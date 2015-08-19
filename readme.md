@@ -58,7 +58,7 @@ test/fixture/1.js
 
 test/fixture/2.js: no issues found
 
-✖ 1 message (0 errors, 1 warning)
+✖ 1 message (1 warning)
 ```
 
 ## API

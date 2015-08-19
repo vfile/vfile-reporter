@@ -112,7 +112,7 @@ describe('vfile-reporter', function () {
             'b.js: no issues found',
             'c.js: no issues found',
             '',
-            '✖ 1 message (0 errors, 1 warning)'
+            '✖ 1 message (1 warning)'
         ].join('\n'));
     });
 
@@ -134,7 +134,7 @@ describe('vfile-reporter', function () {
             'b.js: no issues found',
             'c.js: no issues found',
             '',
-            '✖ 1 message (1 error, 0 warnings)'
+            '✖ 1 message (1 error)'
         ].join('\n'));
     });
 
@@ -175,7 +175,7 @@ describe('vfile-reporter', function () {
             '<stdin>',
             '        3:2  warning  Warning!',
             '',
-            '✖ 1 message (0 errors, 1 warning)'
+            '✖ 1 message (1 warning)'
         ].join('\n'));
     });
 
@@ -197,7 +197,7 @@ describe('vfile-reporter', function () {
             '<stdin>',
             '    3:2-4:8  warning  Warning!',
             '',
-            '✖ 1 message (0 errors, 1 warning)'
+            '✖ 1 message (1 warning)'
         ].join('\n'));
     });
 
@@ -213,7 +213,7 @@ describe('vfile-reporter', function () {
             '    at Object.<anonymous> (test.js:1:1)',
             '    at Module._compile (module.js:1:1)',
             '',
-            '✖ 1 message (1 error, 0 warnings)'
+            '✖ 1 message (1 error)'
         ].join('\n'));
     });
 
@@ -256,7 +256,7 @@ describe('vfile-reporter', function () {
             'a.js',
             '        1:1  error    Error!',
             '',
-            '✖ 1 message (1 error, 0 warnings)'
+            '✖ 1 message (1 error)'
         ].join('\n'));
     });
 });

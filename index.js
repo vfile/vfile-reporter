@@ -129,6 +129,7 @@ function reporter(files, options) {
     var result = [];
     var summaryColor;
     var listing = false;
+    var summary = '';
 
     if (!files) {
         return '';
@@ -231,12 +232,26 @@ function reporter(files, options) {
     });
 
     if (errors || warnings) {
-        result.push(
-            '\n' + chalk[summaryColor].bold([
-            '\u2716 ', total, pluralize(' message', total),
-            ' (', errors, pluralize(' error', errors), ', ',
-            warnings, pluralize(' warning', warnings), ')'
-        ].join('')));
+        summary = [];
+
+        if (errors) {
+            summary.push(errors + ' ' + pluralize('error', errors));
+        }
+
+        if (warnings) {
+            summary.push(warnings + ' ' + pluralize('warning', warnings));
+        }
+
+        result.push([
+            '\n',
+            '\u2716 ',
+            total,
+            ' ',
+            pluralize('message', total),
+            ' (',
+            summary.join(', '),
+            ')'
+        ].join(''));
     }
 
     return result.length ? '\n' + result.join('\n') : '';

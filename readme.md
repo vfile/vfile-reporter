@@ -5,7 +5,7 @@ Format [**VFile**](https://github.com/wooorm/vfile)s using a stylish reporter.
 Originally forked from ESLint’s stylish reporter, but with some coolness
 added.
 
-![Example screen shot of **vfile-reporter**](./screen-shot.png)
+![Example screen shot of **vfile-reporter**](./screenshot.png)
 
 ## Features
 

@@ -15,6 +15,7 @@
  */
 
 var pluralize = require('plur');
+var width = require('string-width');
 var chalk = require('chalk');
 var table = require('text-table');
 var repeat = require('repeat-string');
@@ -62,16 +63,13 @@ function removeNonFailedFiles(files) {
  * @return {number} - Length of `value`.
  */
 function realLength(value) {
-    var index;
-
-    value = chalk.stripColor(value);
-    index = value.indexOf('\n');
+    var index = value.indexOf('\n');
 
     if (index !== -1) {
         value = value.slice(0, index);
     }
 
-    return value.length;
+    return width(value);
 }
 
 /**

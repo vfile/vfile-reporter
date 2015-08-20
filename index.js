@@ -16,6 +16,7 @@
 
 var pluralize = require('plur');
 var width = require('string-width');
+var symbols = require('log-symbols');
 var chalk = require('chalk');
 var table = require('text-table');
 var repeat = require('repeat-string');
@@ -127,7 +128,7 @@ function reporter(files, options) {
     var result = [];
     var summaryColor;
     var listing = false;
-    var summary = '';
+    var summary;
 
     if (!files) {
         return '';
@@ -221,8 +222,8 @@ function reporter(files, options) {
             output += ': no issues found';
         } else {
             output += '\n' + table(messages, {
-                align: ['', 'l', 'l', 'l'],
-                stringLength: realLength
+                'align': ['', 'l', 'l', 'l'],
+                'stringLength': realLength
             });
         }
 
@@ -233,23 +234,28 @@ function reporter(files, options) {
         summary = [];
 
         if (errors) {
-            summary.push(errors + ' ' + pluralize('error', errors));
+            summary.push([
+                symbols.error,
+                errors,
+                pluralize('error', errors)
+            ].join(' '));
         }
 
         if (warnings) {
-            summary.push(warnings + ' ' + pluralize('warning', warnings));
+            summary.push([
+                symbols.warning,
+                warnings,
+                pluralize('warning', warnings)
+            ].join(' '));
         }
 
-        result.push([
-            '\n',
-            '\u2716 ',
-            total,
-            ' ',
-            pluralize('message', total),
-            ' (',
-            summary.join(', '),
-            ')'
-        ].join(''));
+        summary = summary.join(', ');
+
+        if (errors && warnings) {
+            summary = total + ' messages (' + summary + ')';
+        }
+
+        result.push('\n' + summary);
     }
 
     return result.length ? '\n' + result.join('\n') : '';

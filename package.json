@@ -19,6 +19,7 @@
   "repository": "wooorm/vfile-reporter",
   "dependencies": {
     "chalk": "^1.1.0",
+    "log-symbols": "^1.0.2",
     "plur": "^2.0.0",
     "repeat-string": "^1.5.0",
     "string-width": "^1.0.0",

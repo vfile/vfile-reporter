@@ -2,6 +2,11 @@
 
 <!--lint disable no-multiple-toplevel-headings-->
 
+1.2.0 / 2015-08-20
+==================
+
+*   Refactor summary to only expose non-zero types ([1148621](https://github.com/wooorm/vfile-reporter/commit/1148621))
+
 1.1.0 / 2015-08-19
 ==================
 

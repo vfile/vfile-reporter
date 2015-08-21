@@ -2,6 +2,11 @@
 
 <!--lint disable no-multiple-toplevel-headings-->
 
+1.3.0 / 2015-08-21
+==================
+
+*   Add output location when applicable to report ([a5b6369](https://github.com/wooorm/vfile-reporter/commit/a5b6369))
+
 1.2.0 / 2015-08-20
 ==================
 

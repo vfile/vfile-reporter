@@ -259,4 +259,34 @@ describe('vfile-reporter', function () {
             '✖ 1 error'
         ].join('\n'));
     });
+
+    it('should support `history`', function () {
+        var file = toVFile('a.js');
+
+        file.move({
+            'filename': 'b'
+        });
+
+        equal(clean(reporter(file)), 'a.js: no issues found');
+    });
+
+    it('should support `stored`', function () {
+        var file = toVFile('a.js');
+
+        file.stored = true;
+
+        equal(clean(reporter(file)), 'a.js: written');
+    });
+
+    it('should expose the stored file-path', function () {
+        var file = toVFile('a.js');
+
+        file.move({
+            'filename': 'b'
+        })
+
+        file.stored = true;
+
+        equal(clean(reporter(file)), 'a.js > b.js: written');
+    });
 });

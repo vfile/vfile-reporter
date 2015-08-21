@@ -23,6 +23,16 @@ var repeat = require('repeat-string');
 var sort = require('vfile-sort');
 
 /*
+ * Map of no-warning messages, where `true` refers to
+ * `compile: true`.
+ */
+
+var SUCCESS = {
+    'true': chalk.yellow('written'),
+    'false': 'no issues found'
+};
+
+/*
  * List of probabbly lengths of messages.
  */
 
@@ -126,8 +136,8 @@ function reporter(files, options) {
     var errors = 0;
     var warnings = 0;
     var result = [];
-    var summaryColor;
     var listing = false;
+    var summaryColor;
     var summary;
 
     if (!files) {
@@ -151,7 +161,10 @@ function reporter(files, options) {
     }
 
     files.forEach(function (file, position) {
-        var filePath = file.filePath();
+        var destination = file.filePath();
+        var filePath = file.history[0] || destination;
+        var stored = Boolean(file.stored);
+        var moved = stored && destination !== filePath;
         var name = filePath || '<stdin>';
         var output = '';
         var messages;
@@ -216,10 +229,14 @@ function reporter(files, options) {
 
         output += chalk.underline[fileColor || 'green'](name);
 
+        if (moved) {
+            output += ' > ' + destination;
+        }
+
         listing = Boolean(messages.length);
 
         if (!listing) {
-            output += ': no issues found';
+            output += ': ' + SUCCESS[stored];
         } else {
             output += '\n' + table(messages, {
                 'align': ['', 'l', 'l', 'l'],

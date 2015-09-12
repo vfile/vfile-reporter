@@ -129,6 +129,7 @@ function padRight(value, minimum) {
  * @param {Object} [options.silent=false] - Do not output
  *   messages without `fatal` set to true. Also sets
  *   `quiet` to `true`.
+ * @param {Object} [options.verbose=false] - Output notes.
  * @return {string} - Formatted files.
  */
 function reporter(files, options) {
@@ -139,6 +140,7 @@ function reporter(files, options) {
     var listing = false;
     var summaryColor;
     var summary;
+    var verbose;
 
     if (!files) {
         return '';
@@ -151,6 +153,8 @@ function reporter(files, options) {
     if (!options) {
         options = {};
     }
+
+    verbose = options.verbose || false;
 
     if (options.silent) {
         removeNonFatalMessages(files);
@@ -212,6 +216,10 @@ function reporter(files, options) {
                 reason = message.message;
             } else {
                 reason = message.stack;
+            }
+
+            if (verbose && message.note) {
+                reason += '\n' + message.note;
             }
 
             return [

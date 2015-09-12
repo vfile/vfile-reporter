@@ -217,6 +217,34 @@ describe('vfile-reporter', function () {
         ].join('\n'));
     });
 
+    it('should support `note` in verbose mode', function () {
+        var file = toVFile('a.js');
+        var warning = file.warn('Whoops');
+
+        warning.note = [
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ',
+            'nulla tellus, ornare sed auctor nec, feugiat sit amet justo. ',
+            '',
+            'See http://lipsum.com for more information.'
+        ].join('\n');
+
+        file.warn('...and some more warnings');
+
+        equal(clean(reporter(file, {
+            'verbose': true
+        })), [
+            'a.js',
+            '        1:1  warning  Whoops',
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ',
+            'nulla tellus, ornare sed auctor nec, feugiat sit amet justo. ',
+            '',
+            'See http://lipsum.com for more information.',
+            '        1:1  warning  ...and some more warnings',
+            '',
+            '⚠ 2 warnings'
+        ].join('\n'));
+    });
+
     it('should ignore successful files in `quiet` mode', function () {
         var a = toVFile('a.js');
         var b = toVFile('b.js');

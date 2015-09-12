@@ -2,6 +2,11 @@
 
 <!--lint disable no-multiple-toplevel-headings-->
 
+1.4.0 / 2015-09-12
+==================
+
+*   Add support for `note` properties in `verbose` mode ([41a4910](https://github.com/wooorm/vfile-reporter/commit/41a4910))
+
 1.3.0 / 2015-08-21
 ==================
 

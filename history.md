@@ -2,6 +2,11 @@
 
 <!--lint disable no-multiple-toplevel-headings-->
 
+1.4.1 / 2015-10-23
+==================
+
+*   Fix for changes in vfile ([32c2460](https://github.com/wooorm/vfile-reporter/commit/32c2460))
+
 1.4.0 / 2015-09-12
 ==================
 

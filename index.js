@@ -210,13 +210,7 @@ function reporter(files, options) {
                 color = 'gray';
             }
 
-            reason = String(message);
-
-            if (message.stack.slice(0, reason.length) === reason) {
-                reason = message.message;
-            } else {
-                reason = message.stack;
-            }
+            reason = message.stack || message.message;
 
             if (verbose && message.note) {
                 reason += '\n' + message.note;

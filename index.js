@@ -277,7 +277,7 @@ function reporter(files, options) {
         result.push('\n' + summary);
     }
 
-    return result.length ? '\n' + result.join('\n') : '';
+    return result.length ? result.join('\n') : '';
 }
 
 /*

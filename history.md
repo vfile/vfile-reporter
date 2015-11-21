@@ -2,6 +2,11 @@
 
 <!--lint disable no-multiple-toplevel-headings-->
 
+1.5.0 / 2015-11-21
+==================
+
+*   Remove initial newline before report ([ac6a778](https://github.com/wooorm/vfile-reporter/commit/ac6a778))
+
 1.4.1 / 2015-10-23
 ==================
 

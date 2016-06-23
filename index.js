@@ -120,6 +120,16 @@ function padRight(value, minimum) {
 }
 
 /**
+ * Stringify one position.
+ *
+ * @param {Position} position - Point.
+ * @return {string} - Stringified point.
+ */
+function point(position) {
+    return [position.line || 1, position.column || 1].join(':');
+}
+
+/**
  * @param {VFile|Array.<VFile>} files - One or more virtual
  *   files.
  * @param {Object} [options] - Configuration.
@@ -182,12 +192,15 @@ function reporter(files, options) {
 
         messages = messages.map(function (message) {
             var color = 'yellow';
-            var location = message.name;
+            var pos = message.location;
             var label;
             var reason;
+            var location;
 
-            if (filePath) {
-                location = location.slice(location.indexOf(':') + 1);
+            location = point(pos.start);
+
+            if (pos.end.line && pos.end.column) {
+                location += '-' + point(pos.end);
             }
 
             if (message.fatal) {

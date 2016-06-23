@@ -201,6 +201,33 @@ describe('vfile-reporter', function () {
         ].join('\n'));
     });
 
+    it('should support a location (#2)', function () {
+        var file = vfile();
+
+        file.warn('Warning!', {
+            'start': {
+                'line': 3,
+                'column': 2
+            },
+            'end': {
+                'line': 4,
+                'column': 8
+            }
+        });
+
+        file.move({
+            filename: 'foo',
+            extension: 'bar'
+        });
+
+        equal(clean(reporter(file)), [
+            'foo.bar',
+            '    3:2-4:8  warning  Warning!',
+            '',
+            '⚠ 1 warning'
+        ].join('\n'));
+    });
+
     it('should support a “real” error (show a stack)', function () {
         var file = toVFile('test.js');
 

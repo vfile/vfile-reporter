@@ -33,6 +33,9 @@ var POSITION_LENGTH = '00:0-00:0'.length;
 var LABEL_LENGTH = 'message'.length;
 var MESSAGE_LENGTH = 'this is an average message'.length;
 
+/* Default filename. */
+var DEFAULT = '<stdin>';
+
 /**
  * Get the length of `value`, ignoring ANSI sequences.
  *
@@ -113,6 +116,8 @@ function reporter(files, options) {
   var silent = settings.silent;
   var quiet = settings.quiet || settings.silent;
   var verbose = settings.verbose;
+  var defaultName = settings.defaultName || DEFAULT;
+  var fileCount = 0;
   var total = 0;
   var errors = 0;
   var warnings = 0;
@@ -120,6 +125,8 @@ function reporter(files, options) {
   var listing = false;
   var summaryColor;
   var summary;
+  var line;
+  var oneFile;
 
   if (!files) {
     return '';
@@ -130,6 +137,7 @@ function reporter(files, options) {
   }
 
   if (!('length' in files)) {
+    oneFile = true;
     files = [files];
   }
 
@@ -138,7 +146,7 @@ function reporter(files, options) {
     var filePath = file.history[0] || destination;
     var stored = Boolean(file.stored);
     var moved = stored && destination !== filePath;
-    var name = filePath || '<stdin>';
+    var name = filePath || defaultName;
     var output = '';
     var messages;
     var fileColor;
@@ -157,6 +165,7 @@ function reporter(files, options) {
       return;
     }
 
+    fileCount++;
     total += messages.length;
 
     messages = messages.map(function (message) {
@@ -230,6 +239,21 @@ function reporter(files, options) {
 
     result.push(output);
   });
+
+  /* Remove header, if possible. */
+  if (oneFile && fileCount && !settings.defaultName) {
+    line = result[0];
+
+    if (chalk.stripColor(line).slice(0, DEFAULT.length) === DEFAULT) {
+      if (listing) {
+        line = line.slice(line.indexOf('\n') + 1);
+      } else {
+        line = line.slice(line.indexOf(': ') + 2);
+      }
+
+      result[0] = line;
+    }
+  }
 
   if (errors || warnings) {
     summary = [];

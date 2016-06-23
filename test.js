@@ -54,7 +54,7 @@ test('vfile-reporter', function (t) {
 
   t.equal(
     chalk.stripColor(reporter(vfile())),
-    '<stdin>: no issues found',
+    'no issues found',
     'should work without file-paths'
   );
 
@@ -149,7 +149,6 @@ test('vfile-reporter', function (t) {
   t.equal(
     chalk.stripColor(reporter(file)),
     [
-      '<stdin>',
       '        3:2  warning  Warning!',
       '',
       '⚠ 1 warning'
@@ -167,7 +166,6 @@ test('vfile-reporter', function (t) {
   t.equal(
     chalk.stripColor(reporter(file)),
     [
-      '<stdin>',
       '    3:2-4:8  warning  Warning!',
       '',
       '⚠ 1 warning'

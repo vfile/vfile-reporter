@@ -82,13 +82,17 @@ Generate a stylish report from the given files.
 *   `options` (`object`, optional):
 
     *   `quiet` (`boolean`, default: `false`)
-        — Do not output anything for a file which has no warnings or errors.
-        The default behaviour is to show a success message.
+        — Do not output anything for a file which has no warnings or
+        errors.  The default behaviour is to show a success message.
     *   `silent` (`boolean`, default: `false`)
         — Do not output messages without `fatal` set to true.
         Also sets `quiet` to `true`.
     *   `color` (`boolean`, default: `true`)
         — Whether to use colour.
+    *   `defaultName` (`string`, default: `'<stdin>'`)
+        — Label to use for files without file-path.
+        If one file and no `defaultName` is given, no name
+        will show up in the report.
 
 ###### Returns
 

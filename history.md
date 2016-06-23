@@ -2,6 +2,14 @@
 
 <!--lint disable no-multiple-toplevel-headings -->
 
+2.0.0 / 2016-06-23
+==================
+
+*   Add support for `defaultName` ([`fb461cf`](https://github.com/wooorm/vfile-reporter/commit/fb461cf))
+*   Add support for passing an error ([`a4c95be`](https://github.com/wooorm/vfile-reporter/commit/a4c95be))
+*   Fix mutation of files ([`ea22861`](https://github.com/wooorm/vfile-reporter/commit/ea22861))
+*   Fix ranges on files with file-paths added later ([`6359168`](https://github.com/wooorm/vfile-reporter/commit/6359168))
+
 1.5.0 / 2015-11-21
 ==================
 

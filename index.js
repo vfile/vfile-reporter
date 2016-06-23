@@ -125,6 +125,10 @@ function reporter(files, options) {
     return '';
   }
 
+  if (files.stack) {
+    return files.stack;
+  }
+
   if (!('length' in files)) {
     files = [files];
   }

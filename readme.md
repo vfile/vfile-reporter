@@ -78,7 +78,7 @@ Generate a stylish report from the given files.
 
 ###### Parameters
 
-*   `files` ([`VFile`][vfile] or `Array.<VFile>`).
+*   `files` (`Error`, [`VFile`][vfile], or `Array.<VFile>`).
 *   `options` (`object`, optional):
 
     *   `quiet` (`boolean`, default: `false`)

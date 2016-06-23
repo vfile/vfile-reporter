@@ -41,6 +41,12 @@ test('vfile-reporter', function (t) {
   t.equal(reporter([]), '', 'should return empty when not given files');
 
   t.equal(
+    reporter(exception),
+    exception.stack,
+    'should support an error'
+  );
+
+  t.equal(
     chalk.stripColor(reporter(toVFile('a.js'))),
     'a.js: no issues found',
     'should work on a single file'
@@ -283,12 +289,6 @@ test('vfile-reporter', function (t) {
   file.stored = true;
 
   t.equal(chalk.stripColor(reporter(file)), 'a.js > b.js: written', 'should expose the stored file-path');
-
-  t.equal(
-    reporter(toVFile('a.js')),
-    '\x1b[4m\x1b[32ma.js\x1b[39m\x1b[24m: no issues found',
-    'should color by default'
-  );
 
   t.equal(reporter(toVFile('a.js'), {color: false}), 'a.js: no issues found', 'should support `color: false`');
 

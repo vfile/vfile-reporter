@@ -34,33 +34,6 @@ var LABEL_LENGTH = 'message'.length;
 var MESSAGE_LENGTH = 'this is an average message'.length;
 
 /**
- * Reject messages without `fatal: true`.
- *
- * NOTE: Modifies the given files.
- *
- * @param {Array.<VFile>} files - List of files.
- */
-function removeNonFatalMessages(files) {
-  files.forEach(function (file) {
-    file.messages = file.messages.filter(function (message) {
-      return message.fatal === true;
-    });
-  });
-}
-
-/**
- * Reject files without messages.
- *
- * @param {Array.<VFile>} files - List of files.
- * @return {Array.<VFile>} - `files` without non-failed messages.
- */
-function removeNonFailedFiles(files) {
-  return files.filter(function (file) {
-    return Boolean(file.messages.length);
-  });
-}
-
-/**
  * Get the length of `value`, ignoring ANSI sequences.
  *
  * @param {string} value - Value to `pad`.
@@ -83,7 +56,7 @@ function realLength(value) {
  * @param {string} value - Value to `pad`.
  * @param {number} minimum - Pad to `minimum`.
  * @param {boolean?} [side] - Side to pad on.
- * @return {string} - Right-padded `value`.
+ * @return {string} - padded `value`.
  */
 function pad(value, minimum, side) {
   var padding = repeat(' ', minimum - realLength(value));
@@ -136,6 +109,10 @@ function point(position) {
  * @return {string} - Formatted files.
  */
 function reporter(files, options) {
+  var settings = options || {};
+  var silent = settings.silent;
+  var quiet = settings.quiet || settings.silent;
+  var verbose = settings.verbose;
   var total = 0;
   var errors = 0;
   var warnings = 0;
@@ -143,7 +120,6 @@ function reporter(files, options) {
   var listing = false;
   var summaryColor;
   var summary;
-  var verbose;
 
   if (!files) {
     return '';
@@ -151,20 +127,6 @@ function reporter(files, options) {
 
   if (!('length' in files)) {
     files = [files];
-  }
-
-  if (!options) {
-    options = {};
-  }
-
-  verbose = options.verbose || false;
-
-  if (options.silent) {
-    removeNonFatalMessages(files);
-  }
-
-  if (options.silent || options.quiet) {
-    files = removeNonFailedFiles(files);
   }
 
   files.forEach(function (file, position) {
@@ -180,6 +142,16 @@ function reporter(files, options) {
     sort(file);
 
     messages = file.messages;
+
+    if (silent) {
+      messages = messages.filter(function (message) {
+        return message.fatal === true;
+      });
+    }
+
+    if (quiet && !messages.length) {
+      return;
+    }
 
     total += messages.length;
 
@@ -285,7 +257,7 @@ function reporter(files, options) {
 
   result = result.length ? result.join('\n') : '';
 
-  if (options.color === false) {
+  if (settings.color === false) {
     result = chalk.stripColor(result);
   }
 

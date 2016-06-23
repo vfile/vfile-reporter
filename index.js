@@ -10,10 +10,9 @@
 
 'use strict';
 
-/*
- * Dependencies.
- */
+/* eslint-env commonjs */
 
+/* Dependencies. */
 var pluralize = require('plur');
 var width = require('string-width');
 var symbols = require('log-symbols');
@@ -22,20 +21,14 @@ var table = require('text-table');
 var repeat = require('repeat-string');
 var sort = require('vfile-sort');
 
-/*
- * Map of no-warning messages, where `true` refers to
- * `compile: true`.
- */
-
+/* Map of no-warning messages, where `true` refers to
+ * `compile: true`. */
 var SUCCESS = {
-    'true': chalk.yellow('written'),
-    'false': 'no issues found'
+  true: chalk.yellow('written'),
+  false: 'no issues found'
 };
 
-/*
- * List of probabbly lengths of messages.
- */
-
+/* List of probable lengths of messages. */
 var POSITION_LENGTH = '00:0-00:0'.length;
 var LABEL_LENGTH = 'message'.length;
 var MESSAGE_LENGTH = 'this is an average message'.length;
@@ -48,11 +41,11 @@ var MESSAGE_LENGTH = 'this is an average message'.length;
  * @param {Array.<VFile>} files - List of files.
  */
 function removeNonFatalMessages(files) {
-    files.forEach(function (file) {
-        file.messages = file.messages.filter(function (message) {
-            return message.fatal === true;
-        })
+  files.forEach(function (file) {
+    file.messages = file.messages.filter(function (message) {
+      return message.fatal === true;
     });
+  });
 }
 
 /**
@@ -62,9 +55,9 @@ function removeNonFatalMessages(files) {
  * @return {Array.<VFile>} - `files` without non-failed messages.
  */
 function removeNonFailedFiles(files) {
-    return files.filter(function (file) {
-        return Boolean(file.messages.length);
-    });
+  return files.filter(function (file) {
+    return Boolean(file.messages.length);
+  });
 }
 
 /**
@@ -74,13 +67,13 @@ function removeNonFailedFiles(files) {
  * @return {number} - Length of `value`.
  */
 function realLength(value) {
-    var index = value.indexOf('\n');
+  var index = value.indexOf('\n');
 
-    if (index !== -1) {
-        value = value.slice(0, index);
-    }
+  if (index !== -1) {
+    value = value.slice(0, index);
+  }
 
-    return width(value);
+  return width(value);
 }
 
 /**
@@ -93,8 +86,8 @@ function realLength(value) {
  * @return {string} - Right-padded `value`.
  */
 function pad(value, minimum, side) {
-    var padding = repeat(' ', minimum - realLength(value));
-    return side ? padding + value : value + padding;
+  var padding = repeat(' ', minimum - realLength(value));
+  return side ? padding + value : value + padding;
 }
 
 /**
@@ -105,7 +98,7 @@ function pad(value, minimum, side) {
  * @return {string} - Left-padded `value`.
  */
 function padLeft(value, minimum) {
-    return pad(value, minimum, true);
+  return pad(value, minimum, true);
 }
 
 /**
@@ -116,7 +109,7 @@ function padLeft(value, minimum) {
  * @return {string} - Right-padded `value`.
  */
 function padRight(value, minimum) {
-    return pad(value, minimum, false);
+  return pad(value, minimum, false);
 }
 
 /**
@@ -126,7 +119,7 @@ function padRight(value, minimum) {
  * @return {string} - Stringified point.
  */
 function point(position) {
-    return [position.line || 1, position.column || 1].join(':');
+  return [position.line || 1, position.column || 1].join(':');
 }
 
 /**
@@ -143,158 +136,161 @@ function point(position) {
  * @return {string} - Formatted files.
  */
 function reporter(files, options) {
-    var total = 0;
-    var errors = 0;
-    var warnings = 0;
-    var result = [];
-    var listing = false;
-    var summaryColor;
-    var summary;
-    var verbose;
+  var total = 0;
+  var errors = 0;
+  var warnings = 0;
+  var result = [];
+  var listing = false;
+  var summaryColor;
+  var summary;
+  var verbose;
 
-    if (!files) {
-        return '';
-    }
+  if (!files) {
+    return '';
+  }
 
-    if (!('length' in files)) {
-        files = [files];
-    }
+  if (!('length' in files)) {
+    files = [files];
+  }
 
-    if (!options) {
-        options = {};
-    }
+  if (!options) {
+    options = {};
+  }
 
-    verbose = options.verbose || false;
+  verbose = options.verbose || false;
 
-    if (options.silent) {
-        removeNonFatalMessages(files);
-    }
+  if (options.silent) {
+    removeNonFatalMessages(files);
+  }
 
-    if (options.silent || options.quiet) {
-        files = removeNonFailedFiles(files);
-    }
+  if (options.silent || options.quiet) {
+    files = removeNonFailedFiles(files);
+  }
 
-    files.forEach(function (file, position) {
-        var destination = file.filePath();
-        var filePath = file.history[0] || destination;
-        var stored = Boolean(file.stored);
-        var moved = stored && destination !== filePath;
-        var name = filePath || '<stdin>';
-        var output = '';
-        var messages;
-        var fileColor;
+  files.forEach(function (file, position) {
+    var destination = file.filePath();
+    var filePath = file.history[0] || destination;
+    var stored = Boolean(file.stored);
+    var moved = stored && destination !== filePath;
+    var name = filePath || '<stdin>';
+    var output = '';
+    var messages;
+    var fileColor;
 
-        sort(file);
+    sort(file);
 
-        messages = file.messages;
+    messages = file.messages;
 
-        total += messages.length;
+    total += messages.length;
 
-        messages = messages.map(function (message) {
-            var color = 'yellow';
-            var pos = message.location;
-            var label;
-            var reason;
-            var location;
+    messages = messages.map(function (message) {
+      var color = 'yellow';
+      var pos = message.location;
+      var label;
+      var reason;
+      var location;
 
-            location = point(pos.start);
+      location = point(pos.start);
 
-            if (pos.end.line && pos.end.column) {
-                location += '-' + point(pos.end);
-            }
+      if (pos.end.line && pos.end.column) {
+        location += '-' + point(pos.end);
+      }
 
-            if (message.fatal) {
-                color = fileColor = summaryColor = 'red';
-                label = 'error';
-                errors++;
-            } else if (message.fatal === false) {
-                label = 'warning';
-                warnings++;
+      if (message.fatal) {
+        color = fileColor = summaryColor = 'red';
+        label = 'error';
+        errors++;
+      } else if (message.fatal === false) {
+        label = 'warning';
+        warnings++;
 
-                if (!summaryColor) {
-                    summaryColor = color;
-                }
-
-                if (!fileColor) {
-                    fileColor = color;
-                }
-            } else {
-                label = 'message';
-                color = 'gray';
-            }
-
-            reason = message.stack || message.message;
-
-            if (verbose && message.note) {
-                reason += '\n' + message.note;
-            }
-
-            return [
-                '',
-                padLeft(location, POSITION_LENGTH),
-                padRight(chalk[color](label), LABEL_LENGTH),
-                padRight(reason, MESSAGE_LENGTH),
-                message.ruleId || ''
-            ];
-        });
-
-        if (listing || (messages.length && position !== 0)) {
-            output += '\n';
+        if (!summaryColor) {
+          summaryColor = color;
         }
 
-        output += chalk.underline[fileColor || 'green'](name);
-
-        if (moved) {
-            output += ' > ' + destination;
+        if (!fileColor) {
+          fileColor = color;
         }
+      } else {
+        label = 'message';
+        color = 'gray';
+      }
 
-        listing = Boolean(messages.length);
+      reason = message.stack || message.message;
 
-        if (!listing) {
-            output += ': ' + SUCCESS[stored];
-        } else {
-            output += '\n' + table(messages, {
-                'align': ['', 'l', 'l', 'l'],
-                'stringLength': realLength
-            });
-        }
+      if (verbose && message.note) {
+        reason += '\n' + message.note;
+      }
 
-        result.push(output);
+      return [
+        '',
+        padLeft(location, POSITION_LENGTH),
+        padRight(chalk[color](label), LABEL_LENGTH),
+        padRight(reason, MESSAGE_LENGTH),
+        message.ruleId || ''
+      ];
     });
 
-    if (errors || warnings) {
-        summary = [];
-
-        if (errors) {
-            summary.push([
-                symbols.error,
-                errors,
-                pluralize('error', errors)
-            ].join(' '));
-        }
-
-        if (warnings) {
-            summary.push([
-                symbols.warning,
-                warnings,
-                pluralize('warning', warnings)
-            ].join(' '));
-        }
-
-        summary = summary.join(', ');
-
-        if (errors && warnings) {
-            summary = total + ' messages (' + summary + ')';
-        }
-
-        result.push('\n' + summary);
+    if (listing || (messages.length && position !== 0)) {
+      output += '\n';
     }
 
-    return result.length ? result.join('\n') : '';
+    output += chalk.underline[fileColor || 'green'](name);
+
+    if (moved) {
+      output += ' > ' + destination;
+    }
+
+    listing = Boolean(messages.length);
+
+    if (listing) {
+      output += '\n' + table(messages, {
+        align: ['', 'l', 'l', 'l'],
+        stringLength: realLength
+      });
+    } else {
+      output += ': ' + SUCCESS[stored];
+    }
+
+    result.push(output);
+  });
+
+  if (errors || warnings) {
+    summary = [];
+
+    if (errors) {
+      summary.push([
+        symbols.error,
+        errors,
+        pluralize('error', errors)
+      ].join(' '));
+    }
+
+    if (warnings) {
+      summary.push([
+        symbols.warning,
+        warnings,
+        pluralize('warning', warnings)
+      ].join(' '));
+    }
+
+    summary = summary.join(', ');
+
+    if (errors && warnings) {
+      summary = total + ' messages (' + summary + ')';
+    }
+
+    result.push('\n' + summary);
+  }
+
+  result = result.length ? result.join('\n') : '';
+
+  if (options.color === false) {
+    result = chalk.stripColor(result);
+  }
+
+  return result;
 }
 
-/*
- * Expose.
- */
-
+/* Expose. */
 module.exports = reporter;

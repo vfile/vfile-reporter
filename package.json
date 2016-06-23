@@ -8,15 +8,20 @@
     "formatter",
     "reporter",
     "lint",
-    "validate",
     "format",
     "message",
     "warning",
-    "error",
-    "retext",
-    "remark"
+    "error"
   ],
-  "repository": "wooorm/vfile-reporter",
+  "files": [
+    "index.js"
+  ],
+  "repository": "https://github.com/wooorm/vfile-reporter",
+  "bugs": "https://github.com/wooorm/vfile-reporter/issues",
+  "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
+  "contributors": [
+    "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)"
+  ],
   "dependencies": {
     "chalk": "^1.1.0",
     "log-symbols": "^1.0.2",
@@ -26,34 +31,49 @@
     "text-table": "^0.2.0",
     "vfile-sort": "^1.0.0"
   },
-  "author": "Titus Wormer <tituswormer@gmail.com>",
-  "files": [
-    "index.js"
-  ],
   "devDependencies": {
-    "eslint": "^2.0.0",
-    "esmangle": "^1.0.0",
+    "browserify": "^13.0.1",
+    "esmangle": "^1.0.1",
     "istanbul": "^0.4.0",
-    "jscs": "^3.0.0",
-    "jscs-jsdoc": "^2.0.0",
     "remark-cli": "^1.0.0",
     "remark-comment-config": "^4.0.0",
     "remark-github": "^5.0.0",
     "remark-lint": "^4.0.0",
-    "mocha": "^2.0.0",
+    "remark-usage": "^4.0.0",
+    "remark-validate-links": "^4.0.0",
+    "tape": "^4.0.0",
     "to-vfile": "^1.0.0",
-    "vfile": "^1.0.0"
+    "vfile": "^1.0.0",
+    "xo": "^0.16.0"
   },
   "scripts": {
-    "test-api": "mocha --check-leaks test.js",
-    "test-coverage": "istanbul cover _mocha -- test.js",
-    "test-travis": "npm run test-coverage",
-    "test": "npm run test-api",
-    "lint-api": "eslint .",
-    "lint-style": "jscs --reporter inline .",
-    "lint": "npm run lint-api && npm run lint-style",
-    "make": "npm run lint && npm run test-coverage",
     "build-md": "remark . --quiet --frail",
-    "build": "npm run build-md"
+    "build-bundle": "browserify index.js --bare -s vfileReporter > vfile-reporter.js",
+    "build-mangle": "esmangle vfile-reporter.js > vfile-reporter.min.js",
+    "build": "npm run build-md && npm run build-bundle && npm run build-mangle",
+    "lint": "xo",
+    "test-api": "node test.js",
+    "test-coverage": "istanbul cover test.js",
+    "test": "npm run build && npm run lint && npm run test-coverage"
+  },
+  "xo": {
+    "space": true,
+    "ignores": [
+      "vfile-reporter.js",
+      "vfile-reporter.min.js"
+    ]
+  },
+  "remarkConfig": {
+    "output": true,
+    "plugins": [
+      "comment-config",
+      "lint",
+      "github",
+      "validate-links",
+      "usage"
+    ],
+    "settings": {
+      "bullet": "*"
+    }
   }
 }

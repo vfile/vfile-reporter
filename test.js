@@ -1,347 +1,296 @@
-'use strict';
-
-/* eslint-env mocha */
-
-/*
- * Dependencies.
+/**
+ * @author Titus Wormer
+ * @copyright 2016 Titus Wormer
+ * @license MIT
+ * @module vfile-reporter
+ * @fileoverview Test suite for `vfile-reporter`.
  */
 
-var assert = require('assert');
+'use strict';
+
+/* eslint-env node */
+
+/* Dependencies. */
+var test = require('tape');
 var chalk = require('chalk');
 var vfile = require('vfile');
 var toVFile = require('to-vfile');
 var reporter = require('./index.js');
 
-/*
- * Methods.
- */
-
-var equal = assert.strictEqual;
-
-/**
- * Helper to remove trailing white-space and ANSI-colors.
- *
- * @param {string} value - Value to clean.
- * @return {string} - Cleaned `value`.
- */
-function clean(value) {
-    return chalk.stripColor(value).trim();
-}
-
-/*
- * Fixture of a `real` error.
- */
-
 var exception;
 
 try {
-    /* eslint-disable no-undef */
-    variable;
+  /* eslint-disable no-undef */
+  variable = 1;
 } catch (err) {
-    err.stack = err.stack
-        .replace(/\(\/.+\//g, '(')
-        .replace(/\d+:\d+/g, '1:1')
-        .split('\n')
-        .slice(0, 3)
-        .join('\n');
+  err.stack = err.stack
+    .replace(/\(\/.+\//g, '(').replace(/\d+:\d+/g, '1:1')
+    .split('\n').slice(0, 3).join('\n');
 
-    exception = err;
+  exception = err;
 }
 
-/*
- * Tests.
- */
+/* Tests. */
+test('vfile-reporter', function (t) {
+  var file;
+  var fileB;
+  var warning;
 
-describe('vfile-reporter', function () {
-    it('should return empty when not given files', function () {
-        equal(reporter([]), '');
-        equal(reporter(), '');
-    });
+  t.equal(reporter(), '', 'should return empty without a file');
 
-    it('should work on a single file', function () {
-        equal(clean(reporter(toVFile('a.js'))), 'a.js: no issues found');
-    });
+  t.equal(reporter([]), '', 'should return empty when not given files');
 
-    it('should work without file-paths', function () {
-        equal(clean(reporter(vfile())), '<stdin>: no issues found');
-    });
+  t.equal(
+    chalk.stripColor(reporter(toVFile('a.js'))),
+    'a.js: no issues found',
+    'should work on a single file'
+  );
 
-    it('should work on files without messages', function () {
-        equal(clean(reporter([
-            toVFile('a.js'),
-            toVFile('b.js'),
-            toVFile('c.js')
-        ])), [
-            'a.js: no issues found',
-            'b.js: no issues found',
-            'c.js: no issues found'
-        ].join('\n'));
-    });
+  t.equal(
+    chalk.stripColor(reporter(vfile())),
+    '<stdin>: no issues found',
+    'should work without file-paths'
+  );
 
-    it('should work on files with messages', function () {
-        var file = toVFile('a.js');
+  t.equal(
+    chalk.stripColor(reporter([toVFile('a.js'), toVFile('b.js')])),
+    'a.js: no issues found\nb.js: no issues found',
+    'should work on files without messages'
+  );
 
-        file.messages.push(file.message('Note!'));
+  file = toVFile('a.js');
 
-        equal(clean(reporter([
-            file,
-            toVFile('b.js'),
-            toVFile('c.js')
-        ])), [
-            'a.js',
-            '        1:1  message  Note!',
-            '',
-            'b.js: no issues found',
-            'c.js: no issues found'
-        ].join('\n'));
-    });
+  file.messages.push(file.message('Note!'));
 
-    it('should work on files with warnings', function () {
-        var file = toVFile('a.js');
+  t.equal(
+    chalk.stripColor(reporter([file, toVFile('b.js')])),
+    [
+      'a.js',
+      '        1:1  message  Note!',
+      '',
+      'b.js: no issues found'
+    ].join('\n'),
+    'should work on files with messages'
+  );
 
-        file.warn('Warning!');
+  file = toVFile('a.js');
 
-        equal(clean(reporter([
-            file,
-            toVFile('b.js'),
-            toVFile('c.js')
-        ])), [
-            'a.js',
-            '        1:1  warning  Warning!',
-            '',
-            'b.js: no issues found',
-            'c.js: no issues found',
-            '',
-            '⚠ 1 warning'
-        ].join('\n'));
-    });
+  file.warn('Warning!');
 
-    it('should work on files with errors', function () {
-        var file = toVFile('a.js');
+  t.equal(
+    chalk.stripColor(reporter([file, toVFile('b.js')])),
+    [
+      'a.js',
+      '        1:1  warning  Warning!',
+      '',
+      'b.js: no issues found',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should work on files with warnings'
+  );
 
-        file.quiet = true;
+  file = toVFile('a.js');
 
-        file.fail('Error!');
+  file.quiet = true;
 
-        equal(clean(reporter([
-            file,
-            toVFile('b.js'),
-            toVFile('c.js')
-        ])), [
-            'a.js',
-            '        1:1  error    Error!',
-            '',
-            'b.js: no issues found',
-            'c.js: no issues found',
-            '',
-            '✖ 1 error'
-        ].join('\n'));
-    });
+  file.fail('Error!');
 
-    it('should work on files with multiple mixed messages', function () {
-        var file = toVFile('a.js');
+  t.equal(
+    chalk.stripColor(reporter([file, toVFile('b.js')])),
+    [
+      'a.js',
+      '        1:1  error    Error!',
+      '',
+      'b.js: no issues found',
+      '',
+      '✖ 1 error'
+    ].join('\n'),
+    'should work on files with errors'
+  );
 
-        file.quiet = true;
+  file = toVFile('a.js');
 
-        file.fail('Error!');
-        file.messages.push(file.message('Note!'));
-        file.warn('Warning!');
-        file.warn('Another warning!');
-        file.messages.push(file.message('Another note!'));
-        file.fail('Another error!');
+  file.quiet = true;
 
-        equal(clean(reporter(file)), [
-            'a.js',
-            '        1:1  error    Error!',
-            '        1:1  message  Note!',
-            '        1:1  warning  Warning!',
-            '        1:1  warning  Another warning!',
-            '        1:1  message  Another note!',
-            '        1:1  error    Another error!',
-            '',
-            '6 messages (✖ 2 errors, ⚠ 2 warnings)'
-        ].join('\n'));
-    });
+  file.fail('Error!');
+  file.messages.push(file.message('Note!'));
+  file.warn('Warning!');
+  file.warn('Another warning!');
+  file.messages.push(file.message('Another note!'));
+  file.fail('Another error!');
 
-    it('should support a single position', function () {
-        var file = vfile();
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    [
+      'a.js',
+      '        1:1  error    Error!',
+      '        1:1  message  Note!',
+      '        1:1  warning  Warning!',
+      '        1:1  warning  Another warning!',
+      '        1:1  message  Another note!',
+      '        1:1  error    Another error!',
+      '',
+      '6 messages (✖ 2 errors, ⚠ 2 warnings)'
+    ].join('\n'),
+    'should work on files with multiple mixed messages'
+  );
 
-        file.warn('Warning!', {
-            'line': 3,
-            'column': 2
-        });
+  file = vfile();
 
-        equal(clean(reporter(file)), [
-            '<stdin>',
-            '        3:2  warning  Warning!',
-            '',
-            '⚠ 1 warning'
-        ].join('\n'));
-    });
+  file.warn('Warning!', {line: 3, column: 2});
 
-    it('should support a location', function () {
-        var file = vfile();
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    [
+      '<stdin>',
+      '        3:2  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a single position'
+  );
 
-        file.warn('Warning!', {
-            'start': {
-                'line': 3,
-                'column': 2
-            },
-            'end': {
-                'line': 4,
-                'column': 8
-            }
-        });
+  file = vfile();
 
-        equal(clean(reporter(file)), [
-            '<stdin>',
-            '    3:2-4:8  warning  Warning!',
-            '',
-            '⚠ 1 warning'
-        ].join('\n'));
-    });
+  file.warn('Warning!', {
+    start: {line: 3, column: 2},
+    end: {line: 4, column: 8}
+  });
 
-    it('should support a location (#2)', function () {
-        var file = vfile();
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    [
+      '<stdin>',
+      '    3:2-4:8  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a location'
+  );
 
-        file.warn('Warning!', {
-            'start': {
-                'line': 3,
-                'column': 2
-            },
-            'end': {
-                'line': 4,
-                'column': 8
-            }
-        });
+  file = vfile();
 
-        file.move({
-            filename: 'foo',
-            extension: 'bar'
-        });
+  file.warn('Warning!', {
+    start: {line: 3, column: 2},
+    end: {line: 4, column: 8}
+  });
 
-        equal(clean(reporter(file)), [
-            'foo.bar',
-            '    3:2-4:8  warning  Warning!',
-            '',
-            '⚠ 1 warning'
-        ].join('\n'));
-    });
+  file.move({filename: 'foo', extension: 'bar'});
 
-    it('should support a “real” error (show a stack)', function () {
-        var file = toVFile('test.js');
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    [
+      'foo.bar',
+      '    3:2-4:8  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a location (#2)'
+  );
 
-        file.quiet = true;
-        file.fail(exception);
+  file = toVFile('test.js');
+  file.quiet = true;
+  file.fail(exception);
 
-        equal(clean(reporter(file)), [
-            'test.js',
-            '        1:1  error    ReferenceError: variable is not defined',
-            '    at Object.<anonymous> (test.js:1:1)',
-            '    at Module._compile (module.js:1:1)',
-            '',
-            '✖ 1 error'
-        ].join('\n'));
-    });
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    [
+      'test.js',
+      '        1:1  error    ReferenceError: variable is not defined',
+      '    at Object.<anonymous> (test.js:1:1)',
+      '    at Module._compile (module.js:1:1)',
+      '',
+      '✖ 1 error'
+    ].join('\n'),
+    'should support a “real” error (show a stack)'
+  );
 
-    it('should support `note` in verbose mode', function () {
-        var file = toVFile('a.js');
-        var warning = file.warn('Whoops');
+  file = toVFile('a.js');
+  warning = file.warn('Whoops');
 
-        warning.note = [
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ',
-            'nulla tellus, ornare sed auctor nec, feugiat sit amet justo. ',
-            '',
-            'See http://lipsum.com for more information.'
-        ].join('\n');
+  warning.note = 'Lorem ipsum dolor sit amet.';
 
-        file.warn('...and some more warnings');
+  file.warn('...and some more warnings');
 
-        equal(clean(reporter(file, {
-            'verbose': true
-        })), [
-            'a.js',
-            '        1:1  warning  Whoops',
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ',
-            'nulla tellus, ornare sed auctor nec, feugiat sit amet justo. ',
-            '',
-            'See http://lipsum.com for more information.',
-            '        1:1  warning  ...and some more warnings',
-            '',
-            '⚠ 2 warnings'
-        ].join('\n'));
-    });
+  t.equal(
+    chalk.stripColor(reporter(file, {verbose: true})),
+    [
+      'a.js',
+      '        1:1  warning  Whoops',
+      'Lorem ipsum dolor sit amet.',
+      '        1:1  warning  ...and some more warnings',
+      '',
+      '⚠ 2 warnings'
+    ].join('\n'),
+    'should support `note` in verbose mode'
+  );
 
-    it('should ignore successful files in `quiet` mode', function () {
-        var a = toVFile('a.js');
-        var b = toVFile('b.js');
-        var c = toVFile('c.js');
+  file = toVFile('a.js');
 
-        a.quiet = true;
+  file.warn('Warning!');
 
-        a.fail('Error!');
-        b.warn('Warning!');
+  t.equal(
+    chalk.stripColor(reporter([file, toVFile('b.js')], {quiet: true})),
+    [
+      'a.js',
+      '        1:1  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should ignore successful files in `quiet` mode'
+  );
 
-        equal(clean(reporter([a, b, c], {
-            'quiet': true
-        })), [
-            'a.js',
-            '        1:1  error    Error!',
-            '',
-            'b.js',
-            '        1:1  warning  Warning!',
-            '',
-            '2 messages (✖ 1 error, ⚠ 1 warning)'
-        ].join('\n'));
-    });
+  file = toVFile('a.js');
+  fileB = toVFile('b.js');
 
-    it('should ignore non-failures in `silent` mode', function () {
-        var a = toVFile('a.js');
-        var b = toVFile('b.js');
-        var c = toVFile('c.js');
+  file.quiet = true;
+  file.fail('Error!');
+  fileB.warn('Warning!');
 
-        a.quiet = true;
+  t.equal(
+    chalk.stripColor(reporter([file, fileB], {silent: true})),
+    [
+      'a.js',
+      '        1:1  error    Error!',
+      '',
+      '✖ 1 error'
+    ].join('\n'),
+    'should ignore non-failures in `silent` mode'
+  );
 
-        a.fail('Error!');
-        b.warn('Warning!');
+  file = toVFile('a.js');
 
-        equal(clean(reporter([a, b, c], {
-            'silent': true
-        })), [
-            'a.js',
-            '        1:1  error    Error!',
-            '',
-            '✖ 1 error'
-        ].join('\n'));
-    });
+  file.move({filename: 'b'});
 
-    it('should support `history`', function () {
-        var file = toVFile('a.js');
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    'a.js: no issues found',
+    'should support `history`'
+  );
 
-        file.move({
-            'filename': 'b'
-        });
+  file = toVFile('a.js');
+  file.stored = true;
 
-        equal(clean(reporter(file)), 'a.js: no issues found');
-    });
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    'a.js: written',
+    'should support `stored`'
+  );
 
-    it('should support `stored`', function () {
-        var file = toVFile('a.js');
+  file = toVFile('a.js');
+  file.move({filename: 'b'});
+  file.stored = true;
 
-        file.stored = true;
+  t.equal(chalk.stripColor(reporter(file)), 'a.js > b.js: written', 'should expose the stored file-path');
 
-        equal(clean(reporter(file)), 'a.js: written');
-    });
+  t.equal(
+    reporter(toVFile('a.js')),
+    '\x1b[4m\x1b[32ma.js\x1b[39m\x1b[24m: no issues found',
+    'should color by default'
+  );
 
-    it('should expose the stored file-path', function () {
-        var file = toVFile('a.js');
+  t.equal(reporter(toVFile('a.js'), {color: false}), 'a.js: no issues found', 'should support `color: false`');
 
-        file.move({
-            'filename': 'b'
-        })
-
-        file.stored = true;
-
-        equal(clean(reporter(file)), 'a.js > b.js: written');
-    });
+  t.end();
 });

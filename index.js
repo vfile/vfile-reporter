@@ -16,17 +16,11 @@
 var pluralize = require('plur');
 var width = require('string-width');
 var symbols = require('log-symbols');
-var chalk = require('chalk');
+var Chalk = require('chalk').constructor;
+var strip = require('strip-ansi');
 var table = require('text-table');
 var repeat = require('repeat-string');
 var sort = require('vfile-sort');
-
-/* Map of no-warning messages, where `true` refers to
- * `compile: true`. */
-var SUCCESS = {
-  true: chalk.yellow('written'),
-  false: 'no issues found'
-};
 
 /* List of probable lengths of messages. */
 var POSITION_LENGTH = '00:0-00:0'.length;
@@ -117,6 +111,7 @@ function reporter(files, options) {
   var quiet = settings.quiet || settings.silent;
   var verbose = settings.verbose;
   var defaultName = settings.defaultName || DEFAULT;
+  var chalk = new Chalk({enabled: settings.color});
   var fileCount = 0;
   var total = 0;
   var errors = 0;
@@ -234,7 +229,8 @@ function reporter(files, options) {
         stringLength: realLength
       });
     } else {
-      output += ': ' + SUCCESS[stored];
+      output += ': ';
+      output += stored ? chalk.yellow('written') : 'no issues found';
     }
 
     result.push(output);
@@ -244,7 +240,7 @@ function reporter(files, options) {
   if (oneFile && fileCount && !settings.defaultName) {
     line = result[0];
 
-    if (chalk.stripColor(line).slice(0, DEFAULT.length) === DEFAULT) {
+    if (strip(line).slice(0, DEFAULT.length) === DEFAULT) {
       if (listing) {
         line = line.slice(line.indexOf('\n') + 1);
       } else {
@@ -260,7 +256,7 @@ function reporter(files, options) {
 
     if (errors) {
       summary.push([
-        symbols.error,
+        chalk.red(strip(symbols.error)),
         errors,
         pluralize('error', errors)
       ].join(' '));
@@ -268,7 +264,7 @@ function reporter(files, options) {
 
     if (warnings) {
       summary.push([
-        symbols.warning,
+        chalk.yellow(strip(symbols.warning)),
         warnings,
         pluralize('warning', warnings)
       ].join(' '));
@@ -283,13 +279,7 @@ function reporter(files, options) {
     result.push('\n' + summary);
   }
 
-  result = result.length ? result.join('\n') : '';
-
-  if (settings.color === false) {
-    result = chalk.stripColor(result);
-  }
-
-  return result;
+  return result.length ? result.join('\n') : '';
 }
 
 /* Expose. */

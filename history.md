@@ -2,6 +2,12 @@
 
 <!--lint disable no-multiple-toplevel-headings -->
 
+2.0.1 / 2016-07-20
+==================
+
+*   Fix superfluous lines from showing up ([`e3dd9b2`](https://github.com/wooorm/vfile-reporter/commit/e3dd9b2))
+*   Fix a bug where the `color` setting wasn’t honoured ([`7904055`](https://github.com/wooorm/vfile-reporter/commit/7904055))
+
 2.0.0 / 2016-06-23
 ==================
 

@@ -93,6 +93,16 @@ function point(position) {
 }
 
 /**
+ * Check if a message is fatal.
+ *
+ * @param {VFileMessage} message - Message.
+ * @return {boolean} - Whether `message` is `fatal`.
+ */
+function fatal(message) {
+  return message.fatal === true;
+}
+
+/**
  * @param {VFile|Array.<VFile>} files - One or more virtual
  *   files.
  * @param {Object} [options] - Configuration.
@@ -136,6 +146,16 @@ function reporter(files, options) {
     files = [files];
   }
 
+  files = files.filter(function (file) {
+    var messages = file.messages;
+
+    if (silent) {
+      messages = messages.filter(fatal);
+    }
+
+    return !quiet || messages.length;
+  });
+
   files.forEach(function (file, position) {
     var destination = file.filePath();
     var filePath = file.history[0] || destination;
@@ -151,13 +171,7 @@ function reporter(files, options) {
     messages = file.messages;
 
     if (silent) {
-      messages = messages.filter(function (message) {
-        return message.fatal === true;
-      });
-    }
-
-    if (quiet && !messages.length) {
-      return;
+      messages = messages.filter(fatal);
     }
 
     fileCount++;
@@ -241,13 +255,9 @@ function reporter(files, options) {
     line = result[0];
 
     if (strip(line).slice(0, DEFAULT.length) === DEFAULT) {
-      if (listing) {
-        line = line.slice(line.indexOf('\n') + 1);
-      } else {
-        line = line.slice(line.indexOf(': ') + 2);
-      }
-
-      result[0] = line;
+      result[0] = line.slice(
+        listing ? line.indexOf('\n') + 1 : line.indexOf(': ') + 2
+      );
     }
   }
 

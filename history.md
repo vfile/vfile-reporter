@@ -2,6 +2,11 @@
 
 <!--lint disable no-multiple-toplevel-headings -->
 
+2.1.0 / 2016-07-30
+==================
+
+*   Add support for passing any error ([`3712dc4`](https://github.com/wooorm/vfile-reporter/commit/3712dc4))
+
 2.0.1 / 2016-07-20
 ==================
 

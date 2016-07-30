@@ -46,6 +46,16 @@ test('vfile-reporter', function (t) {
     'should support an error'
   );
 
+  file = toVFile('a.js');
+  file.quiet = true;
+  warning = file.fail('Error!');
+
+  t.equal(
+    reporter(warning),
+    'a.js:1:1: Error!',
+    'should support a fatal message'
+  );
+
   t.equal(
     chalk.stripColor(reporter(toVFile('a.js'))),
     'a.js: no issues found',
@@ -65,7 +75,6 @@ test('vfile-reporter', function (t) {
   );
 
   file = toVFile('a.js');
-
   file.messages.push(file.message('Note!'));
 
   t.equal(
@@ -80,7 +89,6 @@ test('vfile-reporter', function (t) {
   );
 
   file = toVFile('a.js');
-
   file.warn('Warning!');
 
   t.equal(
@@ -97,9 +105,7 @@ test('vfile-reporter', function (t) {
   );
 
   file = toVFile('a.js');
-
   file.quiet = true;
-
   file.fail('Error!');
 
   t.equal(
@@ -116,9 +122,7 @@ test('vfile-reporter', function (t) {
   );
 
   file = toVFile('a.js');
-
   file.quiet = true;
-
   file.fail('Error!');
   file.messages.push(file.message('Note!'));
   file.warn('Warning!');
@@ -143,7 +147,6 @@ test('vfile-reporter', function (t) {
   );
 
   file = vfile();
-
   file.warn('Warning!', {line: 3, column: 2});
 
   t.equal(
@@ -157,7 +160,6 @@ test('vfile-reporter', function (t) {
   );
 
   file = vfile();
-
   file.warn('Warning!', {
     start: {line: 3, column: 2},
     end: {line: 4, column: 8}
@@ -174,12 +176,10 @@ test('vfile-reporter', function (t) {
   );
 
   file = vfile();
-
   file.warn('Warning!', {
     start: {line: 3, column: 2},
     end: {line: 4, column: 8}
   });
-
   file.move({filename: 'foo', extension: 'bar'});
 
   t.equal(
@@ -212,9 +212,7 @@ test('vfile-reporter', function (t) {
 
   file = toVFile('a.js');
   warning = file.warn('Whoops');
-
   warning.note = 'Lorem ipsum dolor sit amet.';
-
   file.warn('...and some more warnings');
 
   t.equal(
@@ -231,7 +229,6 @@ test('vfile-reporter', function (t) {
   );
 
   file = toVFile('a.js');
-
   file.warn('Warning!');
 
   t.equal(
@@ -247,7 +244,6 @@ test('vfile-reporter', function (t) {
 
   file = toVFile('a.js');
   fileB = toVFile('b.js');
-
   file.quiet = true;
   file.fail('Error!');
   fileB.warn('Warning!');
@@ -264,7 +260,6 @@ test('vfile-reporter', function (t) {
   );
 
   file = toVFile('a.js');
-
   file.move({filename: 'b'});
 
   t.equal(

@@ -137,8 +137,8 @@ function reporter(files, options) {
     return '';
   }
 
-  if (files.stack) {
-    return files.stack;
+  if ('name' in files && 'message' in files) {
+    return String(files.stack || files);
   }
 
   if (!('length' in files)) {

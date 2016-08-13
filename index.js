@@ -10,287 +10,306 @@
 
 'use strict';
 
-/* eslint-env commonjs */
-
 /* Dependencies. */
-var pluralize = require('plur');
+var plural = require('plur');
 var width = require('string-width');
 var symbols = require('log-symbols');
+var stringify = require('unist-util-stringify-position');
 var Chalk = require('chalk').constructor;
 var strip = require('strip-ansi');
-var table = require('text-table');
 var repeat = require('repeat-string');
-var sort = require('vfile-sort');
+var trim = require('trim');
 
-/* List of probable lengths of messages. */
-var POSITION_LENGTH = '00:0-00:0'.length;
-var LABEL_LENGTH = 'message'.length;
-var MESSAGE_LENGTH = 'this is an average message'.length;
+/* Expose. */
+module.exports = reporter;
 
 /* Default filename. */
 var DEFAULT = '<stdin>';
 
 /**
- * Get the length of `value`, ignoring ANSI sequences.
- *
- * @param {string} value - Value to `pad`.
- * @return {number} - Length of `value`.
- */
-function realLength(value) {
-  var index = value.indexOf('\n');
-
-  if (index !== -1) {
-    value = value.slice(0, index);
-  }
-
-  return width(value);
-}
-
-/**
- * Pad `value` on the `side` (where truthy means left and
- * falsey means right).
- *
- * @param {string} value - Value to `pad`.
- * @param {number} minimum - Pad to `minimum`.
- * @param {boolean?} [side] - Side to pad on.
- * @return {string} - padded `value`.
- */
-function pad(value, minimum, side) {
-  var padding = repeat(' ', minimum - realLength(value));
-  return side ? padding + value : value + padding;
-}
-
-/**
- * Pad `value` on the left.
- *
- * @param {string} value - Value to `pad`.
- * @param {number} minimum - Pad to `minimum`.
- * @return {string} - Left-padded `value`.
- */
-function padLeft(value, minimum) {
-  return pad(value, minimum, true);
-}
-
-/**
- * Pad `value` on the right.
- *
- * @param {string} value - Value to `pad`.
- * @param {number} minimum - Pad to `minimum`.
- * @return {string} - Right-padded `value`.
- */
-function padRight(value, minimum) {
-  return pad(value, minimum, false);
-}
-
-/**
- * Stringify one position.
- *
- * @param {Position} position - Point.
- * @return {string} - Stringified point.
- */
-function point(position) {
-  return [position.line || 1, position.column || 1].join(':');
-}
-
-/**
- * Check if a message is fatal.
- *
- * @param {VFileMessage} message - Message.
- * @return {boolean} - Whether `message` is `fatal`.
- */
-function fatal(message) {
-  return message.fatal === true;
-}
-
-/**
- * @param {VFile|Array.<VFile>} files - One or more virtual
- *   files.
+ * @param {Error|VFile|Array.<VFile>} files - Virtual files.
  * @param {Object} [options] - Configuration.
- * @param {Object} [options.quiet=false] - Do not output
- *   anything for a file which has no messages. The default
- *   behaviour is to show a success message.
- * @param {Object} [options.silent=false] - Do not output
- *   messages without `fatal` set to true. Also sets
- *   `quiet` to `true`.
- * @param {Object} [options.verbose=false] - Output notes.
  * @return {string} - Formatted files.
  */
 function reporter(files, options) {
   var settings = options || {};
-  var silent = settings.silent;
-  var quiet = settings.quiet || settings.silent;
-  var verbose = settings.verbose;
-  var defaultName = settings.defaultName || DEFAULT;
-  var chalk = new Chalk({enabled: settings.color});
-  var fileCount = 0;
-  var total = 0;
-  var errors = 0;
-  var warnings = 0;
-  var result = [];
-  var listing = false;
-  var summaryColor;
-  var summary;
-  var line;
-  var oneFile;
+  var one;
 
   if (!files) {
     return '';
   }
 
+  /* Error. */
   if ('name' in files && 'message' in files) {
     return String(files.stack || files);
   }
 
+  /* One file. */
   if (!('length' in files)) {
-    oneFile = true;
+    one = true;
     files = [files];
   }
 
-  files = files.filter(function (file) {
-    var messages = file.messages;
+  return compile(parse(filter(files, settings), settings), one, settings);
+}
 
-    if (silent) {
-      messages = messages.filter(fatal);
+function filter(files, options) {
+  var result = [];
+  var length = files.length;
+  var index = -1;
+  var file;
+
+  if (!options.quiet && !options.silent) {
+    return files.concat();
+  }
+
+  while (++index < length) {
+    file = files[index];
+
+    if (applicable(file, options).length) {
+      result.push(file);
+    }
+  }
+
+  return result;
+}
+
+function parse(files, options) {
+  var length = files.length;
+  var index = -1;
+  var rows = [];
+  var all = [];
+  var locationSize = 0;
+  var labelSize = 0;
+  var reasonSize = 0;
+  var ruleIdSize = 0;
+  var file;
+  var destination;
+  var origin;
+  var messages;
+  var offset;
+  var count;
+  var message;
+  var loc;
+  var reason;
+  var label;
+  var id;
+
+  while (++index < length) {
+    file = files[index];
+    destination = current(file);
+    origin = file.history[0] || destination;
+    messages = applicable(file, options).sort(comparator);
+
+    if (rows.length && rows[rows.length - 1].type !== 'header') {
+      rows.push({type: 'separator'});
     }
 
-    return !quiet || messages.length;
-  });
+    rows.push({
+      type: 'header',
+      origin: origin,
+      destination: destination,
+      name: origin || options.defaultName || DEFAULT,
+      stored: Boolean(file.stored),
+      moved: Boolean(file.stored && destination !== origin),
+      stats: statistics(messages)
+    });
 
-  files.forEach(function (file, position) {
-    var destination = file.filePath();
-    var filePath = file.history[0] || destination;
-    var stored = Boolean(file.stored);
-    var moved = stored && destination !== filePath;
-    var name = filePath || defaultName;
-    var output = '';
-    var messages;
-    var fileColor;
+    offset = -1;
+    count = messages.length;
 
-    sort(file);
-
-    messages = file.messages;
-
-    if (silent) {
-      messages = messages.filter(fatal);
-    }
-
-    fileCount++;
-    total += messages.length;
-
-    messages = messages.map(function (message) {
-      var color = 'yellow';
-      var pos = message.location;
-      var label;
-      var reason;
-      var location;
-
-      location = point(pos.start);
-
-      if (pos.end.line && pos.end.column) {
-        location += '-' + point(pos.end);
-      }
-
-      if (message.fatal) {
-        color = fileColor = summaryColor = 'red';
-        label = 'error';
-        errors++;
-      } else if (message.fatal === false) {
-        label = 'warning';
-        warnings++;
-
-        if (!summaryColor) {
-          summaryColor = color;
-        }
-
-        if (!fileColor) {
-          fileColor = color;
-        }
-      } else {
-        label = 'message';
-        color = 'gray';
-      }
-
+    while (++offset < count) {
+      message = messages[offset];
+      id = message.ruleId || '';
       reason = message.stack || message.message;
+      loc = message.location;
+      loc = stringify(loc.end.line && loc.end.column ? loc : loc.start);
 
-      if (verbose && message.note) {
+      if (options.verbose && message.note) {
         reason += '\n' + message.note;
       }
 
-      return [
-        '',
-        padLeft(location, POSITION_LENGTH),
-        padRight(chalk[color](label), LABEL_LENGTH),
-        padRight(reason, MESSAGE_LENGTH),
-        message.ruleId || ''
-      ];
-    });
+      label = message.fatal ? 'error' : 'warning';
 
-    if (listing || (messages.length && position !== 0)) {
-      output += '\n';
-    }
-
-    output += chalk.underline[fileColor || 'green'](name);
-
-    if (moved) {
-      output += ' > ' + destination;
-    }
-
-    listing = Boolean(messages.length);
-
-    if (listing) {
-      output += '\n' + table(messages, {
-        align: ['', 'l', 'l', 'l'],
-        stringLength: realLength
+      rows.push({
+        location: loc,
+        label: label,
+        reason: reason,
+        ruleId: id,
+        source: message.source
       });
-    } else {
-      output += ': ';
-      output += stored ? chalk.yellow('written') : 'no issues found';
+
+      locationSize = Math.max(realLength(loc), locationSize);
+      labelSize = Math.max(realLength(label), labelSize);
+      reasonSize = Math.max(realLength(reason), reasonSize);
+      ruleIdSize = Math.max(realLength(id), ruleIdSize);
     }
 
-    result.push(output);
-  });
-
-  /* Remove header, if possible. */
-  if (oneFile && fileCount && !settings.defaultName) {
-    line = result[0];
-
-    if (strip(line).slice(0, DEFAULT.length) === DEFAULT) {
-      result[0] = line.slice(
-        listing ? line.indexOf('\n') + 1 : line.indexOf(': ') + 2
-      );
-    }
+    all = all.concat(messages);
   }
 
-  if (errors || warnings) {
-    summary = [];
-
-    if (errors) {
-      summary.push([
-        chalk.red(strip(symbols.error)),
-        errors,
-        pluralize('error', errors)
-      ].join(' '));
-    }
-
-    if (warnings) {
-      summary.push([
-        chalk.yellow(strip(symbols.warning)),
-        warnings,
-        pluralize('warning', warnings)
-      ].join(' '));
-    }
-
-    summary = summary.join(', ');
-
-    if (errors && warnings) {
-      summary = total + ' messages (' + summary + ')';
-    }
-
-    result.push('\n' + summary);
-  }
-
-  return result.length ? result.join('\n') : '';
+  return {
+    rows: rows,
+    statistics: statistics(all),
+    location: locationSize,
+    label: labelSize,
+    reason: reasonSize,
+    ruleId: ruleIdSize
+  };
 }
 
-/* Expose. */
-module.exports = reporter;
+function compile(map, one, options) {
+  var chalk = new Chalk({enabled: options.color});
+  var all = map.statistics;
+  var rows = map.rows;
+  var length = rows.length;
+  var index = -1;
+  var lines = [];
+  var row;
+  var line;
+
+  while (++index < length) {
+    row = rows[index];
+
+    if (row.type === 'separator') {
+      lines.push('');
+    } else if (row.type === 'header') {
+      line = chalk.underline[colors(row.stats)](row.name) +
+        (row.moved ? ' > ' + row.destination : '');
+
+      if (one && !options.defaultName && !row.origin) {
+        line = '';
+      }
+
+      if (!row.stats.total) {
+        line += line ? ': ' : '';
+        line += row.stored ? chalk.yellow('written') : 'no issues found';
+      }
+
+      if (line) {
+        lines.push(line);
+      }
+    } else {
+      lines.push(trim.right([
+        '',
+        padLeft(row.location, map.location),
+        padRight(chalk[color(row.label)](row.label), map.label),
+        padRight(row.reason, map.reason),
+        padRight(row.ruleId, map.ruleId),
+        row.source || ''
+      ].join('  ')));
+    }
+  }
+
+  if (all.total) {
+    line = [];
+
+    if (all.fatal) {
+      line.push([
+        chalk.red(strip(symbols.error)),
+        all.fatal,
+        plural('error', all.fatal)
+      ].join(' '));
+    }
+
+    if (all.harmless) {
+      line.push([
+        chalk.yellow(strip(symbols.warning)),
+        all.harmless,
+        plural('warning', all.harmless)
+      ].join(' '));
+    }
+
+    line = line.join(', ');
+
+    if (all.fatal && all.harmless) {
+      line = all.total + ' messages (' + line + ')';
+    }
+
+    lines.push('', line);
+  }
+
+  return lines.join('\n');
+}
+
+/* Get stats for a list of messages. */
+function statistics(messages) {
+  var result = {true: 0, false: 0};
+  var length = messages.length;
+  var index = -1;
+
+  while (++index < length) {
+    result[Boolean(messages[index].fatal)]++;
+  }
+
+  return {fatal: result.true, harmless: result.false, total: length};
+}
+
+/* Get applicable messages. */
+function applicable(file, options) {
+  var messages = file.messages;
+  var length = messages.length;
+  var index = -1;
+  var result = [];
+
+  if (options.silent) {
+    while (++index < length) {
+      if (messages[index].fatal) {
+        result.push(messages[index]);
+      }
+    }
+  } else {
+    result = messages.concat();
+  }
+
+  return result;
+}
+
+/* Get colors for stats. */
+function colors(stats) {
+  if (stats.fatal) {
+    return 'red';
+  }
+
+  return stats.total ? 'yellow' : 'green';
+}
+
+/* Get color of a label. */
+function color(label) {
+  return label === 'error' ? 'red' : 'yellow';
+}
+
+/* Get the length of `value`, ignoring ANSI sequences. */
+function realLength(value) {
+  var length = value.indexOf('\n');
+  return width(length === -1 ? value : value.slice(0, length));
+}
+
+/* Pad `value` on the left. */
+function padLeft(value, minimum) {
+  return repeat(' ', minimum - realLength(value)) + value;
+}
+
+/** Pad `value` on the Right. */
+function padRight(value, minimum) {
+  return value + repeat(' ', minimum - realLength(value));
+}
+
+/** Comparator. */
+function comparator(a, b) {
+  return check(a, b, 'line') || check(a, b, 'column') || -1;
+}
+
+/* Compare a single property. */
+function check(a, b, property) {
+  return (a[property] || 0) - (b[property] || 0);
+}
+
+function current(file) {
+  /* istanbul ignore if - Previous `vfile` version. */
+  if (file.filePath) {
+    return file.filePath();
+  }
+
+  return file.path;
+}

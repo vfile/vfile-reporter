@@ -1,13 +1,13 @@
 // Dependencies:
-var toVFile = require('to-vfile');
+var vfile = require('vfile');
 var reporter = require('./index.js');
 
 // Files:
-var one = toVFile('test/fixture/1.js');
-var two = toVFile('test/fixture/2.js');
+var one = vfile({path: 'test/fixture/1.js'});
+var two = vfile({path: 'test/fixture/2.js'});
 
 // Trigger a warning:
-one.warn('Warning!', {line: 2, column: 4});
+one.message('Warning!', {line: 2, column: 4});
 
 // Report:
 var report = reporter([one, two], {color: false});

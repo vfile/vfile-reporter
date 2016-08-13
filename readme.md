@@ -4,9 +4,6 @@
 
 Format [**VFile**][vfile]s using a stylish reporter.
 
-Originally forked from ESLint’s stylish reporter, but with some coolness
-added.
-
 ![Example screen shot of **vfile-reporter**][screenshot]
 
 ## Features
@@ -36,21 +33,21 @@ globals module, [uncompressed and compressed][releases].
 Dependencies:
 
 ```javascript
-var toVFile = require('to-vfile');
+var vfile = require('vfile');
 var reporter = require('vfile-reporter');
 ```
 
 Files:
 
 ```javascript
-var one = toVFile('test/fixture/1.js');
-var two = toVFile('test/fixture/2.js');
+var one = vfile({path: 'test/fixture/1.js'});
+var two = vfile({path: 'test/fixture/2.js'});
 ```
 
 Trigger a warning:
 
 ```javascript
-one.warn('Warning!', {line: 2, column: 4});
+one.message('Warning!', {line: 2, column: 4});
 ```
 
 Report:
@@ -63,7 +60,7 @@ Yields:
 
 ```txt
 test/fixture/1.js
-        2:4  warning  Warning!
+  2:4  warning  Warning!
 
 test/fixture/2.js: no issues found
 

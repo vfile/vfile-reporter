@@ -50,7 +50,7 @@ var two = toVFile('test/fixture/2.js');
 Trigger a warning:
 
 ```javascript
-one.warn('Warning!', {line: 2, column: 4});
+one.message('Warning!', {line: 2, column: 4});
 ```
 
 Report:
@@ -63,7 +63,7 @@ Yields:
 
 ```txt
 test/fixture/1.js
-        2:4  warning  Warning!
+  2:4  warning  Warning!
 
 test/fixture/2.js: no issues found
 

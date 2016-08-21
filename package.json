@@ -44,7 +44,7 @@
     "remark-validate-links": "^4.0.0",
     "tape": "^4.0.0",
     "to-vfile": "^1.0.0",
-    "vfile": "^1.0.0",
+    "vfile": "^2.0.0",
     "xo": "^0.16.0"
   },
   "scripts": {

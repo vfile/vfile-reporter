@@ -27,7 +27,7 @@
     "log-symbols": "^1.0.2",
     "plur": "^2.0.0",
     "repeat-string": "^1.5.0",
-    "string-width": "^1.0.0",
+    "string-width": "^2.0.0",
     "strip-ansi": "^3.0.1",
     "trim": "0.0.1",
     "unist-util-stringify-position": "^1.0.0"

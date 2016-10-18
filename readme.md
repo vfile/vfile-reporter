@@ -1,10 +1,8 @@
 # vfile-reporter [![Build Status][travis-badge]][travis] [![Coverage Status][codecov-badge]][codecov]
 
-<!--lint disable heading-increment list-item-spacing-->
+Format [**vfile**][vfile]s using a stylish reporter.
 
-Format [**VFile**][vfile]s using a stylish reporter.
-
-![Example screen shot of **vfile-reporter**][screenshot]
+![Example screenshot of **vfile-reporter**][screenshot]
 
 ## Features
 
@@ -19,14 +17,11 @@ Format [**VFile**][vfile]s using a stylish reporter.
 
 ## Installation
 
-[npm][npm-install]:
+[npm][]:
 
 ```bash
 npm install vfile-reporter
 ```
-
-**vfile-reporter** is also available as an AMD, CommonJS, and
-globals module, [uncompressed and compressed][releases].
 
 ## Usage
 
@@ -35,24 +30,12 @@ Dependencies:
 ```javascript
 var vfile = require('vfile');
 var reporter = require('vfile-reporter');
-```
 
-Files:
-
-```javascript
 var one = vfile({path: 'test/fixture/1.js'});
 var two = vfile({path: 'test/fixture/2.js'});
-```
 
-Trigger a warning:
-
-```javascript
 one.message('Warning!', {line: 2, column: 4});
-```
 
-Report:
-
-```javascript
 var report = reporter([one, two], {color: false});
 ```
 
@@ -77,7 +60,6 @@ Generate a stylish report from the given files.
 
 *   `files` (`Error`, [`VFile`][vfile], or `Array.<VFile>`).
 *   `options` (`object`, optional):
-
     *   `quiet` (`boolean`, default: `false`)
         — Do not output anything for a file which has no warnings or
         errors.  The default behaviour is to show a success message.
@@ -90,10 +72,6 @@ Generate a stylish report from the given files.
         — Label to use for files without file-path.
         If one file and no `defaultName` is given, no name
         will show up in the report.
-
-###### Returns
-
-`string`, a stylish report.
 
 ## License
 
@@ -113,9 +91,7 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [codecov]: https://codecov.io/github/wooorm/vfile-reporter
 
-[npm-install]: https://docs.npmjs.com/cli/install
-
-[releases]: https://github.com/wooorm/retext-intensify/releases
+[npm]: https://docs.npmjs.com/cli/install
 
 [license]: LICENSE
 

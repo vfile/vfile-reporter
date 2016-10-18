@@ -19,6 +19,7 @@ var Chalk = require('chalk').constructor;
 var strip = require('strip-ansi');
 var repeat = require('repeat-string');
 var trim = require('trim');
+var statistics = require('vfile-statistics');
 
 /* Expose. */
 module.exports = reporter;
@@ -212,17 +213,17 @@ function compile(map, one, options) {
       ].join(' '));
     }
 
-    if (all.harmless) {
+    if (all.nonfatal) {
       line.push([
         chalk.yellow(strip(symbols.warning)),
-        all.harmless,
-        plural('warning', all.harmless)
+        all.nonfatal,
+        plural('warning', all.nonfatal)
       ].join(' '));
     }
 
     line = line.join(', ');
 
-    if (all.fatal && all.harmless) {
+    if (all.fatal && all.nonfatal) {
       line = all.total + ' messages (' + line + ')';
     }
 
@@ -230,19 +231,6 @@ function compile(map, one, options) {
   }
 
   return lines.join('\n');
-}
-
-/* Get stats for a list of messages. */
-function statistics(messages) {
-  var result = {true: 0, false: 0};
-  var length = messages.length;
-  var index = -1;
-
-  while (++index < length) {
-    result[Boolean(messages[index].fatal)]++;
-  }
-
-  return {fatal: result.true, harmless: result.false, total: length};
 }
 
 /* Get applicable messages. */

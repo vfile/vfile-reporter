@@ -1,14 +1,5 @@
-/**
- * @author Titus Wormer
- * @copyright 2016 Titus Wormer
- * @license MIT
- * @module vfile-reporter
- * @fileoverview Test suite for `vfile-reporter`.
- */
-
 'use strict';
 
-/* Dependencies. */
 var test = require('tape');
 var chalk = require('chalk');
 var vfile = require('vfile');
@@ -27,7 +18,6 @@ try {
   exception = err;
 }
 
-/* Tests. */
 test('vfile-reporter', function (t) {
   var file;
   var fileB;

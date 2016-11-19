@@ -1,13 +1,3 @@
-/**
- * @author Titus Wormer
- * @author Sindre Sorhus
- * @copyright 2015 Titus Wormer
- * @copyright 2013 Nicholas C. Zakas
- * @license MIT
- * @module vfile:reporter
- * @fileoverview Stylish reporter for virtual files.
- */
-
 'use strict';
 
 /* Dependencies. */
@@ -27,11 +17,7 @@ module.exports = reporter;
 /* Default filename. */
 var DEFAULT = '<stdin>';
 
-/**
- * @param {Error|VFile|Array.<VFile>} files - Virtual files.
- * @param {Object} [options] - Configuration.
- * @return {string} - Formatted files.
- */
+/* Report a file’s messages. */
 function reporter(files, options) {
   var settings = options || {};
   var one;

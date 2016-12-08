@@ -5,18 +5,34 @@ var chalk = require('chalk');
 var vfile = require('vfile');
 var reporter = require('./index.js');
 
+/* eslint-disable no-undef */
 var exception;
+var changedMessage;
+var multilineException;
 
 try {
-  /* eslint-disable no-undef */
   variable = 1;
 } catch (err) {
-  err.stack = err.stack
-    .replace(/\(\/.+\//g, '(').replace(/\d+:\d+/g, '1:1')
-    .split('\n').slice(0, 3).join('\n');
-
+  err.stack = cleanStack(err.stack, 3);
   exception = err;
 }
+
+try {
+  variable = 1;
+} catch (err) {
+  err.message = 'foo';
+  err.stack = cleanStack(err.stack, 3);
+  changedMessage = err;
+}
+
+try {
+  variable = 1;
+} catch (err) {
+  err.message = 'foo\nbar\nbaz';
+  err.stack = cleanStack(err.stack, 5);
+  multilineException = err;
+}
+/* eslint-enable no-undef */
 
 test('vfile-reporter', function (t) {
   var file;
@@ -162,10 +178,7 @@ test('vfile-reporter', function (t) {
   );
 
   file = vfile();
-  file.message('Warning!', {
-    start: {line: 3, column: 2},
-    end: {line: 4, column: 8}
-  });
+  file.message('Warning!', {start: {line: 3, column: 2}, end: {line: 4, column: 8}});
   file.basename = 'foo.bar';
 
   t.equal(
@@ -196,6 +209,46 @@ test('vfile-reporter', function (t) {
       '✖ 1 error'
     ].join('\n'),
     'should support a “real” error (show a stack)'
+  );
+
+  file = vfile({path: 'test.js'});
+
+  try {
+    file.fail(changedMessage);
+  } catch (err) {}
+
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    [
+      'test.js',
+      '  1:1  error  ReferenceError: foo',
+      '    at Object.<anonymous> (test.js:1:1)',
+      '    at Module._compile (module.js:1:1)',
+      '',
+      '✖ 1 error'
+    ].join('\n'),
+    'should support a “real” error with a changed message'
+  );
+
+  file = vfile({path: 'test.js'});
+
+  try {
+    file.fail(multilineException);
+  } catch (err) {}
+
+  t.equal(
+    chalk.stripColor(reporter(file)),
+    [
+      'test.js',
+      '  1:1  error  ReferenceError: foo',
+      'bar',
+      'baz',
+      '    at Object.<anonymous> (test.js:1:1)',
+      '    at Module._compile (module.js:1:1)',
+      '',
+      '✖ 1 error'
+    ].join('\n'),
+    'should support a “real” error with a multiline message'
   );
 
   file = vfile({path: 'a.js'});
@@ -278,3 +331,9 @@ test('vfile-reporter', function (t) {
 
   t.end();
 });
+
+function cleanStack(stack, max) {
+  return stack
+    .replace(/\(\/.+\//g, '(').replace(/\d+:\d+/g, '1:1')
+    .split('\n').slice(0, max).join('\n');
+}

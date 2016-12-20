@@ -16,8 +16,8 @@
   "files": [
     "index.js"
   ],
-  "repository": "https://github.com/wooorm/vfile-reporter",
-  "bugs": "https://github.com/wooorm/vfile-reporter/issues",
+  "repository": "https://github.com/vfile/vfile-reporter",
+  "bugs": "https://github.com/vfile/vfile-reporter/issues",
   "author": "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (http://wooorm.com)"

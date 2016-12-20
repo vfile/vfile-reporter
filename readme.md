@@ -13,7 +13,7 @@ Format [**vfile**][vfile]s using a stylish reporter.
     stack-traces help answer that question.
 *   [x] Successful files (configurable)
     — Sometimes you want to know if things went okay.
-*   [x] And all of [**VFile**](https://github.com/wooorm/vfile)s awesomeness.
+*   [x] And all of [**VFile**][vfile]s awesomeness.
 
 ## Installation
 
@@ -83,13 +83,13 @@ Nicholas C. Zakas, and licensed under MIT.
 
 <!-- Definitions -->
 
-[travis-badge]: https://img.shields.io/travis/wooorm/vfile-reporter.svg
+[travis-badge]: https://img.shields.io/travis/vfile/vfile-reporter.svg
 
-[travis]: https://travis-ci.org/wooorm/vfile-reporter
+[travis]: https://travis-ci.org/vfile/vfile-reporter
 
-[codecov-badge]: https://img.shields.io/codecov/c/github/wooorm/vfile-reporter.svg
+[codecov-badge]: https://img.shields.io/codecov/c/github/vfile/vfile-reporter.svg
 
-[codecov]: https://codecov.io/github/wooorm/vfile-reporter
+[codecov]: https://codecov.io/github/vfile/vfile-reporter
 
 [npm]: https://docs.npmjs.com/cli/install
 
@@ -99,6 +99,6 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [eslint]: https://github.com/eslint/eslint
 
-[vfile]: https://github.com/wooorm/vfile
+[vfile]: https://github.com/vfile/vfile
 
 [screenshot]: ./screenshot.png

@@ -44,7 +44,7 @@
     "xo": "^0.17.0"
   },
   "scripts": {
-    "build-md": "remark . --quiet --frail",
+    "build-md": "remark . -qfo",
     "build-bundle": "browserify index.js --bare -s vfileReporter > vfile-reporter.js",
     "build-mangle": "esmangle vfile-reporter.js > vfile-reporter.min.js",
     "build": "npm run build-md && npm run build-bundle && npm run build-mangle",
@@ -61,15 +61,11 @@
   },
   "xo": {
     "space": true,
-    "rules": {
-      "unicorn/explicit-length-check": "off"
-    },
     "ignores": [
       "vfile-reporter.js"
     ]
   },
   "remarkConfig": {
-    "output": true,
     "presets": "wooorm"
   }
 }

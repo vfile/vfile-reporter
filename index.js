@@ -1,6 +1,5 @@
 'use strict';
 
-/* Dependencies. */
 var plural = require('plur');
 var width = require('string-width');
 var symbols = require('log-symbols');
@@ -11,7 +10,6 @@ var repeat = require('repeat-string');
 var trim = require('trim');
 var statistics = require('vfile-statistics');
 
-/* Expose. */
 module.exports = reporter;
 
 /* Default filename. */
@@ -53,7 +51,7 @@ function filter(files, options) {
   while (++index < length) {
     file = files[index];
 
-    if (applicable(file, options).length) {
+    if (applicable(file, options).length !== 0) {
       result.push(file);
     }
   }
@@ -88,7 +86,7 @@ function parse(files, options) {
     origin = file.history[0] || destination;
     messages = applicable(file, options).sort(comparator);
 
-    if (rows.length && rows[rows.length - 1].type !== 'header') {
+    if (rows.length !== 0 && rows[rows.length - 1].type !== 'header') {
       rows.push({type: 'separator'});
     }
 
@@ -219,7 +217,6 @@ function compile(map, one, options) {
   return lines.join('\n');
 }
 
-/* Get applicable messages. */
 function applicable(file, options) {
   var messages = file.messages;
   var length = messages.length;
@@ -264,12 +261,12 @@ function padLeft(value, minimum) {
   return repeat(' ', minimum - realLength(value)) + value;
 }
 
-/** Pad `value` on the Right. */
+/* Pad `value` on the Right. */
 function padRight(value, minimum) {
   return value + repeat(' ', minimum - realLength(value));
 }
 
-/** Comparator. */
+/* Comparator. */
 function comparator(a, b) {
   return check(a, b, 'line') || check(a, b, 'column') || -1;
 }

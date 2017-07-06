@@ -19,4 +19,4 @@ deploy:
       - "vfile-reporter.min.js"
     on:
       tags: true
-      node: '7.0'
+      node: '8.0'

@@ -329,6 +329,54 @@ test('vfile-reporter', function (t) {
 
   t.equal(reporter(vfile({path: 'a.js'}), {color: false}), 'a.js: no issues found', 'should support `color: false`');
 
+  file = vfile('Hello this is a file with some issues');
+  file.message('Warning!', {
+    start: {line: 1, column: 17},
+    end: {line: 1, column: 20}
+  });
+
+  t.equal(chalk.stripColor(reporter(file, {context: 6})),
+    [
+      '"... is a file with ..."',
+      '  1:17-1:20  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support context'
+  );
+
+  file = vfile('Hello this is a file with some issues');
+  file.message('Warning!', {
+    start: {line: 1, column: 2},
+    end: {line: 1, column: 8}
+  });
+
+  t.equal(chalk.stripColor(reporter(file, {context: 3})),
+    [
+      '"...Hello this ..."',
+      '  1:2-1:8  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support context near the start of a line'
+  );
+
+  file = vfile('Hello this is a file with some issues');
+  file.message('Warning!', {
+    start: {line: 1, column: 27},
+    end: {line: 1, column: 30}
+  });
+
+  t.equal(chalk.stripColor(reporter(file, {context: 15})),
+    [
+      '"...is a file with some issues..."',
+      '  1:27-1:30  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support context near the end of a line'
+  );
+
   t.end();
 });
 

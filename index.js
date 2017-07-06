@@ -116,6 +116,17 @@ function parse(files, options) {
 
       label = message.fatal ? 'error' : 'warning';
 
+      if (options.context) {
+        var line = String(file).split('\n')[message.location.start.line - 1];
+        var startIndex = message.location.start.column - 1 - options.context;
+        var endIndex = message.location.end.column + options.context;
+        var context = line.slice(startIndex > 0 ? startIndex : 0, endIndex < line.length ? endIndex : line.length);
+        rows.push({
+          type: 'context',
+          context: context
+        });
+      }
+
       rows.push({
         location: loc,
         label: label,
@@ -174,6 +185,8 @@ function compile(map, one, options) {
       if (line) {
         lines.push(line);
       }
+    } else if (row.type === 'context') {
+      lines.push('"...' + row.context + '..."');
     } else {
       lines.push(trim.right([
         '',

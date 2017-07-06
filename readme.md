@@ -6,14 +6,10 @@ Format [**vfile**][vfile]s using a stylish reporter.
 
 ## Features
 
-*   [x] Ranges
-    — Not just a starting position, such as `3:2`, but `3:2-3:6`.
-*   [x] Stack-traces
-    — When something awful happens, you want to know **where** it occurred,
-    stack-traces help answer that question.
+*   [x] Ranges (`3:2` and `3:2-3:6`)
+*   [x] Stack-traces to show where awful stuff occurs
 *   [x] Successful files (configurable)
-    — Sometimes you want to know if things went okay.
-*   [x] And all of [**VFile**][vfile]s awesomeness.
+*   [x] All of [**VFile**][vfile]s awesomeness
 
 ## Installation
 
@@ -25,7 +21,7 @@ npm install vfile-reporter
 
 ## Usage
 
-Dependencies:
+Say `example.js` contains:
 
 ```javascript
 var vfile = require('vfile');
@@ -36,10 +32,10 @@ var two = vfile({path: 'test/fixture/2.js'});
 
 one.message('Warning!', {line: 2, column: 4});
 
-var report = reporter([one, two], {color: false});
+console.error(reporter([one, two]));
 ```
 
-Yields:
+Now, running `node example` yields:
 
 ```txt
 test/fixture/1.js
@@ -54,24 +50,30 @@ test/fixture/2.js: no issues found
 
 ### `reporter(files[, options])`
 
-Generate a stylish report from the given files.
+Generate a stylish report from the given [`vfile`][vfile], `Array.<VFile>`,
+or `Error`.
 
-###### Parameters
+##### `options`
 
-*   `files` (`Error`, [`VFile`][vfile], or `Array.<VFile>`).
-*   `options` (`object`, optional):
-    *   `quiet` (`boolean`, default: `false`)
-        — Do not output anything for a file which has no warnings or
-        errors.  The default behaviour is to show a success message.
-    *   `silent` (`boolean`, default: `false`)
-        — Do not output messages without `fatal` set to true.
-        Also sets `quiet` to `true`.
-    *   `color` (`boolean`, default: `true`)
-        — Whether to use colour.
-    *   `defaultName` (`string`, default: `'<stdin>'`)
-        — Label to use for files without file-path.
-        If one file and no `defaultName` is given, no name
-        will show up in the report.
+##### `options.quiet`
+
+Do not output anything for a file which has no warnings or errors (`boolean`,
+default: `false`).  The default behaviour is to show a success message.
+
+##### `options.silent`
+
+Do not output messages without `fatal` set to true (`boolean`, default:
+`false`).  Also sets `quiet` to `true`.
+
+##### `options.color`
+
+Whether to use colour (`boolean`, default: depends).  The default behaviour
+is the check if [colour is supported][support].
+
+##### `options.defaultName`
+
+Label to use for files without file-path (`string`, default: `'<stdin>'`).
+If one file and no `defaultName` is given, no name will show up in the report.
 
 ## License
 
@@ -102,3 +104,5 @@ Nicholas C. Zakas, and licensed under MIT.
 [vfile]: https://github.com/vfile/vfile
 
 [screenshot]: ./screenshot.png
+
+[support]: https://github.com/chalk/supports-color

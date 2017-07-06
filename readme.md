@@ -75,6 +75,19 @@ is the check if [colour is supported][support].
 Label to use for files without file-path (`string`, default: `'<stdin>'`).
 If one file and no `defaultName` is given, no name will show up in the report.
 
+## Related
+
+*   [`vfile-reporter-json`](https://github.com/vfile/vfile-reporter-json)
+    — JSON reporter
+*   [`vfile-reporter-pretty`](https://github.com/vfile/vfile-reporter-pretty)
+    — Pretty reporter
+*   [`convert-vinyl-to-vfile`](https://github.com/dustinspecker/convert-vinyl-to-vfile)
+    — Convert from [Vinyl][]
+*   [`vfile-statistics`](https://github.com/vfile/vfile-statistics)
+    — Count messages per category
+*   [`vfile-sort`](https://github.com/vfile/vfile-sort)
+    — Sort messages by line/column
+
 ## License
 
 [MIT][license] © [Titus Wormer][author]
@@ -106,3 +119,5 @@ Nicholas C. Zakas, and licensed under MIT.
 [screenshot]: ./screenshot.png
 
 [support]: https://github.com/chalk/supports-color
+
+[vinyl]: https://github.com/gulpjs/vinyl

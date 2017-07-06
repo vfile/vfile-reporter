@@ -377,6 +377,25 @@ test('vfile-reporter', function (t) {
     'should support context near the end of a line'
   );
 
+  file = vfile([
+    'Hello this is a file with some issues',
+    'especially this issue that wraps the line'
+  ].join('\n'));
+  file.message('Warning!', {
+    start: {line: 1, column: 27},
+    end: {line: 2, column: 3}
+  });
+
+  t.equal(chalk.stripColor(reporter(file, {context: 2})),
+    [
+      '"...h some issues...espec..."',
+      '  1:27-2:3  warning  Warning!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support context for a message that spans multiple lines'
+  );
+
   t.end();
 });
 

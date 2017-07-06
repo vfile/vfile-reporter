@@ -117,10 +117,19 @@ function parse(files, options) {
       label = message.fatal ? 'error' : 'warning';
 
       if (options.context) {
-        var line = String(file).split('\n')[message.location.start.line - 1];
+        var lines = String(file).split('\n');
+        var line = lines[message.location.start.line - 1];
         var startIndex = message.location.start.column - 1 - options.context;
         var endIndex = message.location.end.column + options.context;
-        var context = line.slice(startIndex > 0 ? startIndex : 0, endIndex < line.length ? endIndex : line.length);
+        var contextStart = startIndex > 0 ? startIndex : 0;
+        var contextEnd = endIndex < line.length ? endIndex : line.length;
+        var context;
+        if (message.location.start.line < message.location.end.line) {
+          var endLine = lines[message.location.end.line - 1];
+          context = line.slice(contextStart, line.length) + '...' + endLine.slice(0, contextEnd);
+        } else {
+          context = line.slice(contextStart, contextEnd);
+        }
         rows.push({
           type: 'context',
           context: context

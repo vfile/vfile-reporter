@@ -9,7 +9,7 @@ Format [**vfile**][vfile]s using a stylish reporter.
 *   [x] Ranges (`3:2` and `3:2-3:6`)
 *   [x] Stack-traces to show where awful stuff occurs
 *   [x] Successful files (configurable)
-*   [x] All of [**VFile**][vfile]s awesomeness
+*   [x] All of [**VFile**][vfile]’s awesomeness
 
 ## Installation
 

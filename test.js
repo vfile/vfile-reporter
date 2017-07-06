@@ -1,7 +1,7 @@
 'use strict';
 
 var test = require('tape');
-var chalk = require('chalk');
+var strip = require('strip-ansi');
 var vfile = require('vfile');
 var reporter = require('./index.js');
 
@@ -62,19 +62,19 @@ test('vfile-reporter', function (t) {
   );
 
   t.equal(
-    chalk.stripColor(reporter(vfile({path: 'a.js'}))),
+    strip(reporter(vfile({path: 'a.js'}))),
     'a.js: no issues found',
     'should work on a single file'
   );
 
   t.equal(
-    chalk.stripColor(reporter(vfile())),
+    strip(reporter(vfile())),
     'no issues found',
     'should work without file-paths'
   );
 
   t.equal(
-    chalk.stripColor(reporter([
+    strip(reporter([
       vfile({path: 'a.js'}),
       vfile({path: 'b.js'})
     ])),
@@ -86,7 +86,7 @@ test('vfile-reporter', function (t) {
   file.message('Warning!');
 
   t.equal(
-    chalk.stripColor(reporter([file, vfile({path: 'b.js'})])),
+    strip(reporter([file, vfile({path: 'b.js'})])),
     [
       'a.js',
       '  1:1  warning  Warning!',
@@ -105,7 +105,7 @@ test('vfile-reporter', function (t) {
   } catch (err) {}
 
   t.equal(
-    chalk.stripColor(reporter([file, vfile({path: 'b.js'})])),
+    strip(reporter([file, vfile({path: 'b.js'})])),
     [
       'a.js',
       '  1:1  error  Error!',
@@ -133,7 +133,7 @@ test('vfile-reporter', function (t) {
   } catch (err) {}
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     [
       'a.js',
       '  1:1  error    Error!',
@@ -152,7 +152,7 @@ test('vfile-reporter', function (t) {
   file.message('Warning!', {line: 3, column: 2});
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     [
       '  3:2  warning  Warning!',
       '',
@@ -168,7 +168,7 @@ test('vfile-reporter', function (t) {
   });
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     [
       '  3:2-4:8  warning  Warning!',
       '',
@@ -182,7 +182,7 @@ test('vfile-reporter', function (t) {
   file.basename = 'foo.bar';
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     [
       'foo.bar',
       '  3:2-4:8  warning  Warning!',
@@ -199,7 +199,7 @@ test('vfile-reporter', function (t) {
   } catch (err) {}
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     [
       'test.js',
       '  1:1  error  ReferenceError: variable is not defined',
@@ -218,7 +218,7 @@ test('vfile-reporter', function (t) {
   } catch (err) {}
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     [
       'test.js',
       '  1:1  error  ReferenceError: foo',
@@ -237,7 +237,7 @@ test('vfile-reporter', function (t) {
   } catch (err) {}
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     [
       'test.js',
       '  1:1  error  ReferenceError: foo',
@@ -257,7 +257,7 @@ test('vfile-reporter', function (t) {
   file.message('...and some more warnings');
 
   t.equal(
-    chalk.stripColor(reporter(file, {verbose: true})),
+    strip(reporter(file, {verbose: true})),
     [
       'a.js',
       '  1:1  warning  Whoops',
@@ -273,7 +273,7 @@ test('vfile-reporter', function (t) {
   file.message('Warning!');
 
   t.equal(
-    chalk.stripColor(reporter([file, vfile({path: 'b.js'})], {quiet: true})),
+    strip(reporter([file, vfile({path: 'b.js'})], {quiet: true})),
     [
       'a.js',
       '  1:1  warning  Warning!',
@@ -293,7 +293,7 @@ test('vfile-reporter', function (t) {
   fileB.message('Warning!');
 
   t.equal(
-    chalk.stripColor(reporter([file, fileB], {silent: true})),
+    strip(reporter([file, fileB], {silent: true})),
     [
       'a.js',
       '  1:1  error  Error!',
@@ -307,7 +307,7 @@ test('vfile-reporter', function (t) {
   file.stem = 'b';
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     'a.js: no issues found',
     'should support `history`'
   );
@@ -316,7 +316,7 @@ test('vfile-reporter', function (t) {
   file.stored = true;
 
   t.equal(
-    chalk.stripColor(reporter(file)),
+    strip(reporter(file)),
     'a.js: written',
     'should support `stored`'
   );
@@ -325,8 +325,9 @@ test('vfile-reporter', function (t) {
   file.stem = 'b';
   file.stored = true;
 
-  t.equal(chalk.stripColor(reporter(file)), 'a.js > b.js: written', 'should expose the stored file-path');
+  t.equal(strip(reporter(file)), 'a.js > b.js: written', 'should expose the stored file-path');
 
+  t.equal(reporter(vfile({path: 'a.js'})), '\x1b[4m\x1b[32ma.js\x1b[39m\x1b[24m: no issues found', 'should infer color support');
   t.equal(reporter(vfile({path: 'a.js'}), {color: false}), 'a.js: no issues found', 'should support `color: false`');
 
   t.end();

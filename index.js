@@ -1,19 +1,39 @@
 'use strict';
 
-var plural = require('plur');
+var supported = require('supports-color').hasBasic;
 var width = require('string-width');
-var symbols = require('log-symbols');
 var stringify = require('unist-util-stringify-position');
-var Chalk = require('chalk').constructor;
-var strip = require('strip-ansi');
 var repeat = require('repeat-string');
-var trim = require('trim');
 var statistics = require('vfile-statistics');
 
 module.exports = reporter;
 
+/* Check which characters should be used. */
+var windows = process.platform === 'win32';
+/* istanbul ignore next - Windows. */
+var chars = windows ? {error: '×', warning: '‼'} : {error: '✖', warning: '⚠'};
+
+/* Match trailing white-space. */
+var trailing = /\s*$/;
+
 /* Default filename. */
 var DEFAULT = '<stdin>';
+
+var noop = {open: '', close: ''};
+
+var colors = {
+  underline: {open: '\u001b[4m', close: '\u001b[24m'},
+  red: {open: '\u001b[31m', close: '\u001b[39m'},
+  yellow: {open: '\u001b[33m', close: '\u001b[39m'},
+  green: {open: '\u001b[32m', close: '\u001b[39m'}
+};
+
+var noops = {
+  underline: noop,
+  red: noop,
+  yellow: noop,
+  green: noop
+};
 
 /* Report a file’s messages. */
 function reporter(files, options) {
@@ -144,7 +164,7 @@ function parse(files, options) {
 }
 
 function compile(map, one, options) {
-  var chalk = new Chalk({enabled: options.color});
+  var enabled = options.color;
   var all = map.statistics;
   var rows = map.rows;
   var length = rows.length;
@@ -152,6 +172,14 @@ function compile(map, one, options) {
   var lines = [];
   var row;
   var line;
+  var style;
+  var color;
+
+  if (enabled === null || enabled === undefined) {
+    enabled = supported;
+  }
+
+  style = enabled ? colors : noops;
 
   while (++index < length) {
     row = rows[index];
@@ -159,30 +187,38 @@ function compile(map, one, options) {
     if (row.type === 'separator') {
       lines.push('');
     } else if (row.type === 'header') {
-      line = chalk.underline[colors(row.stats)](row.name) +
-        (row.moved ? ' > ' + row.destination : '');
-
       if (one && !options.defaultName && !row.origin) {
         line = '';
+      } else {
+        color = style[row.stats.fatal ? 'red' : (row.stats.total ? 'yellow' : 'green')];
+        line = style.underline.open + color.open + row.name + color.close + style.underline.close;
+        line += row.moved ? ' > ' + row.destination : '';
       }
 
       if (!row.stats.total) {
         line += line ? ': ' : '';
-        line += row.stored ? chalk.yellow('written') : 'no issues found';
+
+        if (row.stored) {
+          line += style.yellow.open + 'written' + style.yellow.close;
+        } else {
+          line += 'no issues found';
+        }
       }
 
       if (line) {
         lines.push(line);
       }
     } else {
-      lines.push(trim.right([
+      color = style[row.label === 'error' ? 'red' : 'yellow'];
+
+      lines.push([
         '',
         padLeft(row.location, map.location),
-        padRight(chalk[color(row.label)](row.label), map.label),
+        padRight(color.open + row.label + color.close, map.label),
         padRight(row.reason, map.reason),
         padRight(row.ruleId, map.ruleId),
         row.source || ''
-      ].join('  ')));
+      ].join('  ').replace(trailing, ''));
     }
   }
 
@@ -191,17 +227,17 @@ function compile(map, one, options) {
 
     if (all.fatal) {
       line.push([
-        chalk.red(strip(symbols.error)),
+        style.red.open + chars.error + style.red.close,
         all.fatal,
-        plural('error', all.fatal)
+        all.fatal === 1 ? 'error' : 'errors'
       ].join(' '));
     }
 
     if (all.nonfatal) {
       line.push([
-        chalk.yellow(strip(symbols.warning)),
+        style.yellow.open + chars.warning + style.yellow.close,
         all.nonfatal,
-        plural('warning', all.nonfatal)
+        all.nonfatal === 1 ? 'warning' : 'warnings'
       ].join(' '));
     }
 
@@ -234,20 +270,6 @@ function applicable(file, options) {
   }
 
   return result;
-}
-
-/* Get colors for stats. */
-function colors(stats) {
-  if (stats.fatal) {
-    return 'red';
-  }
-
-  return stats.total ? 'yellow' : 'green';
-}
-
-/* Get color of a label. */
-function color(label) {
-  return label === 'error' ? 'red' : 'yellow';
 }
 
 /* Get the length of `value`, ignoring ANSI sequences. */

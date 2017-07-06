@@ -72,6 +72,9 @@ Generate a stylish report from the given files.
         — Label to use for files without file-path.
         If one file and no `defaultName` is given, no name
         will show up in the report.
+    *   `context` (`integer`, default: `0`)
+        — Print out the specified number of characters before
+        and after the reported location above each message.
 
 ## License
 

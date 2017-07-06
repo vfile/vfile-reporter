@@ -55,22 +55,22 @@ or `Error`.
 
 ##### `options`
 
-##### `options.quiet`
+###### `options.quiet`
 
 Do not output anything for a file which has no warnings or errors (`boolean`,
 default: `false`).  The default behaviour is to show a success message.
 
-##### `options.silent`
+###### `options.silent`
 
 Do not output messages without `fatal` set to true (`boolean`, default:
 `false`).  Also sets `quiet` to `true`.
 
-##### `options.color`
+###### `options.color`
 
 Whether to use colour (`boolean`, default: depends).  The default behaviour
 is the check if [colour is supported][support].
 
-##### `options.defaultName`
+###### `options.defaultName`
 
 Label to use for files without file-path (`string`, default: `'<stdin>'`).
 If one file and no `defaultName` is given, no name will show up in the report.

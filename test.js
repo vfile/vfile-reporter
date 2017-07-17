@@ -126,7 +126,7 @@ test('vfile-reporter', function (t) {
   file.message('Note!');
   file.message('Warning!');
   file.message('Another warning!');
-  file.message('Another note!');
+  file.info('Another note!');
 
   try {
     file.fail('Another error!');
@@ -140,10 +140,10 @@ test('vfile-reporter', function (t) {
       '  1:1  warning  Note!',
       '  1:1  warning  Warning!',
       '  1:1  warning  Another warning!',
-      '  1:1  warning  Another note!',
+      '  1:1  info     Another note!',
       '  1:1  error    Another error!',
       '',
-      '6 messages (✖ 2 errors, ⚠ 4 warnings)'
+      '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
     'should work on files with multiple mixed messages'
   );

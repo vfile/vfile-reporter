@@ -10,6 +10,7 @@ module.exports = reporter;
 
 /* Check which characters should be used. */
 var windows = process.platform === 'win32';
+/* `log-symbols` without chalk: */
 /* istanbul ignore next - Windows. */
 var chars = windows ? {error: '×', warning: '‼'} : {error: '✖', warning: '⚠'};
 
@@ -33,6 +34,13 @@ var noops = {
   red: noop,
   yellow: noop,
   green: noop
+};
+
+var labels = {
+  true: 'error',
+  false: 'warning',
+  null: 'info',
+  undefined: 'info'
 };
 
 /* Report a file’s messages. */
@@ -134,7 +142,7 @@ function parse(files, options) {
         reason += '\n' + message.note;
       }
 
-      label = message.fatal ? 'error' : 'warning';
+      label = labels[message.fatal];
 
       rows.push({
         location: loc,
@@ -222,28 +230,28 @@ function compile(map, one, options) {
     }
   }
 
-  if (all.total) {
+  if (all.fatal || all.warn) {
     line = [];
 
     if (all.fatal) {
       line.push([
         style.red.open + chars.error + style.red.close,
         all.fatal,
-        all.fatal === 1 ? 'error' : 'errors'
+        plural(labels.true, all.fatal)
       ].join(' '));
     }
 
-    if (all.nonfatal) {
+    if (all.warn) {
       line.push([
         style.yellow.open + chars.warning + style.yellow.close,
-        all.nonfatal,
-        all.nonfatal === 1 ? 'warning' : 'warnings'
+        all.warn,
+        plural(labels.false, all.warn)
       ].join(' '));
     }
 
     line = line.join(', ');
 
-    if (all.fatal && all.nonfatal) {
+    if (all.total !== all.fatal && all.total !== all.warn) {
       line = all.total + ' messages (' + line + ')';
     }
 
@@ -305,4 +313,8 @@ function current(file) {
   }
 
   return file.path;
+}
+
+function plural(value, count) {
+  return count === 1 ? value : value + 's';
 }

@@ -27,7 +27,7 @@
     "string-width": "^1.0.0",
     "supports-color": "^4.1.0",
     "unist-util-stringify-position": "^1.0.0",
-    "vfile-statistics": "^1.0.0"
+    "vfile-statistics": "^1.1.0"
   },
   "devDependencies": {
     "browserify": "^14.0.0",

@@ -88,6 +88,13 @@ If one file and no `defaultName` is given, no name will show up in the report.
 *   [`vfile-sort`](https://github.com/vfile/vfile-sort)
     — Sort messages by line/column
 
+## Contribute
+
+See [`contribute.md` in `vfile/vfile`][contribute] for ways to get started.
+
+This organisation has a [Code of Conduct][coc].  By interacting with this
+repository, organisation, or community you agree to abide by its terms.
+
 ## License
 
 [MIT][license] © [Titus Wormer][author]
@@ -121,3 +128,7 @@ Nicholas C. Zakas, and licensed under MIT.
 [support]: https://github.com/chalk/supports-color
 
 [vinyl]: https://github.com/gulpjs/vinyl
+
+[contribute]: https://github.com/vfile/vfile/blob/master/contributing.md
+
+[coc]: https://github.com/vfile/vfile/blob/master/code-of-conduct.md

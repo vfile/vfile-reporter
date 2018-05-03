@@ -24,15 +24,15 @@ npm install vfile-reporter
 Say `example.js` contains:
 
 ```javascript
-var vfile = require('vfile');
-var reporter = require('vfile-reporter');
+var vfile = require('vfile')
+var reporter = require('vfile-reporter')
 
-var one = vfile({path: 'test/fixture/1.js'});
-var two = vfile({path: 'test/fixture/2.js'});
+var one = vfile({path: 'test/fixture/1.js'})
+var two = vfile({path: 'test/fixture/2.js'})
 
-one.message('Warning!', {line: 2, column: 4});
+one.message('Warning!', {line: 2, column: 4})
 
-console.error(reporter([one, two]));
+console.error(reporter([one, two]))
 ```
 
 Now, running `node example` yields:

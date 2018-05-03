@@ -24,12 +24,15 @@
   ],
   "dependencies": {
     "repeat-string": "^1.5.0",
-    "string-width": "^1.0.0",
-    "supports-color": "^4.1.0",
+    "string-width": "^2.0.0",
+    "supports-color": "^5.4.0",
     "unist-util-stringify-position": "^1.0.0",
     "vfile-statistics": "^1.1.0"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.6.1",
+    "babelify": "^8.0.0",
     "browserify": "^16.0.0",
     "esmangle": "^1.0.1",
     "nyc": "^11.0.0",
@@ -43,7 +46,7 @@
   },
   "scripts": {
     "format": "remark . -qfo && prettier --write '**/*.js' && xo --fix",
-    "build-bundle": "browserify index.js --bare -s vfileReporter > vfile-reporter.js",
+    "build-bundle": "browserify index.js -o vfile-reporter.js --bare -s vfileReporter -g [ babelify --presets [ \"babel-preset-env\" ] ]",
     "build-mangle": "esmangle vfile-reporter.js > vfile-reporter.min.js",
     "build": "npm run build-bundle && npm run build-mangle",
     "test-api": "node test",

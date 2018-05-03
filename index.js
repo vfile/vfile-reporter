@@ -1,6 +1,6 @@
 'use strict'
 
-var supported = require('supports-color').hasBasic
+var supported = require('supports-color').stderr.hasBasic
 var width = require('string-width')
 var stringify = require('unist-util-stringify-position')
 var repeat = require('repeat-string')

@@ -5,3 +5,4 @@ coverage/
 node_modules/
 vfile-reporter.js
 vfile-reporter.min.js
+yarn.lock

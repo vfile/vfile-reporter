@@ -182,14 +182,14 @@ test('vfile-reporter', function(t) {
   } catch (err) {}
 
   t.equal(
-    strip(reporter(file)),
+    strip(reporter(file))
+      .split('\n')
+      .slice(0, 3)
+      .join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: variable is not defined',
-      '    at Object.<anonymous> (test.js:1:1)',
-      '    at Module._compile (module.js:1:1)',
-      '',
-      '✖ 1 error'
+      '    at Object.<anonymous> (test.js:1:1)'
     ].join('\n'),
     'should support a “real” error (show a stack)'
   )
@@ -201,14 +201,14 @@ test('vfile-reporter', function(t) {
   } catch (err) {}
 
   t.equal(
-    strip(reporter(file)),
+    strip(reporter(file))
+      .split('\n')
+      .slice(0, 3)
+      .join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: foo',
-      '    at Object.<anonymous> (test.js:1:1)',
-      '    at Module._compile (module.js:1:1)',
-      '',
-      '✖ 1 error'
+      '    at Object.<anonymous> (test.js:1:1)'
     ].join('\n'),
     'should support a “real” error with a changed message'
   )
@@ -220,16 +220,16 @@ test('vfile-reporter', function(t) {
   } catch (err) {}
 
   t.equal(
-    strip(reporter(file)),
+    strip(reporter(file))
+      .split('\n')
+      .slice(0, 5)
+      .join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: foo',
       'bar',
       'baz',
-      '    at Object.<anonymous> (test.js:1:1)',
-      '    at Module._compile (module.js:1:1)',
-      '',
-      '✖ 1 error'
+      '    at Object.<anonymous> (test.js:1:1)'
     ].join('\n'),
     'should support a “real” error with a multiline message'
   )

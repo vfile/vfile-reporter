@@ -3,7 +3,7 @@
 var test = require('tape');
 var strip = require('strip-ansi');
 var vfile = require('vfile');
-var reporter = require('./index.js');
+var reporter = require('.');
 
 /* eslint-disable no-undef */
 var exception;
@@ -327,7 +327,7 @@ test('vfile-reporter', function (t) {
 
   t.equal(strip(reporter(file)), 'a.js > b.js: written', 'should expose the stored file-path');
 
-  t.equal(reporter(vfile({path: 'a.js'})), '\x1b[4m\x1b[32ma.js\x1b[39m\x1b[24m: no issues found', 'should infer color support');
+  t.equal(reporter(vfile({path: 'a.js'})), '\u001B[4m\u001B[32ma.js\u001B[39m\u001B[24m: no issues found', 'should infer color support');
   t.equal(reporter(vfile({path: 'a.js'}), {color: false}), 'a.js: no issues found', 'should support `color: false`');
 
   t.end();

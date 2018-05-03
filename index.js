@@ -23,10 +23,10 @@ var DEFAULT = '<stdin>';
 var noop = {open: '', close: ''};
 
 var colors = {
-  underline: {open: '\u001b[4m', close: '\u001b[24m'},
-  red: {open: '\u001b[31m', close: '\u001b[39m'},
-  yellow: {open: '\u001b[33m', close: '\u001b[39m'},
-  green: {open: '\u001b[32m', close: '\u001b[39m'}
+  underline: {open: '\u001B[4m', close: '\u001B[24m'},
+  red: {open: '\u001B[31m', close: '\u001B[39m'},
+  yellow: {open: '\u001B[33m', close: '\u001B[39m'},
+  green: {open: '\u001B[32m', close: '\u001B[39m'}
 };
 
 var noops = {

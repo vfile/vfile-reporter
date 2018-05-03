@@ -90,7 +90,7 @@ If one file and no `defaultName` is given, no name will show up in the report.
 
 ## Contribute
 
-See [`contribute.md` in `vfile/vfile`][contribute] for ways to get started.
+See [`contributing.md` in `vfile/vfile`][contributing] for ways to get started.
 
 This organisation has a [Code of Conduct][coc].  By interacting with this
 repository, organisation, or community you agree to abide by its terms.
@@ -129,6 +129,6 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [vinyl]: https://github.com/gulpjs/vinyl
 
-[contribute]: https://github.com/vfile/vfile/blob/master/contributing.md
+[contributing]: https://github.com/vfile/vfile/blob/master/contributing.md
 
 [coc]: https://github.com/vfile/vfile/blob/master/code-of-conduct.md

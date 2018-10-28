@@ -5,6 +5,7 @@ var width = require('string-width')
 var stringify = require('unist-util-stringify-position')
 var repeat = require('repeat-string')
 var statistics = require('vfile-statistics')
+var sort = require('vfile-sort')
 
 module.exports = reporter
 
@@ -112,7 +113,7 @@ function parse(files, options) {
     file = files[index]
     destination = current(file)
     origin = file.history[0] || destination
-    messages = applicable(file, options).sort(comparator)
+    messages = sort({messages: applicable(file, options)}).messages
 
     if (rows.length !== 0 && rows[rows.length - 1].type !== 'header') {
       rows.push({type: 'separator'})
@@ -320,16 +321,6 @@ function padLeft(value, minimum) {
 /* Pad `value` on the Right. */
 function padRight(value, minimum) {
   return value + repeat(' ', minimum - realLength(value))
-}
-
-/* Comparator. */
-function comparator(a, b) {
-  return check(a, b, 'line') || check(a, b, 'column') || -1
-}
-
-/* Compare a single property. */
-function check(a, b, property) {
-  return (a[property] || 0) - (b[property] || 0)
 }
 
 function current(file) {

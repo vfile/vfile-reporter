@@ -12,25 +12,25 @@ var multilineException
 
 try {
   variable = 1
-} catch (err) {
-  err.stack = cleanStack(err.stack, 3)
-  exception = err
+} catch (error) {
+  error.stack = cleanStack(error.stack, 3)
+  exception = error
 }
 
 try {
   variable = 1
-} catch (err) {
-  err.message = 'foo'
-  err.stack = cleanStack(err.stack, 3)
-  changedMessage = err
+} catch (error) {
+  error.message = 'foo'
+  error.stack = cleanStack(error.stack, 3)
+  changedMessage = error
 }
 
 try {
   variable = 1
-} catch (err) {
-  err.message = 'foo\nbar\nbaz'
-  err.stack = cleanStack(err.stack, 5)
-  multilineException = err
+} catch (error) {
+  error.message = 'foo\nbar\nbaz'
+  error.stack = cleanStack(error.stack, 5)
+  multilineException = error
 }
 /* eslint-enable no-undef */
 
@@ -49,7 +49,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (err) {}
+  } catch (error) {}
 
   t.equal(
     reporter(file.messages[0]),
@@ -95,7 +95,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (err) {}
+  } catch (error) {}
 
   t.equal(
     strip(reporter([file, vfile({path: 'b.js'})])),
@@ -114,7 +114,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (err) {}
+  } catch (error) {}
 
   file.message('Note!')
   file.message('Warning!')
@@ -123,18 +123,18 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Another error!')
-  } catch (err) {}
+  } catch (error) {}
 
   t.equal(
     strip(reporter(file)),
     [
       'a.js',
-      '  1:1  error    Error!',
-      '  1:1  warning  Note!',
-      '  1:1  warning  Warning!',
-      '  1:1  warning  Another warning!',
-      '  1:1  info     Another note!',
       '  1:1  error    Another error!',
+      '  1:1  info     Another note!',
+      '  1:1  warning  Another warning!',
+      '  1:1  warning  Warning!',
+      '  1:1  warning  Note!',
+      '  1:1  error    Error!',
       '',
       '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
@@ -179,7 +179,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(exception)
-  } catch (err) {}
+  } catch (error) {}
 
   t.equal(
     strip(reporter(file))
@@ -198,7 +198,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(changedMessage)
-  } catch (err) {}
+  } catch (error) {}
 
   t.equal(
     strip(reporter(file))
@@ -217,7 +217,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(multilineException)
-  } catch (err) {}
+  } catch (error) {}
 
   t.equal(
     strip(reporter(file))
@@ -243,9 +243,9 @@ test('vfile-reporter', function(t) {
     strip(reporter(file, {verbose: true})),
     [
       'a.js',
+      '  1:1  warning  ...and some more warnings',
       '  1:1  warning  Whoops',
       'Lorem ipsum dolor sit amet.',
-      '  1:1  warning  ...and some more warnings',
       '',
       '⚠ 2 warnings'
     ].join('\n'),
@@ -266,7 +266,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (err) {}
+  } catch (error) {}
 
   fileB.message('Warning!')
 

@@ -182,6 +182,9 @@ function compile(map, one, options) {
   var line
   var style
   var color
+  var reason
+  var rest
+  var position
 
   if (enabled === null || enabled === undefined) {
     enabled = supported
@@ -225,17 +228,26 @@ function compile(map, one, options) {
     } else {
       color = style[row.label === 'error' ? 'red' : 'yellow']
 
+      reason = row.reason
+      rest = ''
+      position = reason.indexOf('\n')
+
+      if (position !== -1) {
+        rest = reason.slice(position)
+        reason = reason.slice(0, position)
+      }
+
       lines.push(
         [
           '',
           padLeft(row.location, map.location),
           padRight(color.open + row.label + color.close, map.label),
-          padRight(row.reason, map.reason),
+          padRight(reason, map.reason),
           padRight(row.ruleId, map.ruleId),
           row.source || ''
         ]
           .join('  ')
-          .replace(trailing, '')
+          .replace(trailing, '') + rest
       )
     }
   }

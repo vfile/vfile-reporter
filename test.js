@@ -197,6 +197,25 @@ test('vfile-reporter', function(t) {
   file = vfile({path: 'test.js'})
 
   try {
+    file.fail(exception, 'foo:bar')
+  } catch (error) {}
+
+  t.equal(
+    strip(reporter(file))
+      .split('\n')
+      .slice(0, 3)
+      .join('\n'),
+    [
+      'test.js',
+      '  1:1  error  ReferenceError: variable is not defined  bar  foo',
+      '    at Object.<anonymous> (test.js:1:1)'
+    ].join('\n'),
+    'should support properly align a real error with a source'
+  )
+
+  file = vfile({path: 'test.js'})
+
+  try {
     file.fail(changedMessage)
   } catch (error) {}
 
@@ -232,6 +251,27 @@ test('vfile-reporter', function(t) {
       '    at Object.<anonymous> (test.js:1:1)'
     ].join('\n'),
     'should support a “real” error with a multiline message'
+  )
+
+  file = vfile({path: 'test.js'})
+
+  try {
+    file.fail(multilineException, 'alpha:bravo')
+  } catch (error) {}
+
+  t.equal(
+    strip(reporter(file))
+      .split('\n')
+      .slice(0, 5)
+      .join('\n'),
+    [
+      'test.js',
+      '  1:1  error  ReferenceError: foo  bravo  alpha',
+      'bar',
+      'baz',
+      '    at Object.<anonymous> (test.js:1:1)'
+    ].join('\n'),
+    'should support a “real” error with a multiline message and a source'
   )
 
   file = vfile({path: 'a.js'})

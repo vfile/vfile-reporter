@@ -1,4 +1,9 @@
-# vfile-reporter [![Build Status][travis-badge]][travis] [![Coverage Status][codecov-badge]][codecov]
+# vfile-reporter
+
+[![Build][build-badge]][build]
+[![Coverage][coverage-badge]][coverage]
+[![Downloads][downloads-badge]][downloads]
+[![Chat][chat-badge]][chat]
 
 Format [**vfile**][vfile]s using a stylish reporter.
 
@@ -105,13 +110,21 @@ Nicholas C. Zakas, and licensed under MIT.
 
 <!-- Definitions -->
 
-[travis-badge]: https://img.shields.io/travis/vfile/vfile-reporter.svg
+[build-badge]: https://img.shields.io/travis/vfile/vfile-reporter.svg
 
-[travis]: https://travis-ci.org/vfile/vfile-reporter
+[build]: https://travis-ci.org/vfile/vfile-reporter
 
-[codecov-badge]: https://img.shields.io/codecov/c/github/vfile/vfile-reporter.svg
+[coverage-badge]: https://img.shields.io/codecov/c/github/vfile/vfile-reporter.svg
 
-[codecov]: https://codecov.io/github/vfile/vfile-reporter
+[coverage]: https://codecov.io/github/vfile/vfile-reporter
+
+[downloads-badge]: https://img.shields.io/npm/dm/vfile-reporter.svg
+
+[downloads]: https://www.npmjs.com/package/vfile-reporter
+
+[chat-badge]: https://img.shields.io/badge/join%20the%20community-on%20spectrum-7b16ff.svg
+
+[chat]: https://spectrum.chat/unified/vfile
 
 [npm]: https://docs.npmjs.com/cli/install
 

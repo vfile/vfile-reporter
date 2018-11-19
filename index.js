@@ -9,16 +9,16 @@ var sort = require('vfile-sort')
 
 module.exports = reporter
 
-/* Check which characters should be used. */
+// Check which characters should be used.
 var windows = process.platform === 'win32'
-/* `log-symbols` without chalk: */
+// `log-symbols` without chalk:
 /* istanbul ignore next - Windows. */
 var chars = windows ? {error: '×', warning: '‼'} : {error: '✖', warning: '⚠'}
 
-/* Match trailing white-space. */
+// Match trailing white-space.
 var trailing = /\s*$/
 
-/* Default filename. */
+// Default filename.
 var DEFAULT = '<stdin>'
 
 var noop = {open: '', close: ''}
@@ -44,7 +44,7 @@ var labels = {
   undefined: 'info'
 }
 
-/* Report a file’s messages. */
+// Report a file’s messages.
 function reporter(files, options) {
   var settings = options || {}
   var one
@@ -53,12 +53,12 @@ function reporter(files, options) {
     return ''
   }
 
-  /* Error. */
+  // Error.
   if ('name' in files && 'message' in files) {
     return String(files.stack || files)
   }
 
-  /* One file. */
+  // One file.
   if (!('length' in files)) {
     one = true
     files = [files]
@@ -307,18 +307,18 @@ function applicable(file, options) {
   return result
 }
 
-/* Get the length of `value`, ignoring ANSI sequences. */
+// Get the length of `value`, ignoring ANSI sequences.
 function realLength(value) {
   var length = value.indexOf('\n')
   return width(length === -1 ? value : value.slice(0, length))
 }
 
-/* Pad `value` on the left. */
+// Pad `value` on the left.
 function padLeft(value, minimum) {
   return repeat(' ', minimum - realLength(value)) + value
 }
 
-/* Pad `value` on the Right. */
+// Pad `value` on the right.
 function padRight(value, minimum) {
   return value + repeat(' ', minimum - realLength(value))
 }

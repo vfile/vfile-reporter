@@ -117,7 +117,7 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [license]: license
 
-[author]: http://wooorm.com
+[author]: https://wooorm.com
 
 [eslint]: https://github.com/eslint/eslint
 

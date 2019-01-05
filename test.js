@@ -1,5 +1,6 @@
 'use strict'
 
+var sep = require('path').sep
 var test = require('tape')
 var strip = require('strip-ansi')
 var vfile = require('vfile')
@@ -373,7 +374,7 @@ test('vfile-reporter', function(t) {
 
 function cleanStack(stack, max) {
   return stack
-    .replace(/\(\/.+\//g, '(')
+    .replace(new RegExp('\\(.+\\' + sep, 'g'), '(')
     .replace(/\d+:\d+/g, '1:1')
     .split('\n')
     .slice(0, max)

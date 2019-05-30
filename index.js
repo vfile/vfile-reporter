@@ -111,7 +111,7 @@ function parse(files, options) {
 
   while (++index < length) {
     file = files[index]
-    destination = current(file)
+    destination = file.path
     origin = file.history[0] || destination
     messages = sort({messages: applicable(file, options)}).messages
 
@@ -322,15 +322,6 @@ function padLeft(value, minimum) {
 // Pad `value` on the right.
 function padRight(value, minimum) {
   return value + repeat(' ', minimum - realLength(value))
-}
-
-function current(file) {
-  /* istanbul ignore if - Previous `vfile` version. */
-  if (file.filePath) {
-    return file.filePath()
-  }
-
-  return file.path
 }
 
 function plural(value, count) {

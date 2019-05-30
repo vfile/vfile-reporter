@@ -370,6 +370,19 @@ test('vfile-reporter', function(t) {
     'should support `color: false`'
   )
 
+  // Force chalk.
+  var supportsColor = chalk.supportsColor
+  chalk.supportsColor = true
+
+  t.equal(
+    reporter(vfile({path: 'a.js'}), {color: true}),
+    chalk.underline.green('a.js') + ': no issues found',
+    'should support `color: false`'
+  )
+
+  chalk.supportsColor = supportsColor
+  console.log('supports:', supportsColor)
+
   t.end()
 })
 

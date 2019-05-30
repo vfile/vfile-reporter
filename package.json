@@ -35,6 +35,8 @@
     "@babel/preset-env": "^7.1.0",
     "babelify": "^10.0.0",
     "browserify": "^16.0.0",
+    "chalk": "^2.4.2",
+    "figures": "^2.0.0",
     "nyc": "^14.0.0",
     "prettier": "^1.0.0",
     "remark-cli": "^6.0.0",
@@ -46,7 +48,7 @@
     "xo": "^0.24.0"
   },
   "scripts": {
-    "format": "remark . -qfo && prettier --write '**/*.js' && xo --fix",
+    "format": "remark . -qfo && prettier --write \"**/*.js\" && xo --fix",
     "build-bundle": "browserify . --bare -s vfileReporter -g [ babelify --presets [ \"@babel/preset-env\" ] ] > vfile-reporter.js",
     "build-mangle": "browserify . --bare -s vfileReporter -g [ babelify --presets [ \"@babel/preset-env\" ] ] -p tinyify > vfile-reporter.min.js",
     "build": "npm run build-bundle && npm run build-mangle",

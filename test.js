@@ -1,8 +1,11 @@
 'use strict'
 
+var sep = require('path').sep
 var test = require('tape')
 var strip = require('strip-ansi')
 var vfile = require('vfile')
+var figures = require('figures')
+var chalk = require('chalk')
 var reporter = require('.')
 
 /* eslint-disable no-undef */
@@ -86,7 +89,7 @@ test('vfile-reporter', function(t) {
       '',
       'b.js: no issues found',
       '',
-      '⚠ 1 warning'
+      figures.warning + ' 1 warning'
     ].join('\n'),
     'should work on files with warnings'
   )
@@ -105,7 +108,7 @@ test('vfile-reporter', function(t) {
       '',
       'b.js: no issues found',
       '',
-      '✖ 1 error'
+      figures.cross + ' 1 error'
     ].join('\n'),
     'should work on files with errors'
   )
@@ -136,7 +139,11 @@ test('vfile-reporter', function(t) {
       '  1:1  warning  Warning!',
       '  1:1  info     Another note!',
       '',
-      '6 messages (✖ 2 errors, ⚠ 3 warnings)'
+      '6 messages (' +
+        figures.cross +
+        ' 2 errors, ' +
+        figures.warning +
+        ' 3 warnings)'
     ].join('\n'),
     'should work on files with multiple mixed messages'
   )
@@ -146,7 +153,7 @@ test('vfile-reporter', function(t) {
 
   t.equal(
     strip(reporter(file)),
-    ['  3:2  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    ['  3:2  warning  Warning!', '', figures.warning + ' 1 warning'].join('\n'),
     'should support a single position'
   )
 
@@ -158,7 +165,9 @@ test('vfile-reporter', function(t) {
 
   t.equal(
     strip(reporter(file)),
-    ['  3:2-4:8  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    ['  3:2-4:8  warning  Warning!', '', figures.warning + ' 1 warning'].join(
+      '\n'
+    ),
     'should support a location'
   )
 
@@ -171,7 +180,12 @@ test('vfile-reporter', function(t) {
 
   t.equal(
     strip(reporter(file)),
-    ['foo.bar', '  3:2-4:8  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    [
+      'foo.bar',
+      '  3:2-4:8  warning  Warning!',
+      '',
+      figures.warning + ' 1 warning'
+    ].join('\n'),
     'should support a location (#2)'
   )
 
@@ -287,7 +301,7 @@ test('vfile-reporter', function(t) {
       '  1:1  warning  Whoops',
       'Lorem ipsum dolor sit amet.',
       '',
-      '⚠ 2 warnings'
+      figures.warning + ' 2 warnings'
     ].join('\n'),
     'should support `note` in verbose mode'
   )
@@ -297,7 +311,12 @@ test('vfile-reporter', function(t) {
 
   t.equal(
     strip(reporter([file, vfile({path: 'b.js'})], {quiet: true})),
-    ['a.js', '  1:1  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    [
+      'a.js',
+      '  1:1  warning  Warning!',
+      '',
+      figures.warning + ' 1 warning'
+    ].join('\n'),
     'should ignore successful files in `quiet` mode'
   )
 
@@ -312,7 +331,7 @@ test('vfile-reporter', function(t) {
 
   t.equal(
     strip(reporter([file, fileB], {silent: true})),
-    ['a.js', '  1:1  error  Error!', '', '✖ 1 error'].join('\n'),
+    ['a.js', '  1:1  error  Error!', '', figures.cross + ' 1 error'].join('\n'),
     'should ignore non-failures in `silent` mode'
   )
 
@@ -342,9 +361,16 @@ test('vfile-reporter', function(t) {
 
   t.equal(
     reporter(vfile({path: 'a.js'})),
-    '\u001B[4m\u001B[32ma.js\u001B[39m\u001B[24m: no issues found',
+    chalk.underline.green('a.js') + ': no issues found',
     'should infer color support'
   )
+
+  t.equal(
+    reporter(vfile({path: 'a.js'}), {color: true}),
+    '\u001B[4m\u001B[32ma.js\u001B[39m\u001B[24m: no issues found',
+    'should support `color: true`'
+  )
+
   t.equal(
     reporter(vfile({path: 'a.js'}), {color: false}),
     'a.js: no issues found',
@@ -356,7 +382,7 @@ test('vfile-reporter', function(t) {
 
 function cleanStack(stack, max) {
   return stack
-    .replace(/\(\/.+\//g, '(')
+    .replace(new RegExp('\\(.+\\' + sep, 'g'), '(')
     .replace(/\d+:\d+/g, '1:1')
     .split('\n')
     .slice(0, max)

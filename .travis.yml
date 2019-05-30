@@ -5,7 +5,9 @@ os:
 node_js:
   # - lts/boron
   - node
-after_script: bash <(curl -s https://codecov.io/bash)
+after_script:
+  - cat coverage/lcov-report/index.js.html
+  - bash <(curl -s https://codecov.io/bash)
 deploy:
   provider: releases
   skip_cleanup: true

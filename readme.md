@@ -3,6 +3,8 @@
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
 [![Downloads][downloads-badge]][downloads]
+[![Sponsors][sponsors-badge]][collective]
+[![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
 Format [**vfile**][vfile]s using a stylish reporter.
@@ -16,11 +18,11 @@ Format [**vfile**][vfile]s using a stylish reporter.
 *   [x] Successful files (configurable)
 *   [x] All of [**VFile**][vfile]’s awesomeness
 
-## Installation
+## Install
 
 [npm][]:
 
-```bash
+```sh
 npm install vfile-reporter
 ```
 
@@ -28,7 +30,7 @@ npm install vfile-reporter
 
 Say `example.js` contains:
 
-```javascript
+```js
 var vfile = require('vfile')
 var reporter = require('vfile-reporter')
 
@@ -73,7 +75,7 @@ Do not output messages without `fatal` set to true (`boolean`, default:
 ###### `options.color`
 
 Whether to use colour (`boolean`, default: depends).  The default behaviour
-is the check if [colour is supported][support].
+is the check if [colour is supported][supports-color].
 
 ###### `options.defaultName`
 
@@ -95,10 +97,13 @@ If one file and no `defaultName` is given, no name will show up in the report.
 
 ## Contribute
 
-See [`contributing.md` in `vfile/vfile`][contributing] for ways to get started.
+See [`contributing.md`][contributing] in [`vfile/.github`][health] for ways to
+get started.
+See [`support.md`][support] for ways to get help.
 
-This organisation has a [Code of Conduct][coc].  By interacting with this
-repository, organisation, or community you agree to abide by its terms.
+This project has a [Code of Conduct][coc].
+By interacting with this repository, organisation, or community you agree to
+abide by its terms.
 
 ## License
 
@@ -122,11 +127,25 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [downloads]: https://www.npmjs.com/package/vfile-reporter
 
+[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
+
+[backers-badge]: https://opencollective.com/unified/backers/badge.svg
+
+[collective]: https://opencollective.com/unified
+
 [chat-badge]: https://img.shields.io/badge/join%20the%20community-on%20spectrum-7b16ff.svg
 
 [chat]: https://spectrum.chat/unified/vfile
 
 [npm]: https://docs.npmjs.com/cli/install
+
+[contributing]: https://github.com/vfile/.github/blob/master/contributing.md
+
+[support]: https://github.com/vfile/.github/blob/master/support.md
+
+[health]: https://github.com/vfile/.github
+
+[coc]: https://github.com/vfile/.github/blob/master/code-of-conduct.md
 
 [license]: license
 
@@ -138,10 +157,6 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [screenshot]: ./screenshot.png
 
-[support]: https://github.com/chalk/supports-color
+[supports-color]: https://github.com/chalk/supports-color
 
 [vinyl]: https://github.com/gulpjs/vinyl
-
-[contributing]: https://github.com/vfile/vfile/blob/master/contributing.md
-
-[coc]: https://github.com/vfile/vfile/blob/master/code-of-conduct.md

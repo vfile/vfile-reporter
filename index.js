@@ -172,6 +172,7 @@ function parse(files, options) {
   }
 }
 
+// eslint-disable-next-line complexity
 function compile(map, one, options) {
   var enabled = options.color
   var all = map.statistics

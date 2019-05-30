@@ -129,11 +129,11 @@ test('vfile-reporter', function(t) {
     strip(reporter(file)),
     [
       'a.js',
-      '  1:1  error    Error!',
       '  1:1  error    Another error!',
+      '  1:1  error    Error!',
+      '  1:1  warning  Another warning!',
       '  1:1  warning  Note!',
       '  1:1  warning  Warning!',
-      '  1:1  warning  Another warning!',
       '  1:1  info     Another note!',
       '',
       '6 messages (✖ 2 errors, ⚠ 3 warnings)'
@@ -283,9 +283,9 @@ test('vfile-reporter', function(t) {
     strip(reporter(file, {verbose: true})),
     [
       'a.js',
+      '  1:1  warning  ...and some more warnings',
       '  1:1  warning  Whoops',
       'Lorem ipsum dolor sit amet.',
-      '  1:1  warning  ...and some more warnings',
       '',
       '⚠ 2 warnings'
     ].join('\n'),

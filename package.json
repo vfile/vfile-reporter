@@ -36,7 +36,7 @@
     "babelify": "^10.0.0",
     "browserify": "^16.0.0",
     "chalk": "^2.4.2",
-    "figures": "^2.0.0",
+    "figures": "^3.0.0",
     "nyc": "^14.0.0",
     "prettier": "^1.0.0",
     "remark-cli": "^6.0.0",

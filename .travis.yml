@@ -1,13 +1,11 @@
 language: node_js
 os:
   - windows
-  # - linux
+  - linux
 node_js:
-  # - lts/boron
+  - lts/boron
   - node
-after_script:
-  - cat coverage/lcov-report/index.js.html
-  - bash <(curl -s https://codecov.io/bash)
+after_script: bash <(curl -s https://codecov.io/bash)
 deploy:
   provider: releases
   skip_cleanup: true

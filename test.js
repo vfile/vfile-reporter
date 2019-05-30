@@ -364,15 +364,16 @@ test('vfile-reporter', function(t) {
     chalk.underline.green('a.js') + ': no issues found',
     'should infer color support'
   )
-  t.equal(
-    reporter(vfile({path: 'a.js'}), {color: false}),
-    'a.js: no issues found',
-    'should support `color: false`'
-  )
 
   t.equal(
     reporter(vfile({path: 'a.js'}), {color: true}),
     '\u001B[4m\u001B[32ma.js\u001B[39m\u001B[24m: no issues found',
+    'should support `color: true`'
+  )
+
+  t.equal(
+    reporter(vfile({path: 'a.js'}), {color: false}),
+    'a.js: no issues found',
     'should support `color: false`'
   )
 

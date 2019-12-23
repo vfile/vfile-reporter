@@ -62,6 +62,11 @@ or `Error`.
 
 ##### `options`
 
+##### `options.verbose`
+
+Output long form descriptions of messages, if applicable (`boolean`, default:
+`false`).
+
 ###### `options.quiet`
 
 Do not output anything for a file which has no warnings or errors (`boolean`,

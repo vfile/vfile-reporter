@@ -52,7 +52,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     reporter(file.messages[0]),
@@ -98,7 +98,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     strip(reporter([file, vfile({path: 'b.js'})])),
@@ -117,7 +117,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (error) {}
+  } catch (_) {}
 
   file.message('Note!')
   file.message('Warning!')
@@ -126,7 +126,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Another error!')
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     strip(reporter(file)),
@@ -193,7 +193,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(exception)
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     strip(reporter(file))
@@ -212,7 +212,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(exception, 'foo:bar')
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     strip(reporter(file))
@@ -231,7 +231,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(changedMessage)
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     strip(reporter(file))
@@ -250,7 +250,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(multilineException)
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     strip(reporter(file))
@@ -271,7 +271,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail(multilineException, 'alpha:bravo')
-  } catch (error) {}
+  } catch (_) {}
 
   t.equal(
     strip(reporter(file))
@@ -325,7 +325,7 @@ test('vfile-reporter', function(t) {
 
   try {
     file.fail('Error!')
-  } catch (error) {}
+  } catch (_) {}
 
   fileB.message('Warning!')
 

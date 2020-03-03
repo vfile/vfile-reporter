@@ -45,17 +45,17 @@
     "@babel/preset-env": "^7.1.0",
     "babelify": "^10.0.0",
     "browserify": "^16.0.0",
-    "chalk": "^2.4.2",
+    "chalk": "^3.0.0",
     "figures": "^3.0.0",
-    "nyc": "^14.0.0",
+    "nyc": "^15.0.0",
     "prettier": "^1.0.0",
-    "remark-cli": "^6.0.0",
-    "remark-preset-wooorm": "^5.0.0",
-    "strip-ansi": "^5.0.0",
+    "remark-cli": "^7.0.0",
+    "remark-preset-wooorm": "^6.0.0",
+    "strip-ansi": "^6.0.0",
     "tape": "^4.0.0",
     "tinyify": "^2.0.0",
     "vfile": "^4.0.0",
-    "xo": "^0.24.0"
+    "xo": "^0.27.0"
   },
   "scripts": {
     "format": "remark . -qfo && prettier --write \"**/*.js\" && xo --fix",

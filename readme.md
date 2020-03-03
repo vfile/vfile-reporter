@@ -7,7 +7,7 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-Format [**vfile**][vfile]s using a stylish reporter.
+Create a report for a **[vfile][]**.
 
 ![Example screenshot of **vfile-reporter**][screenshot]
 
@@ -26,7 +26,7 @@ Format [**vfile**][vfile]s using a stylish reporter.
 npm install vfile-reporter
 ```
 
-## Usage
+## Use
 
 Say `example.js` contains:
 
@@ -70,17 +70,19 @@ Output long form descriptions of messages, if applicable (`boolean`, default:
 ###### `options.quiet`
 
 Do not output anything for a file which has no warnings or errors (`boolean`,
-default: `false`).  The default behaviour is to show a success message.
+default: `false`).
+The default behavior is to show a success message.
 
 ###### `options.silent`
 
 Do not output messages without `fatal` set to true (`boolean`, default:
-`false`).  Also sets `quiet` to `true`.
+`false`).
+Also sets `quiet` to `true`.
 
 ###### `options.color`
 
-Whether to use colour (`boolean`, default: depends).  The default behaviour
-is the check if [colour is supported][supports-color].
+Whether to use color (`boolean`, default: depends).
+The default behavior is the check if [color is supported][supports-color].
 
 ###### `options.defaultName`
 
@@ -106,8 +108,8 @@ See [`contributing.md`][contributing] in [`vfile/.github`][health] for ways to
 get started.
 See [`support.md`][support] for ways to get help.
 
-This project has a [Code of Conduct][coc].
-By interacting with this repository, organisation, or community you agree to
+This project has a [code of conduct][coc].
+By interacting with this repository, organization, or community you agree to
 abide by its terms.
 
 ## License
@@ -138,7 +140,7 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [collective]: https://opencollective.com/unified
 
-[chat-badge]: https://img.shields.io/badge/join%20the%20community-on%20spectrum-7b16ff.svg
+[chat-badge]: https://img.shields.io/badge/chat-spectrum-7b16ff.svg
 
 [chat]: https://spectrum.chat/unified/vfile
 

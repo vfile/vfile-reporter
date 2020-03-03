@@ -19,7 +19,7 @@ var chars = windows ? {error: '×', warning: '‼'} : {error: '✖', warning: '�
 var trailing = /\s*$/
 
 // Default filename.
-var DEFAULT = '<stdin>'
+var defaultName = '<stdin>'
 
 var noop = {open: '', close: ''}
 
@@ -123,7 +123,7 @@ function parse(files, options) {
       type: 'header',
       origin: origin,
       destination: destination,
-      name: origin || options.defaultName || DEFAULT,
+      name: origin || options.defaultName || defaultName,
       stored: Boolean(file.stored),
       moved: Boolean(file.stored && destination !== origin),
       stats: statistics(messages)

@@ -37,7 +37,7 @@ try {
 }
 /* eslint-enable no-undef */
 
-test('vfile-reporter', function(t) {
+test('vfile-reporter', function (t) {
   var file
   var fileB
   var warning
@@ -196,10 +196,7 @@ test('vfile-reporter', function(t) {
   } catch (_) {}
 
   t.equal(
-    strip(reporter(file))
-      .split('\n')
-      .slice(0, 3)
-      .join('\n'),
+    strip(reporter(file)).split('\n').slice(0, 3).join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: variable is not defined',
@@ -215,10 +212,7 @@ test('vfile-reporter', function(t) {
   } catch (_) {}
 
   t.equal(
-    strip(reporter(file))
-      .split('\n')
-      .slice(0, 3)
-      .join('\n'),
+    strip(reporter(file)).split('\n').slice(0, 3).join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: variable is not defined  bar  foo',
@@ -234,10 +228,7 @@ test('vfile-reporter', function(t) {
   } catch (_) {}
 
   t.equal(
-    strip(reporter(file))
-      .split('\n')
-      .slice(0, 3)
-      .join('\n'),
+    strip(reporter(file)).split('\n').slice(0, 3).join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: foo',
@@ -253,10 +244,7 @@ test('vfile-reporter', function(t) {
   } catch (_) {}
 
   t.equal(
-    strip(reporter(file))
-      .split('\n')
-      .slice(0, 5)
-      .join('\n'),
+    strip(reporter(file)).split('\n').slice(0, 5).join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: foo',
@@ -274,10 +262,7 @@ test('vfile-reporter', function(t) {
   } catch (_) {}
 
   t.equal(
-    strip(reporter(file))
-      .split('\n')
-      .slice(0, 5)
-      .join('\n'),
+    strip(reporter(file)).split('\n').slice(0, 5).join('\n'),
     [
       'test.js',
       '  1:1  error  ReferenceError: foo  bravo  alpha',

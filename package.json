@@ -41,24 +41,24 @@
     "vfile-statistics": "^1.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
     "babelify": "^10.0.0",
     "browserify": "^16.0.0",
     "chalk": "^3.0.0",
     "figures": "^3.0.0",
     "nyc": "^15.0.0",
-    "prettier": "^1.0.0",
-    "remark-cli": "^7.0.0",
-    "remark-preset-wooorm": "^6.0.0",
+    "prettier": "^2.0.0",
+    "remark-cli": "^8.0.0",
+    "remark-preset-wooorm": "^7.0.0",
     "strip-ansi": "^6.0.0",
-    "tape": "^4.0.0",
+    "tape": "^5.0.0",
     "tinyify": "^2.0.0",
     "vfile": "^4.0.0",
-    "xo": "^0.27.0"
+    "xo": "^0.32.0"
   },
   "scripts": {
-    "format": "remark . -qfo && prettier --write \"**/*.js\" && xo --fix",
+    "format": "remark . -qfo && prettier . --write && xo --fix",
     "build-bundle": "browserify . --bare -s vfileReporter -g [ babelify --presets [ \"@babel/preset-env\" ] ] > vfile-reporter.js",
     "build-mangle": "browserify . --bare -s vfileReporter -g [ babelify --presets [ \"@babel/preset-env\" ] ] -p tinyify > vfile-reporter.min.js",
     "build": "npm run build-bundle && npm run build-mangle",
@@ -84,6 +84,9 @@
   "xo": {
     "prettier": true,
     "esnext": false,
+    "rules": {
+      "unicorn/prefer-optional-catch-binding": "off"
+    },
     "ignores": [
       "vfile-reporter.js"
     ]

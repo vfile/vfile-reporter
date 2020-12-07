@@ -9,7 +9,7 @@
 
 Create a report for a **[vfile][]**.
 
-![Example screenshot of **vfile-reporter**][screenshot]
+![Example screenshot of vfile-reporter][screenshot]
 
 ## Features
 

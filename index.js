@@ -80,7 +80,7 @@ function filter(files, options) {
   while (++index < length) {
     file = files[index]
 
-    if (applicable(file, options).length !== 0) {
+    if (applicable(file, options).length > 0) {
       result.push(file)
     }
   }
@@ -115,7 +115,7 @@ function parse(files, options) {
     origin = file.history[0] || destination
     messages = sort({messages: applicable(file, options)}).messages
 
-    if (rows.length !== 0 && rows[rows.length - 1].type !== 'header') {
+    if (rows.length > 0 && rows[rows.length - 1].type !== 'header') {
       rows.push({type: 'separator'})
     }
 
@@ -217,11 +217,9 @@ function compile(map, one, options) {
       if (!row.stats.total) {
         line += line ? ': ' : ''
 
-        if (row.stored) {
-          line += style.yellow.open + 'written' + style.yellow.close
-        } else {
-          line += 'no issues found'
-        }
+        line += row.stored
+          ? style.yellow.open + 'written' + style.yellow.close
+          : 'no issues found'
       }
 
       if (line) {

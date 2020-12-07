@@ -85,6 +85,13 @@
     "prettier": true,
     "esnext": false,
     "rules": {
+      "complexity": "off",
+      "eqeqeq": "off",
+      "guard-for-in": "off",
+      "no-eq-null": "off",
+      "unicorn/escape-case": "off",
+      "unicorn/explicit-length-check": "off",
+      "unicorn/no-hex-escape": "off",
       "unicorn/prefer-optional-catch-binding": "off"
     },
     "ignores": [

@@ -9,33 +9,14 @@ var sort = require('vfile-sort')
 
 module.exports = reporter
 
-// Check which characters should be used.
-var windows = process.platform === 'win32'
+var push = [].push
+
 // `log-symbols` without chalk:
 /* istanbul ignore next - Windows. */
-var chars = windows ? {error: '×', warning: '‼'} : {error: '✖', warning: '⚠'}
-
-// Match trailing white-space.
-var trailing = /\s*$/
-
-// Default filename.
-var defaultName = '<stdin>'
-
-var noop = {open: '', close: ''}
-
-var colors = {
-  underline: {open: '\u001B[4m', close: '\u001B[24m'},
-  red: {open: '\u001B[31m', close: '\u001B[39m'},
-  yellow: {open: '\u001B[33m', close: '\u001B[39m'},
-  green: {open: '\u001B[32m', close: '\u001B[39m'}
-}
-
-var noops = {
-  underline: noop,
-  red: noop,
-  yellow: noop,
-  green: noop
-}
+var chars =
+  process.platform === 'win32'
+    ? {error: '×', warning: '‼'}
+    : {error: '✖', warning: '⚠'}
 
 var labels = {
   true: 'error',
@@ -64,221 +45,183 @@ function reporter(files, options) {
     files = [files]
   }
 
-  return compile(parse(filter(files, settings), settings), one, settings)
+  return format(transform(files, settings), one, settings)
 }
 
-function filter(files, options) {
-  var result = []
-  var length = files.length
-  var index = -1
-  var file
-
-  if (!options.quiet && !options.silent) {
-    return files.concat()
-  }
-
-  while (++index < length) {
-    file = files[index]
-
-    if (applicable(file, options).length > 0) {
-      result.push(file)
-    }
-  }
-
-  return result
-}
-
-function parse(files, options) {
-  var length = files.length
+function transform(files, options) {
   var index = -1
   var rows = []
   var all = []
-  var locationSize = 0
-  var labelSize = 0
-  var reasonSize = 0
-  var ruleIdSize = 0
-  var file
-  var destination
-  var origin
+  var sizes = {}
   var messages
   var offset
-  var count
   var message
-  var loc
-  var reason
-  var label
-  var id
+  var messageRows
+  var row
+  var key
 
-  while (++index < length) {
-    file = files[index]
-    destination = file.path
-    origin = file.history[0] || destination
-    messages = sort({messages: applicable(file, options)}).messages
-
-    if (rows.length > 0 && rows[rows.length - 1].type !== 'header') {
-      rows.push({type: 'separator'})
-    }
-
-    rows.push({
-      type: 'header',
-      origin: origin,
-      destination: destination,
-      name: origin || options.defaultName || defaultName,
-      stored: Boolean(file.stored),
-      moved: Boolean(file.stored && destination !== origin),
-      stats: statistics(messages)
-    })
-
+  while (++index < files.length) {
+    messages = sort({messages: files[index].messages.concat()}).messages
+    messageRows = []
     offset = -1
-    count = messages.length
 
-    while (++offset < count) {
+    while (++offset < messages.length) {
       message = messages[offset]
-      id = message.ruleId || ''
-      reason = message.stack || message.message
-      loc = message.location
-      loc = stringify(loc.end.line && loc.end.column ? loc : loc.start)
 
-      if (options.verbose && message.note) {
-        reason += '\n' + message.note
+      if (!options.silent || message.fatal) {
+        all.push(message)
+
+        row = {
+          location: stringify(
+            message.location.end.line && message.location.end.column
+              ? message.location
+              : message.location.start
+          ),
+          label: labels[message.fatal],
+          reason:
+            (message.stack || message.message) +
+            (options.verbose && message.note ? '\n' + message.note : ''),
+          ruleId: message.ruleId || '',
+          source: message.source || ''
+        }
+
+        for (key in row) {
+          sizes[key] = Math.max(size(row[key]), sizes[key] || 0)
+        }
+
+        messageRows.push(row)
       }
-
-      label = labels[message.fatal]
-
-      rows.push({
-        location: loc,
-        label: label,
-        reason: reason,
-        ruleId: id,
-        source: message.source
-      })
-
-      locationSize = Math.max(realLength(loc), locationSize)
-      labelSize = Math.max(realLength(label), labelSize)
-      reasonSize = Math.max(realLength(reason), reasonSize)
-      ruleIdSize = Math.max(realLength(id), ruleIdSize)
     }
 
-    all = all.concat(messages)
+    if ((!options.quiet && !options.silent) || messageRows.length) {
+      rows.push({type: 'file', file: files[index], stats: statistics(messages)})
+      push.apply(rows, messageRows)
+    }
   }
 
-  return {
-    rows: rows,
-    statistics: statistics(all),
-    location: locationSize,
-    label: labelSize,
-    reason: reasonSize,
-    ruleId: ruleIdSize
-  }
+  return {rows: rows, stats: statistics(all), sizes: sizes}
 }
 
-// eslint-disable-next-line complexity
-function compile(map, one, options) {
-  var enabled = options.color
-  var all = map.statistics
-  var rows = map.rows
-  var length = rows.length
-  var index = -1
+function format(map, one, options) {
+  var enabled = options.color == null ? supported : options.color
   var lines = []
+  var index = -1
+  var stats
   var row
   var line
-  var style
-  var color
   var reason
   var rest
-  var position
+  var match
 
-  if (enabled === null || enabled === undefined) {
-    enabled = supported
-  }
+  while (++index < map.rows.length) {
+    row = map.rows[index]
 
-  style = enabled ? colors : noops
+    if (row.type === 'file') {
+      stats = row.stats
+      line = row.file.history[0] || options.defaultName || '<stdin>'
 
-  while (++index < length) {
-    row = rows[index]
+      line =
+        one && !options.defaultName && !row.file.history[0]
+          ? ''
+          : (enabled
+              ? '\x1b[4m' /* Underline. */ +
+                (stats.fatal
+                  ? '\x1b[31m' /* Red. */
+                  : stats.total
+                  ? '\x1b[33m' /* Yellow. */
+                  : '\x1b[32m') /* Green. */ +
+                line +
+                '\x1b[39m\x1b[24m'
+              : line) +
+            (row.file.stored && row.file.path !== row.file.history[0]
+              ? ' > ' + row.file.path
+              : '')
 
-    if (row.type === 'separator') {
-      lines.push('')
-    } else if (row.type === 'header') {
-      if (one && !options.defaultName && !row.origin) {
-        line = ''
-      } else {
-        color =
-          style[row.stats.fatal ? 'red' : row.stats.total ? 'yellow' : 'green']
+      if (!stats.total) {
         line =
-          style.underline.open +
-          color.open +
-          row.name +
-          color.close +
-          style.underline.close
-        line += row.moved ? ' > ' + row.destination : ''
-      }
-
-      if (!row.stats.total) {
-        line += line ? ': ' : ''
-
-        line += row.stored
-          ? style.yellow.open + 'written' + style.yellow.close
-          : 'no issues found'
+          (line ? line + ': ' : '') +
+          (row.file.stored
+            ? enabled
+              ? '\x1b[33mwritten\x1b[39m' /* Yellow. */
+              : 'written'
+            : 'no issues found')
       }
 
       if (line) {
+        if (index && map.rows[index - 1].type !== 'file') {
+          lines.push('')
+        }
+
         lines.push(line)
       }
     } else {
-      color = style[row.label === 'error' ? 'red' : 'yellow']
-
       reason = row.reason
-      rest = ''
-      position = reason.indexOf('\n')
+      match = /\r?\n|\r/.exec(reason)
 
-      if (position !== -1) {
-        rest = reason.slice(position)
-        reason = reason.slice(0, position)
+      if (match) {
+        rest = reason.slice(match.index)
+        reason = reason.slice(0, match.index)
+      } else {
+        rest = ''
       }
 
       lines.push(
-        [
-          '',
-          padLeft(row.location, map.location),
-          padRight(color.open + row.label + color.close, map.label),
-          padRight(reason, map.reason),
-          padRight(row.ruleId, map.ruleId),
-          row.source || ''
-        ]
-          .join('  ')
-          .replace(trailing, '') + rest
+        (
+          '  ' +
+          repeat(' ', map.sizes.location - size(row.location)) +
+          row.location +
+          '  ' +
+          (enabled
+            ? (row.label === 'error'
+                ? '\x1b[31m' /* Red. */
+                : '\x1b[33m') /* Yellow. */ +
+              row.label +
+              '\x1b[39m'
+            : row.label) +
+          repeat(' ', map.sizes.label - size(row.label)) +
+          '  ' +
+          reason +
+          repeat(' ', map.sizes.reason - size(reason)) +
+          '  ' +
+          row.ruleId +
+          repeat(' ', map.sizes.ruleId - size(row.ruleId)) +
+          '  ' +
+          (row.source || '')
+        ).replace(/ +$/, '') + rest
       )
     }
   }
 
-  if (all.fatal || all.warn) {
-    line = []
+  stats = map.stats
 
-    if (all.fatal) {
-      line.push(
-        [
-          style.red.open + chars.error + style.red.close,
-          all.fatal,
-          plural(labels.true, all.fatal)
-        ].join(' ')
-      )
+  if (stats.fatal || stats.warn) {
+    line = ''
+
+    if (stats.fatal) {
+      line =
+        (enabled
+          ? '\x1b[31m' /* Red. */ + chars.error + '\x1b[39m'
+          : chars.error) +
+        ' ' +
+        stats.fatal +
+        ' ' +
+        (labels.true + (stats.fatal === 1 ? '' : 's'))
     }
 
-    if (all.warn) {
-      line.push(
-        [
-          style.yellow.open + chars.warning + style.yellow.close,
-          all.warn,
-          plural(labels.false, all.warn)
-        ].join(' ')
-      )
+    if (stats.warn) {
+      line =
+        (line ? line + ', ' : '') +
+        (enabled
+          ? '\x1b[33m' /* Yellow. */ + chars.warning + '\x1b[39m'
+          : chars.warning) +
+        ' ' +
+        stats.warn +
+        ' ' +
+        (labels.false + (stats.warn === 1 ? '' : 's'))
     }
 
-    line = line.join(', ')
-
-    if (all.total !== all.fatal && all.total !== all.warn) {
-      line = all.total + ' messages (' + line + ')'
+    if (stats.total !== stats.fatal && stats.total !== stats.warn) {
+      line = stats.total + ' messages (' + line + ')'
     }
 
     lines.push('', line)
@@ -287,41 +230,8 @@ function compile(map, one, options) {
   return lines.join('\n')
 }
 
-function applicable(file, options) {
-  var messages = file.messages
-  var length = messages.length
-  var index = -1
-  var result = []
-
-  if (options.silent) {
-    while (++index < length) {
-      if (messages[index].fatal) {
-        result.push(messages[index])
-      }
-    }
-  } else {
-    result = messages.concat()
-  }
-
-  return result
-}
-
 // Get the length of `value`, ignoring ANSI sequences.
-function realLength(value) {
-  var length = value.indexOf('\n')
-  return width(length === -1 ? value : value.slice(0, length))
-}
-
-// Pad `value` on the left.
-function padLeft(value, minimum) {
-  return repeat(' ', minimum - realLength(value)) + value
-}
-
-// Pad `value` on the right.
-function padRight(value, minimum) {
-  return value + repeat(' ', minimum - realLength(value))
-}
-
-function plural(value, count) {
-  return count === 1 ? value : value + 's'
+function size(value) {
+  var match = /\r?\n|\r/.exec(value)
+  return width(match ? value.slice(0, match.index) : value)
 }

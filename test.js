@@ -148,6 +148,26 @@ test('vfile-reporter', function (t) {
     'should work on files with multiple mixed messages'
   )
 
+  t.equal(
+    reporter(file, {color: false}),
+    [
+      'a.js',
+      '  1:1  error    Another error!',
+      '  1:1  error    Error!',
+      '  1:1  warning  Another warning!',
+      '  1:1  warning  Note!',
+      '  1:1  warning  Warning!',
+      '  1:1  info     Another note!',
+      '',
+      '6 messages (' +
+        figures.cross +
+        ' 2 errors, ' +
+        figures.warning +
+        ' 3 warnings)'
+    ].join('\n'),
+    'should work on files with multiple mixed messages (w/o color)'
+  )
+
   file = vfile()
   file.message('Warning!', {line: 3, column: 2})
 
@@ -218,7 +238,7 @@ test('vfile-reporter', function (t) {
       '  1:1  error  ReferenceError: variable is not defined  bar  foo',
       '    at Object.<anonymous> (test.js:1:1)'
     ].join('\n'),
-    'should support properly align a real error with a source'
+    'should properly align a real error with a source'
   )
 
   file = vfile({path: 'test.js'})
@@ -333,6 +353,12 @@ test('vfile-reporter', function (t) {
   file.stored = true
 
   t.equal(strip(reporter(file)), 'a.js: written', 'should support `stored`')
+
+  t.equal(
+    reporter(file, {color: false}),
+    'a.js: written',
+    'should support `stored` (w/o color)'
+  )
 
   file = vfile({path: 'a.js'})
   file.stem = 'b'

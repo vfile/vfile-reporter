@@ -62,7 +62,7 @@ or `Error`.
 
 ##### `options`
 
-##### `options.verbose`
+###### `options.verbose`
 
 Output long form descriptions of messages, if applicable (`boolean`, default:
 `false`).

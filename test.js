@@ -5,7 +5,6 @@ var test = require('tape')
 var strip = require('strip-ansi')
 var vfile = require('vfile')
 var figures = require('figures')
-var chalk = require('chalk')
 var reporter = require('.')
 
 /* eslint-disable no-undef */
@@ -371,14 +370,8 @@ test('vfile-reporter', function (t) {
   )
 
   t.equal(
-    reporter(vfile({path: 'a.js'})),
-    chalk.underline.green('a.js') + ': no issues found',
-    'should infer color support'
-  )
-
-  t.equal(
     reporter(vfile({path: 'a.js'}), {color: true}),
-    '\u001B[4m\u001B[32ma.js\u001B[39m\u001B[24m: no issues found',
+    '\x1b[4m\x1b[32ma.js\x1b[39m\x1b[24m: no issues found',
     'should support `color: true`'
   )
 

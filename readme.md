@@ -122,9 +122,9 @@ Nicholas C. Zakas, and licensed under MIT.
 
 <!-- Definitions -->
 
-[build-badge]: https://img.shields.io/travis/vfile/vfile-reporter.svg
+[build-badge]: https://github.com/vfile/vfile-reporter/workflows/main/badge.svg
 
-[build]: https://travis-ci.org/vfile/vfile-reporter
+[build]: https://github.com/vfile/vfile-reporter/actions
 
 [coverage-badge]: https://img.shields.io/codecov/c/github/vfile/vfile-reporter.svg
 

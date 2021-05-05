@@ -1,3 +1,35 @@
+/**
+ * @typedef {import('vfile').VFile} VFile
+ * @typedef {import('vfile-message').VFileMessage} VFileMessage
+ * @typedef {import('vfile-statistics').Statistics} Statistics
+ *
+ * @typedef Options
+ * @property {boolean} [color]
+ * @property {boolean} [silent=false]
+ * @property {boolean} [quiet=false]
+ * @property {boolean} [verbose=false]
+ * @property {string} [defaultName='<stdin>']
+ *
+ * @typedef _Row
+ * @property {string} place
+ * @property {string} label
+ * @property {string} reason
+ * @property {string} ruleId
+ * @property {string} source
+ *
+ * @typedef _FileRow
+ * @property {'file'} type
+ * @property {VFile} file
+ * @property {Statistics} stats
+ *
+ * @typedef {{[x: string]: number}} _Sizes
+ *
+ * @typedef _Info
+ * @property {Array.<_FileRow|_Row>} rows
+ * @property {Statistics} stats
+ * @property {_Sizes} sizes
+ */
+
 import supportsColor from 'supports-color'
 import width from 'string-width'
 import repeat from 'repeat-string'
@@ -6,6 +38,8 @@ import {statistics} from 'vfile-statistics'
 import {sort} from 'vfile-sort'
 
 var own = {}.hasOwnProperty
+
+// @ts-ignore Types are incorrect.
 var supported = supportsColor.stderr.hasBasic
 
 // `log-symbols` without chalk, ignored for Windows:
@@ -17,9 +51,15 @@ var chars =
 
 var labels = {true: 'error', false: 'warning', null: 'info', undefined: 'info'}
 
-// Report a file’s messages.
-export function reporter(files, options) {
-  var settings = options || {}
+/**
+ * Report a file’s messages.
+ *
+ * @param {Error|VFile|Array.<VFile>} [files]
+ * @param {Options} [options]
+ * @returns {string}
+ */
+export function reporter(files, options = {}) {
+  /** @type {boolean} */
   var one
 
   if (!files) {
@@ -32,27 +72,42 @@ export function reporter(files, options) {
   }
 
   // One file.
-  if (!('length' in files)) {
+  if (!Array.isArray(files)) {
     one = true
     files = [files]
   }
 
-  return format(transform(files, settings), one, settings)
+  return format(transform(files, options), one, options)
 }
 
+/**
+ * @param {Array.<VFile>} files
+ * @param {Options} options
+ * @returns {_Info}
+ */
 function transform(files, options) {
   var index = -1
+  /** @type {Array.<_FileRow|_Row>} */
   var rows = []
+  /** @type {Array.<VFileMessage>} */
   var all = []
-  var sizes = {}
-  var messages
+  /** @type {number} */
   var offset
+  /** @type {_Sizes} */
+  var sizes = {}
+  /** @type {Array.<VFileMessage>} */
+  var messages
+  /** @type {VFileMessage} */
   var message
-  var messageRows
+  /** @type {_Row} */
   var row
+  /** @type {Array.<_Row>} */
+  var messageRows
+  /** @type {string} */
   var key
 
   while (++index < files.length) {
+    // @ts-ignore it works fine.
     messages = sort({messages: [...files[index].messages]}).messages
     messageRows = []
     offset = -1
@@ -98,24 +153,37 @@ function transform(files, options) {
   return {rows, stats: statistics(all), sizes}
 }
 
+/**
+ * @param {_Info} map
+ * @param {boolean} one
+ * @param {Options} options
+ */
 function format(map, one, options) {
+  /** @type {boolean} */
   var enabled =
     options.color === undefined || options.color === null
       ? supported
       : options.color
+  /** @type {Array.<string>} */
   var lines = []
   var index = -1
+  /** @type {Statistics} */
   var stats
+  /** @type {_FileRow|_Row} */
   var row
+  /** @type {string} */
   var line
+  /** @type {string} */
   var reason
+  /** @type {string} */
   var rest
+  /** @type {RegExpMatchArray} */
   var match
 
   while (++index < map.rows.length) {
     row = map.rows[index]
 
-    if (row.type === 'file') {
+    if ('type' in row) {
       stats = row.stats
       line = row.file.history[0] || options.defaultName || '<stdin>'
 
@@ -147,7 +215,7 @@ function format(map, one, options) {
       }
 
       if (line) {
-        if (index && map.rows[index - 1].type !== 'file') {
+        if (index && !('type' in map.rows[index - 1])) {
           lines.push('')
         }
 
@@ -229,7 +297,12 @@ function format(map, one, options) {
   return lines.join('\n')
 }
 
-// Get the length of `value`, ignoring ANSI sequences.
+/**
+ * Get the length of `value`, ignoring ANSI sequences.
+ *
+ * @param {string} value
+ * @returns {number}
+ */
 function size(value) {
   var match = /\r?\n|\r/.exec(value)
   return width(match ? value.slice(0, match.index) : value)

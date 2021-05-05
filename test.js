@@ -1,3 +1,7 @@
+/**
+ * @typedef {import('vfile-message').VFileMessage} VFileMessage
+ */
+
 import path from 'path'
 import test from 'tape'
 import strip from 'strip-ansi'
@@ -6,11 +10,15 @@ import figures from 'figures'
 import {reporter} from './index.js'
 
 /* eslint-disable no-undef */
+/** @type {Error} */
 var exception
+/** @type {Error} */
 var changedMessage
+/** @type {Error} */
 var multilineException
 
 try {
+  // @ts-ignore
   variable = 1
 } catch (error) {
   error.stack = cleanStack(error.stack, 3)
@@ -18,6 +26,7 @@ try {
 }
 
 try {
+  // @ts-ignore
   variable = 1
 } catch (error) {
   error.message = 'foo'
@@ -26,6 +35,7 @@ try {
 }
 
 try {
+  // @ts-ignore
   variable = 1
 } catch (error) {
   error.message = 'foo\nbar\nbaz'
@@ -35,8 +45,11 @@ try {
 /* eslint-enable no-undef */
 
 test('vfile-reporter', function (t) {
+  /** @type {VFile} */
   var file
+  /** @type {VFile} */
   var fileB
+  /** @type {VFileMessage} */
   var warning
 
   t.equal(reporter(), '', 'should return empty without a file')
@@ -225,7 +238,7 @@ test('vfile-reporter', function (t) {
   file = new VFile({path: 'test.js'})
 
   try {
-    file.fail(exception, 'foo:bar')
+    file.fail(exception, null, 'foo:bar')
   } catch {}
 
   t.equal(
@@ -271,7 +284,7 @@ test('vfile-reporter', function (t) {
   file = new VFile({path: 'test.js'})
 
   try {
-    file.fail(multilineException, 'alpha:bravo')
+    file.fail(multilineException, null, 'alpha:bravo')
   } catch {}
 
   t.equal(
@@ -378,6 +391,10 @@ test('vfile-reporter', function (t) {
   t.end()
 })
 
+/**
+ * @param {string} stack
+ * @param {number} max
+ */
 function cleanStack(stack, max) {
   return stack
     .replace(new RegExp('\\(.+\\' + path.sep, 'g'), '(')

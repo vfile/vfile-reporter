@@ -1,32 +1,24 @@
-'use strict'
+import supportsColor from 'supports-color'
+import width from 'string-width'
+import repeat from 'repeat-string'
+import {stringifyPosition} from 'unist-util-stringify-position'
+import {statistics} from 'vfile-statistics'
+import {sort} from 'vfile-sort'
 
-var supported = require('supports-color').stderr.hasBasic
-var width = require('string-width')
-var stringify = require('unist-util-stringify-position')
-var repeat = require('repeat-string')
-var statistics = require('vfile-statistics')
-var sort = require('vfile-sort')
+var own = {}.hasOwnProperty
+var supported = supportsColor.stderr.hasBasic
 
-module.exports = reporter
-
-var push = [].push
-
-// `log-symbols` without chalk:
-/* istanbul ignore next - Windows. */
+// `log-symbols` without chalk, ignored for Windows:
+/* c8 ignore next 4 */
 var chars =
   process.platform === 'win32'
     ? {error: '×', warning: '‼'}
     : {error: '✖', warning: '⚠'}
 
-var labels = {
-  true: 'error',
-  false: 'warning',
-  null: 'info',
-  undefined: 'info'
-}
+var labels = {true: 'error', false: 'warning', null: 'info', undefined: 'info'}
 
 // Report a file’s messages.
-function reporter(files, options) {
+export function reporter(files, options) {
   var settings = options || {}
   var one
 
@@ -61,7 +53,7 @@ function transform(files, options) {
   var key
 
   while (++index < files.length) {
-    messages = sort({messages: files[index].messages.concat()}).messages
+    messages = sort({messages: [...files[index].messages]}).messages
     messageRows = []
     offset = -1
 
@@ -72,10 +64,10 @@ function transform(files, options) {
         all.push(message)
 
         row = {
-          location: stringify(
-            message.location.end.line && message.location.end.column
-              ? message.location
-              : message.location.start
+          place: stringifyPosition(
+            message.position.end.line && message.position.end.column
+              ? message.position
+              : message.position.start
           ),
           label: labels[message.fatal],
           reason:
@@ -86,24 +78,31 @@ function transform(files, options) {
         }
 
         for (key in row) {
-          sizes[key] = Math.max(size(row[key]), sizes[key] || 0)
+          if (own.call(row, key)) {
+            sizes[key] = Math.max(size(row[key]), sizes[key] || 0)
+          }
         }
 
         messageRows.push(row)
       }
     }
 
-    if ((!options.quiet && !options.silent) || messageRows.length) {
-      rows.push({type: 'file', file: files[index], stats: statistics(messages)})
-      push.apply(rows, messageRows)
+    if ((!options.quiet && !options.silent) || messageRows.length > 0) {
+      rows.push(
+        {type: 'file', file: files[index], stats: statistics(messages)},
+        ...messageRows
+      )
     }
   }
 
-  return {rows: rows, stats: statistics(all), sizes: sizes}
+  return {rows, stats: statistics(all), sizes}
 }
 
 function format(map, one, options) {
-  var enabled = options.color == null ? supported : options.color
+  var enabled =
+    options.color === undefined || options.color === null
+      ? supported
+      : options.color
   var lines = []
   var index = -1
   var stats
@@ -124,14 +123,14 @@ function format(map, one, options) {
         one && !options.defaultName && !row.file.history[0]
           ? ''
           : (enabled
-              ? '\x1b[4m' /* Underline. */ +
+              ? '\u001B[4m' /* Underline. */ +
                 (stats.fatal
-                  ? '\x1b[31m' /* Red. */
+                  ? '\u001B[31m' /* Red. */
                   : stats.total
-                  ? '\x1b[33m' /* Yellow. */
-                  : '\x1b[32m') /* Green. */ +
+                  ? '\u001B[33m' /* Yellow. */
+                  : '\u001B[32m') /* Green. */ +
                 line +
-                '\x1b[39m\x1b[24m'
+                '\u001B[39m\u001B[24m'
               : line) +
             (row.file.stored && row.file.path !== row.file.history[0]
               ? ' > ' + row.file.path
@@ -142,7 +141,7 @@ function format(map, one, options) {
           (line ? line + ': ' : '') +
           (row.file.stored
             ? enabled
-              ? '\x1b[33mwritten\x1b[39m' /* Yellow. */
+              ? '\u001B[33mwritten\u001B[39m' /* Yellow. */
               : 'written'
             : 'no issues found')
       }
@@ -168,15 +167,15 @@ function format(map, one, options) {
       lines.push(
         (
           '  ' +
-          repeat(' ', map.sizes.location - size(row.location)) +
-          row.location +
+          repeat(' ', map.sizes.place - size(row.place)) +
+          row.place +
           '  ' +
           (enabled
             ? (row.label === 'error'
-                ? '\x1b[31m' /* Red. */
-                : '\x1b[33m') /* Yellow. */ +
+                ? '\u001B[31m' /* Red. */
+                : '\u001B[33m') /* Yellow. */ +
               row.label +
-              '\x1b[39m'
+              '\u001B[39m'
             : row.label) +
           repeat(' ', map.sizes.label - size(row.label)) +
           '  ' +
@@ -200,7 +199,7 @@ function format(map, one, options) {
     if (stats.fatal) {
       line =
         (enabled
-          ? '\x1b[31m' /* Red. */ + chars.error + '\x1b[39m'
+          ? '\u001B[31m' /* Red. */ + chars.error + '\u001B[39m'
           : chars.error) +
         ' ' +
         stats.fatal +
@@ -212,7 +211,7 @@ function format(map, one, options) {
       line =
         (line ? line + ', ' : '') +
         (enabled
-          ? '\x1b[33m' /* Yellow. */ + chars.warning + '\x1b[39m'
+          ? '\u001B[33m' /* Yellow. */ + chars.warning + '\u001B[39m'
           : chars.warning) +
         ' ' +
         stats.warn +

@@ -34,11 +34,11 @@ npm install vfile-reporter
 Say `example.js` contains:
 
 ```js
-var vfile = require('vfile')
-var reporter = require('vfile-reporter')
+import {VFile} from 'vfile'
+import {reporter} from 'vfile-reporter'
 
-var one = vfile({path: 'test/fixture/1.js'})
-var two = vfile({path: 'test/fixture/2.js'})
+var one = new VFile({path: 'test/fixture/1.js'})
+var two = new VFile({path: 'test/fixture/2.js'})
 
 one.message('Warning!', {line: 2, column: 4})
 

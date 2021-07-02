@@ -59,7 +59,7 @@ test/fixture/2.js: no issues found
 ## API
 
 This package exports the following identifiers: `reporter`.
-There is no default export.
+That identifier is also the default export.
 
 ### `reporter(files[, options])`
 

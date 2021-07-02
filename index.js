@@ -51,6 +51,8 @@ var chars =
 
 var labels = {true: 'error', false: 'warning', null: 'info', undefined: 'info'}
 
+export default reporter
+
 /**
  * Report a file’s messages.
  *

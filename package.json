@@ -38,9 +38,7 @@
     "index.js"
   ],
   "dependencies": {
-    "@types/repeat-string": "^1.0.0",
     "@types/supports-color": "^8.0.0",
-    "repeat-string": "^1.0.0",
     "string-width": "^5.0.0",
     "supports-color": "^9.0.0",
     "unist-util-stringify-position": "^3.0.0",

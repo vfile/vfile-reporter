@@ -32,7 +32,6 @@
 
 import supportsColor from 'supports-color'
 import width from 'string-width'
-import repeat from 'repeat-string'
 import {stringifyPosition} from 'unist-util-stringify-position'
 import {statistics} from 'vfile-statistics'
 import {sort} from 'vfile-sort'
@@ -228,7 +227,7 @@ function format(map, one, options) {
       lines.push(
         (
           '  ' +
-          repeat(' ', map.sizes.place - size(row.place)) +
+          ' '.repeat(map.sizes.place - size(row.place)) +
           row.place +
           '  ' +
           (enabled
@@ -238,13 +237,13 @@ function format(map, one, options) {
               row.label +
               '\u001B[39m'
             : row.label) +
-          repeat(' ', map.sizes.label - size(row.label)) +
+          ' '.repeat(map.sizes.label - size(row.label)) +
           '  ' +
           reason +
-          repeat(' ', map.sizes.reason - size(reason)) +
+          ' '.repeat(map.sizes.reason - size(reason)) +
           '  ' +
           row.ruleId +
-          repeat(' ', map.sizes.ruleId - size(row.ruleId)) +
+          ' '.repeat(map.sizes.ruleId - size(row.ruleId)) +
           '  ' +
           (row.source || '')
         ).replace(/ +$/, '') + rest

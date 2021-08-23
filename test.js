@@ -18,7 +18,7 @@ let changedMessage
 let multilineException
 
 try {
-  // @ts-ignore
+  // @ts-expect-error
   variable = 1
 } catch (error) {
   error.stack = cleanStack(error.stack, 3)
@@ -26,7 +26,7 @@ try {
 }
 
 try {
-  // @ts-ignore
+  // @ts-expect-error
   variable = 1
 } catch (error) {
   error.message = 'foo'
@@ -35,7 +35,7 @@ try {
 }
 
 try {
-  // @ts-ignore
+  // @ts-expect-error
   variable = 1
 } catch (error) {
   error.message = 'foo\nbar\nbaz'
@@ -234,7 +234,7 @@ test('vfile-reporter', (t) => {
   file = new VFile({path: 'test.js'})
 
   try {
-    file.fail(exception, null, 'foo:bar')
+    file.fail(exception, undefined, 'foo:bar')
   } catch {}
 
   t.equal(
@@ -280,7 +280,7 @@ test('vfile-reporter', (t) => {
   file = new VFile({path: 'test.js'})
 
   try {
-    file.fail(multilineException, null, 'alpha:bravo')
+    file.fail(multilineException, undefined, 'alpha:bravo')
   } catch {}
 
   t.equal(

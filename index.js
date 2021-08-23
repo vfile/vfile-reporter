@@ -39,7 +39,7 @@ import {sort} from 'vfile-sort'
 
 const own = {}.hasOwnProperty
 
-// @ts-ignore Types are incorrect.
+// @ts-expect-error Types are incorrect.
 const supported = supportsColor.stderr.hasBasic
 
 // `log-symbols` without chalk, ignored for Windows:
@@ -66,7 +66,7 @@ export default reporter
  * @returns {string}
  */
 export function reporter(files, options = {}) {
-  /** @type {boolean} */
+  /** @type {boolean|undefined} */
   let one
 
   if (!files) {
@@ -93,51 +93,45 @@ export function reporter(files, options = {}) {
  * @returns {_Info}
  */
 function transform(files, options) {
-  let index = -1
   /** @type {Array.<_FileRow|_Row>} */
   const rows = []
   /** @type {Array.<VFileMessage>} */
   const all = []
-  /** @type {number} */
-  let offset
   /** @type {_Sizes} */
   const sizes = {}
-  /** @type {Array.<VFileMessage>} */
-  let messages
-  /** @type {VFileMessage} */
-  let message
-  /** @type {_Row} */
-  let row
-  /** @type {Array.<_Row>} */
-  let messageRows
-  /** @type {string} */
-  let key
+  let index = -1
 
   while (++index < files.length) {
-    // @ts-ignore it works fine.
-    messages = sort({messages: [...files[index].messages]}).messages
-    messageRows = []
-    offset = -1
+    // @ts-expect-error it works fine.
+    const messages = sort({messages: [...files[index].messages]}).messages
+    /** @type {Array.<_Row>} */
+    const messageRows = []
+    let offset = -1
 
     while (++offset < messages.length) {
-      message = messages[offset]
+      const message = messages[offset]
 
       if (!options.silent || message.fatal) {
         all.push(message)
 
-        row = {
+        const row = {
           place: stringifyPosition(
-            message.position.end.line && message.position.end.column
-              ? message.position
-              : message.position.start
+            message.position
+              ? message.position.end.line && message.position.end.column
+                ? message.position
+                : message.position.start
+              : undefined
           ),
-          label: labels[message.fatal],
+          label: labels[/** @type {keyof labels} */ (String(message.fatal))],
           reason:
             (message.stack || message.message) +
             (options.verbose && message.note ? '\n' + message.note : ''),
           ruleId: message.ruleId || '',
           source: message.source || ''
         }
+
+        /** @type {keyof row} */
+        let key
 
         for (key in row) {
           if (own.call(row, key)) {
@@ -162,7 +156,7 @@ function transform(files, options) {
 
 /**
  * @param {_Info} map
- * @param {boolean} one
+ * @param {boolean|undefined} one
  * @param {Options} options
  */
 function format(map, one, options) {
@@ -174,25 +168,13 @@ function format(map, one, options) {
   /** @type {Array.<string>} */
   const lines = []
   let index = -1
-  /** @type {Statistics} */
-  let stats
-  /** @type {_FileRow|_Row} */
-  let row
-  /** @type {string} */
-  let line
-  /** @type {string} */
-  let reason
-  /** @type {string} */
-  let rest
-  /** @type {RegExpMatchArray} */
-  let match
 
   while (++index < map.rows.length) {
-    row = map.rows[index]
+    const row = map.rows[index]
 
     if ('type' in row) {
-      stats = row.stats
-      line = row.file.history[0] || options.defaultName || '<stdin>'
+      const stats = row.stats
+      let line = row.file.history[0] || options.defaultName || '<stdin>'
 
       line =
         one && !options.defaultName && !row.file.history[0]
@@ -229,8 +211,10 @@ function format(map, one, options) {
         lines.push(line)
       }
     } else {
-      reason = row.reason
-      match = /\r?\n|\r/.exec(reason)
+      let reason = row.reason
+      const match = /\r?\n|\r/.exec(reason)
+      /** @type {string} */
+      let rest
 
       if (match) {
         rest = reason.slice(match.index)
@@ -266,10 +250,10 @@ function format(map, one, options) {
     }
   }
 
-  stats = map.stats
+  const stats = map.stats
 
   if (stats.fatal || stats.warn) {
-    line = ''
+    let line = ''
 
     if (stats.fatal) {
       line =

@@ -175,12 +175,21 @@ test('vfile-reporter', (t) => {
   )
 
   file = new VFile()
+  Object.assign(file.message('Warning!'), {position: null})
+
+  t.equal(
+    strip(reporter(file)),
+    '    warning  Warning!\n\n' + figures.warning + ' 1 warning',
+    'should support a missing position'
+  )
+
+  file = new VFile()
   file.message('Warning!', {line: 3, column: 2})
 
   t.equal(
     strip(reporter(file)),
     ['  3:2  warning  Warning!', '', figures.warning + ' 1 warning'].join('\n'),
-    'should support a single position'
+    'should support a single point'
   )
 
   file = new VFile()

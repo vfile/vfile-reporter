@@ -134,6 +134,7 @@ function transform(files, options) {
         let key
 
         for (key in row) {
+          // eslint-disable-next-line max-depth
           if (own.call(row, key)) {
             sizes[key] = Math.max(size(row[key]), sizes[key] || 0)
           }
@@ -159,6 +160,7 @@ function transform(files, options) {
  * @param {boolean|undefined} one
  * @param {Options} options
  */
+// eslint-disable-next-line complexity
 function format(map, one, options) {
   /** @type {boolean} */
   const enabled =

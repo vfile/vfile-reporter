@@ -2,7 +2,7 @@
  * @typedef {import('vfile-message').VFileMessage} VFileMessage
  */
 
-import path from 'path'
+import path from 'node:path'
 import test from 'tape'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'

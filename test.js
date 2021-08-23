@@ -11,11 +11,11 @@ import {reporter} from './index.js'
 
 /* eslint-disable no-undef */
 /** @type {Error} */
-var exception
+let exception
 /** @type {Error} */
-var changedMessage
+let changedMessage
 /** @type {Error} */
-var multilineException
+let multilineException
 
 try {
   // @ts-ignore
@@ -44,13 +44,9 @@ try {
 }
 /* eslint-enable no-undef */
 
-test('vfile-reporter', function (t) {
+test('vfile-reporter', (t) => {
   /** @type {VFile} */
-  var file
-  /** @type {VFile} */
-  var fileB
-  /** @type {VFileMessage} */
-  var warning
+  let file
 
   t.equal(reporter(), '', 'should return empty without a file')
 
@@ -300,7 +296,7 @@ test('vfile-reporter', function (t) {
   )
 
   file = new VFile({path: 'a.js'})
-  warning = file.message('Whoops')
+  const warning = file.message('Whoops')
   warning.note = 'Lorem ipsum dolor sit amet.'
   file.message('...and some more warnings')
 
@@ -332,7 +328,7 @@ test('vfile-reporter', function (t) {
   )
 
   file = new VFile({path: 'a.js'})
-  fileB = new VFile({path: 'b.js'})
+  const fileB = new VFile({path: 'b.js'})
 
   try {
     file.fail('Error!')

@@ -84,8 +84,6 @@
     "rules": {
       "complexity": "off",
       "max-depth": "off",
-      "no-var": "off",
-      "prefer-arrow-callback": "off",
       "unicorn/prefer-node-protocol": "off"
     }
   },

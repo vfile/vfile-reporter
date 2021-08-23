@@ -37,8 +37,8 @@ Say `example.js` contains:
 import {VFile} from 'vfile'
 import {reporter} from 'vfile-reporter'
 
-var one = new VFile({path: 'test/fixture/1.js'})
-var two = new VFile({path: 'test/fixture/2.js'})
+const one = new VFile({path: 'test/fixture/1.js'})
+const two = new VFile({path: 'test/fixture/2.js'})
 
 one.message('Warning!', {line: 2, column: 4})
 

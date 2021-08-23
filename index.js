@@ -37,19 +37,24 @@ import {stringifyPosition} from 'unist-util-stringify-position'
 import {statistics} from 'vfile-statistics'
 import {sort} from 'vfile-sort'
 
-var own = {}.hasOwnProperty
+const own = {}.hasOwnProperty
 
 // @ts-ignore Types are incorrect.
-var supported = supportsColor.stderr.hasBasic
+const supported = supportsColor.stderr.hasBasic
 
 // `log-symbols` without chalk, ignored for Windows:
 /* c8 ignore next 4 */
-var chars =
+const chars =
   process.platform === 'win32'
     ? {error: '×', warning: '‼'}
     : {error: '✖', warning: '⚠'}
 
-var labels = {true: 'error', false: 'warning', null: 'info', undefined: 'info'}
+const labels = {
+  true: 'error',
+  false: 'warning',
+  null: 'info',
+  undefined: 'info'
+}
 
 export default reporter
 
@@ -62,7 +67,7 @@ export default reporter
  */
 export function reporter(files, options = {}) {
   /** @type {boolean} */
-  var one
+  let one
 
   if (!files) {
     return ''
@@ -88,25 +93,25 @@ export function reporter(files, options = {}) {
  * @returns {_Info}
  */
 function transform(files, options) {
-  var index = -1
+  let index = -1
   /** @type {Array.<_FileRow|_Row>} */
-  var rows = []
+  const rows = []
   /** @type {Array.<VFileMessage>} */
-  var all = []
+  const all = []
   /** @type {number} */
-  var offset
+  let offset
   /** @type {_Sizes} */
-  var sizes = {}
+  const sizes = {}
   /** @type {Array.<VFileMessage>} */
-  var messages
+  let messages
   /** @type {VFileMessage} */
-  var message
+  let message
   /** @type {_Row} */
-  var row
+  let row
   /** @type {Array.<_Row>} */
-  var messageRows
+  let messageRows
   /** @type {string} */
-  var key
+  let key
 
   while (++index < files.length) {
     // @ts-ignore it works fine.
@@ -162,25 +167,25 @@ function transform(files, options) {
  */
 function format(map, one, options) {
   /** @type {boolean} */
-  var enabled =
+  const enabled =
     options.color === undefined || options.color === null
       ? supported
       : options.color
   /** @type {Array.<string>} */
-  var lines = []
-  var index = -1
+  const lines = []
+  let index = -1
   /** @type {Statistics} */
-  var stats
+  let stats
   /** @type {_FileRow|_Row} */
-  var row
+  let row
   /** @type {string} */
-  var line
+  let line
   /** @type {string} */
-  var reason
+  let reason
   /** @type {string} */
-  var rest
+  let rest
   /** @type {RegExpMatchArray} */
-  var match
+  let match
 
   while (++index < map.rows.length) {
     row = map.rows[index]
@@ -306,6 +311,6 @@ function format(map, one, options) {
  * @returns {number}
  */
 function size(value) {
-  var match = /\r?\n|\r/.exec(value)
+  const match = /\r?\n|\r/.exec(value)
   return width(match ? value.slice(0, match.index) : value)
 }

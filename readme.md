@@ -63,7 +63,7 @@ That identifier is also the default export.
 
 ### `reporter(files[, options])`
 
-Generate a stylish report from the given [`vfile`][vfile], `Array.<VFile>`,
+Generate a stylish report from the given [`vfile`][vfile], `Array<VFile>`,
 or `Error`.
 
 ##### `options`

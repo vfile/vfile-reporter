@@ -34,6 +34,7 @@
   "main": "index.js",
   "types": "index.d.ts",
   "files": [
+    "lib/",
     "index.d.ts",
     "index.js"
   ],
@@ -63,7 +64,7 @@
   },
   "scripts": {
     "prepack": "npm run build && npm run format",
-    "build": "rimraf \"*.d.ts\" && tsc && type-coverage",
+    "build": "rimraf \"lib/**/*.d.ts\" \"*.d.ts\" && tsc && type-coverage",
     "format": "remark . -qfo && prettier . -w --loglevel warn && xo --fix",
     "test-api": "cross-env FORCE_COLOR=\"true\" node test.js",
     "test-coverage": "cross-env FORCE_COLOR=\"true\" c8 --check-coverage --branches 100 --functions 100 --lines 100 --statements 100 --reporter lcov node test.js",

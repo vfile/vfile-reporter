@@ -7,7 +7,7 @@ import test from 'tape'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
 import figures from 'figures'
-import {reporter} from './index.js'
+import reporterDefault, {reporter} from './index.js'
 
 /* eslint-disable no-undef */
 /** @type {Error} */
@@ -48,6 +48,12 @@ try {
 /* eslint-enable no-undef */
 
 test('vfile-reporter', (t) => {
+  t.equal(
+    reporter,
+    reporterDefault,
+    'should expose `reporter` as a named and a default export'
+  )
+
   /** @type {VFile} */
   let file
 

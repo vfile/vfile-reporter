@@ -32,6 +32,9 @@
   "sideEffects": false,
   "type": "module",
   "main": "index.js",
+  "browser": {
+    "./lib/color.js": "./lib/color.browser.js"
+  },
   "types": "index.d.ts",
   "files": [
     "lib/",

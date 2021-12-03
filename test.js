@@ -21,26 +21,29 @@ try {
   // @ts-expect-error
   variable = 1
 } catch (error) {
-  error.stack = cleanStack(error.stack, 3)
-  exception = error
+  const error_ = /** @type {Error} */ (error)
+  error_.stack = cleanStack(error_.stack, 3)
+  exception = error_
 }
 
 try {
   // @ts-expect-error
   variable = 1
 } catch (error) {
-  error.message = 'foo'
-  error.stack = cleanStack(error.stack, 3)
-  changedMessage = error
+  const error_ = /** @type {Error} */ (error)
+  error_.message = 'foo'
+  error_.stack = cleanStack(error_.stack, 3)
+  changedMessage = error_
 }
 
 try {
   // @ts-expect-error
   variable = 1
 } catch (error) {
-  error.message = 'foo\nbar\nbaz'
-  error.stack = cleanStack(error.stack, 5)
-  multilineException = error
+  const error_ = /** @type {Error} */ (error)
+  error_.message = 'foo\nbar\nbaz'
+  error_.stack = cleanStack(error_.stack, 5)
+  multilineException = error_
 }
 /* eslint-enable no-undef */
 
@@ -397,11 +400,11 @@ test('vfile-reporter', (t) => {
 })
 
 /**
- * @param {string} stack
+ * @param {string|undefined} stack
  * @param {number} max
  */
 function cleanStack(stack, max) {
-  return stack
+  return (stack || '')
     .replace(new RegExp('\\(.+\\' + path.sep, 'g'), '(')
     .replace(/file:.+\//g, '')
     .replace(/\d+:\d+/g, '1:1')

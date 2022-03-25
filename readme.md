@@ -7,26 +7,58 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-Create a report for a **[vfile][]**.
+[vfile][] utility to create a report from a file.
 
 ![Example screenshot of vfile-reporter][screenshot]
 
-## Features
+## Contents
 
-*   [x] Ranges (`3:2` and `3:2-3:6`)
-*   [x] Stack-traces to show where awful stuff occurs
-*   [x] Successful files (configurable)
-*   [x] All of [**VFile**][vfile]’s awesomeness
+*   [What is this?](#what-is-this)
+*   [When should I use this?](#when-should-i-use-this)
+*   [Install](#install)
+*   [Use](#use)
+*   [API](#api)
+    *   [`reporter(files[, options])`](#reporterfiles-options)
+*   [Types](#types)
+*   [Compatibility](#compatibility)
+*   [Security](#security)
+*   [Related](#related)
+*   [Contribute](#contribute)
+*   [License](#license)
+
+## What is this?
+
+This package create a textual report from a file showing the warnings that
+occurred while processing.
+Many CLIs of tools that process files, whether linters (such as ESLint) or
+bundlers (such as esbuild), have similar functionality.
+
+## When should I use this?
+
+You can use this package whenever you want to display a report about what
+occurred while processing to a human.
 
 ## Install
 
-This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
-Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
-
-[npm][]:
+This package is [ESM only][esm].
+In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
 
 ```sh
 npm install vfile-reporter
+```
+
+In Deno with [`esm.sh`][esmsh]:
+
+```js
+import {reporter} from 'https://esm.sh/vfile-reporter@7'
+```
+
+In browsers with [`esm.sh`][esmsh]:
+
+```html
+<script type="module">
+  import {reporter} from 'https://esm.sh/vfile-reporter@7?bundle'
+</script>
 ```
 
 ## Use
@@ -58,55 +90,72 @@ test/fixture/2.js: no issues found
 
 ## API
 
-This package exports the following identifiers: `reporter`.
-That identifier is also the default export.
+This package exports the identifier `reporter`.
+That value is also the default export.
 
 ### `reporter(files[, options])`
 
-Generate a stylish report from the given [`vfile`][vfile], `Array<VFile>`,
-or `Error`.
+Create a report from an error, on file, or multiple files.
 
 ##### `options`
 
-###### `options.verbose`
-
-Output long form descriptions of messages, if applicable (`boolean`, default:
-`false`).
-
-###### `options.quiet`
-
-Do not output anything for a file which has no warnings or errors (`boolean`,
-default: `false`).
-The default behavior is to show a success message.
-
-###### `options.silent`
-
-Do not output messages without `fatal` set to true (`boolean`, default:
-`false`).
-Also sets `quiet` to `true`.
+Configuration (optional).
 
 ###### `options.color`
 
-Whether to use color (`boolean`, default: depends).
+Use ANSI colors in report (`boolean`, default: depends).
 The default behavior is the check if [color is supported][supports-color].
+
+###### `options.verbose`
+
+Show message [`note`][message-note]s (`boolean`, default: `false`).
+Notes are optional, additional, long descriptions.
+
+###### `options.quiet`
+
+Do not show files without messages (`boolean`, default: `false`).
+
+###### `options.silent`
+
+Show errors only (`boolean`, default: `false`).
+This does not show info and warning messages.
+Also sets `quiet` to `true`.
 
 ###### `options.defaultName`
 
-Label to use for files without file-path (`string`, default: `'<stdin>'`).
+Label to use for files without file path (`string`, default: `'<stdin>'`).
 If one file and no `defaultName` is given, no name will show up in the report.
+
+##### Returns
+
+`string`.
+
+## Types
+
+This package is fully typed with [TypeScript][].
+It exports the additional type `Options`.
+
+## Compatibility
+
+Projects maintained by the unified collective are compatible with all maintained
+versions of Node.js.
+As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
+Our projects sometimes work with older versions, but this is not guaranteed.
+
+## Security
+
+Use of `vfile-reporter` is safe.
 
 ## Related
 
 *   [`vfile-reporter-json`](https://github.com/vfile/vfile-reporter-json)
-    — JSON reporter
+    — create a JSON report
 *   [`vfile-reporter-pretty`](https://github.com/vfile/vfile-reporter-pretty)
-    — Pretty reporter
-*   [`convert-vinyl-to-vfile`](https://github.com/dustinspecker/convert-vinyl-to-vfile)
-    — Convert from [Vinyl][]
-*   [`vfile-statistics`](https://github.com/vfile/vfile-statistics)
-    — Count messages per category
-*   [`vfile-sort`](https://github.com/vfile/vfile-sort)
-    — Sort messages by line/column
+    — create a pretty report
+*   [`vfile-reporter-junit`](https://github.com/kellyselden/vfile-reporter-junit)
+    — create a jUnit report
+*   [`vfile-reporter-position`](https://github.com/Hocdoc/vfile-reporter-position)
+    — create a report with content excerpts
 
 ## Contribute
 
@@ -115,7 +164,7 @@ get started.
 See [`support.md`][support] for ways to get help.
 
 This project has a [code of conduct][coc].
-By interacting with this repository, organization, or community you agree to
+By interacting with this repository, organisation, or community you agree to
 abide by its terms.
 
 ## License
@@ -152,13 +201,19 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [npm]: https://docs.npmjs.com/cli/install
 
-[contributing]: https://github.com/vfile/.github/blob/HEAD/contributing.md
+[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
 
-[support]: https://github.com/vfile/.github/blob/HEAD/support.md
+[esmsh]: https://esm.sh
+
+[typescript]: https://www.typescriptlang.org
+
+[contributing]: https://github.com/vfile/.github/blob/main/contributing.md
+
+[support]: https://github.com/vfile/.github/blob/main/support.md
 
 [health]: https://github.com/vfile/.github
 
-[coc]: https://github.com/vfile/.github/blob/HEAD/code-of-conduct.md
+[coc]: https://github.com/vfile/.github/blob/main/code-of-conduct.md
 
 [license]: license
 
@@ -172,4 +227,4 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [supports-color]: https://github.com/chalk/supports-color
 
-[vinyl]: https://github.com/gulpjs/vinyl
+[message-note]: https://github.com/vfile/vfile-message#note

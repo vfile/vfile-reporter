@@ -33,7 +33,8 @@
   "type": "module",
   "main": "index.js",
   "browser": {
-    "./lib/color.js": "./lib/color.browser.js"
+    "./lib/color.js": "./lib/color.browser.js",
+    "./lib/platform.js": "./lib/platform.browser.js"
   },
   "types": "index.d.ts",
   "files": [
@@ -53,7 +54,7 @@
     "@types/tape": "^4.0.0",
     "c8": "^7.0.0",
     "cross-env": "^7.0.0",
-    "figures": "^4.0.0",
+    "figures": "^3.0.0",
     "prettier": "^2.0.0",
     "remark-cli": "^10.0.0",
     "remark-preset-wooorm": "^9.0.0",
@@ -82,10 +83,7 @@
     "trailingComma": "none"
   },
   "xo": {
-    "prettier": true,
-    "rules": {
-      "node/prefer-global/process": "off"
-    }
+    "prettier": true
   },
   "remarkConfig": {
     "plugins": [

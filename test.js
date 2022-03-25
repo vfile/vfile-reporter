@@ -6,6 +6,7 @@ import path from 'node:path'
 import test from 'tape'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
+// To do: <https://github.com/vfile/vfile-reporter/commit/a5ed7a0>
 import figures from 'figures'
 import reporterDefault, {reporter} from './index.js'
 

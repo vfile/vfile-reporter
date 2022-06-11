@@ -7,7 +7,7 @@
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
 
-[vfile][] utility to create a report from a file.
+[vfile][] utility to create a report.
 
 ![Example screenshot of vfile-reporter][screenshot]
 
@@ -38,6 +38,9 @@ bundlers (such as esbuild), have similar functionality.
 You can use this package whenever you want to display a report about what
 occurred while processing to a human.
 
+There are [other reporters][reporters] that display information differently
+listed in vfile.
+
 ## Install
 
 This package is [ESM only][esm].
@@ -63,7 +66,7 @@ In browsers with [`esm.sh`][esmsh]:
 
 ## Use
 
-Say `example.js` contains:
+Say our module `example.js` looks as follows:
 
 ```js
 import {VFile} from 'vfile'
@@ -77,7 +80,7 @@ one.message('Warning!', {line: 2, column: 4})
 console.error(reporter([one, two]))
 ```
 
-Now, running `node example` yields:
+…now running `node example.js` yields:
 
 ```txt
 test/fixture/1.js
@@ -95,7 +98,7 @@ That value is also the default export.
 
 ### `reporter(files[, options])`
 
-Create a report from an error, on file, or multiple files.
+Create a report from an error, one file, or multiple files.
 
 ##### `options`
 
@@ -104,7 +107,8 @@ Configuration (optional).
 ###### `options.color`
 
 Use ANSI colors in report (`boolean`, default: depends).
-The default behavior is the check if [color is supported][supports-color].
+The default behavior in Node.js is the check if [color is
+supported][supports-color].
 
 ###### `options.verbose`
 
@@ -128,7 +132,7 @@ If one file and no `defaultName` is given, no name will show up in the report.
 
 ##### Returns
 
-`string`.
+Report (`string`).
 
 ## Types
 
@@ -139,7 +143,7 @@ It exports the additional type `Options`.
 
 Projects maintained by the unified collective are compatible with all maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
+As of now, that is Node.js 12.20+, 14.14+, 16.0+, and 18.0+.
 Our projects sometimes work with older versions, but this is not guaranteed.
 
 ## Security
@@ -171,7 +175,7 @@ abide by its terms.
 
 [MIT][license] © [Titus Wormer][author]
 
-Forked from [ESLint][]’s stylish reporter
+Forked from [ESLint][]s stylish reporter
 (originally created by Sindre Sorhus), which is Copyright (c) 2013
 Nicholas C. Zakas, and licensed under MIT.
 
@@ -223,8 +227,10 @@ Nicholas C. Zakas, and licensed under MIT.
 
 [vfile]: https://github.com/vfile/vfile
 
-[screenshot]: ./screenshot.png
+[reporters]: https://github.com/vfile/vfile#reporters
 
 [supports-color]: https://github.com/chalk/supports-color
 
 [message-note]: https://github.com/vfile/vfile-message#note
+
+[screenshot]: screenshot.png

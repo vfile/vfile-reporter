@@ -1,13 +1,16 @@
-/**
- * @typedef {import('vfile-message').VFileMessage} VFileMessage
- */
-
 import path from 'node:path'
+import process from 'node:process'
 import test from 'tape'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
-import figures from 'figures'
 import reporterDefault, {reporter} from './index.js'
+
+// `log-symbols` without chalk, ignored for Windows:
+/* c8 ignore next 4 */
+const chars =
+  process.platform === 'win32'
+    ? {error: '×', warning: '‼'}
+    : {error: '✖', warning: '⚠'}
 
 /* eslint-disable no-undef */
 /** @type {Error} */
@@ -104,7 +107,7 @@ test('vfile-reporter', (t) => {
       '',
       'b.js: no issues found',
       '',
-      figures.warning + ' 1 warning'
+      chars.warning + ' 1 warning'
     ].join('\n'),
     'should work on files with warnings'
   )
@@ -123,7 +126,7 @@ test('vfile-reporter', (t) => {
       '',
       'b.js: no issues found',
       '',
-      figures.cross + ' 1 error'
+      chars.error + ' 1 error'
     ].join('\n'),
     'should work on files with errors'
   )
@@ -155,9 +158,9 @@ test('vfile-reporter', (t) => {
       '  1:1  info     Another note!',
       '',
       '6 messages (' +
-        figures.cross +
+        chars.error +
         ' 2 errors, ' +
-        figures.warning +
+        chars.warning +
         ' 3 warnings)'
     ].join('\n'),
     'should work on files with multiple mixed messages'
@@ -175,9 +178,9 @@ test('vfile-reporter', (t) => {
       '  1:1  info     Another note!',
       '',
       '6 messages (' +
-        figures.cross +
+        chars.error +
         ' 2 errors, ' +
-        figures.warning +
+        chars.warning +
         ' 3 warnings)'
     ].join('\n'),
     'should work on files with multiple mixed messages (w/o color)'
@@ -188,7 +191,7 @@ test('vfile-reporter', (t) => {
 
   t.equal(
     strip(reporter(file)),
-    '    warning  Warning!\n\n' + figures.warning + ' 1 warning',
+    '    warning  Warning!\n\n' + chars.warning + ' 1 warning',
     'should support a missing position'
   )
 
@@ -197,7 +200,7 @@ test('vfile-reporter', (t) => {
 
   t.equal(
     strip(reporter(file)),
-    ['  3:2  warning  Warning!', '', figures.warning + ' 1 warning'].join('\n'),
+    ['  3:2  warning  Warning!', '', chars.warning + ' 1 warning'].join('\n'),
     'should support a single point'
   )
 
@@ -209,7 +212,7 @@ test('vfile-reporter', (t) => {
 
   t.equal(
     strip(reporter(file)),
-    ['  3:2-4:8  warning  Warning!', '', figures.warning + ' 1 warning'].join(
+    ['  3:2-4:8  warning  Warning!', '', chars.warning + ' 1 warning'].join(
       '\n'
     ),
     'should support a location'
@@ -228,7 +231,7 @@ test('vfile-reporter', (t) => {
       'foo.bar',
       '  3:2-4:8  warning  Warning!',
       '',
-      figures.warning + ' 1 warning'
+      chars.warning + ' 1 warning'
     ].join('\n'),
     'should support a location (#2)'
   )
@@ -326,7 +329,7 @@ test('vfile-reporter', (t) => {
       '  1:1  warning  Whoops',
       'Lorem ipsum dolor sit amet.',
       '',
-      figures.warning + ' 2 warnings'
+      chars.warning + ' 2 warnings'
     ].join('\n'),
     'should support `note` in verbose mode'
   )
@@ -336,12 +339,9 @@ test('vfile-reporter', (t) => {
 
   t.equal(
     strip(reporter([file, new VFile({path: 'b.js'})], {quiet: true})),
-    [
-      'a.js',
-      '  1:1  warning  Warning!',
-      '',
-      figures.warning + ' 1 warning'
-    ].join('\n'),
+    ['a.js', '  1:1  warning  Warning!', '', chars.warning + ' 1 warning'].join(
+      '\n'
+    ),
     'should ignore successful files in `quiet` mode'
   )
 
@@ -356,7 +356,7 @@ test('vfile-reporter', (t) => {
 
   t.equal(
     strip(reporter([file, fileB], {silent: true})),
-    ['a.js', '  1:1  error  Error!', '', figures.cross + ' 1 error'].join('\n'),
+    ['a.js', '  1:1  error  Error!', '', chars.error + ' 1 error'].join('\n'),
     'should ignore non-failures in `silent` mode'
   )
 

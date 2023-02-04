@@ -1,6 +1,7 @@
+import assert from 'node:assert/strict'
 import path from 'node:path'
 import process from 'node:process'
-import test from 'tape'
+import test from 'node:test'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
 import reporterDefault, {reporter} from './index.js'
@@ -50,47 +51,44 @@ try {
 }
 /* eslint-enable no-undef */
 
-test('vfile-reporter', (t) => {
-  t.equal(
+test('vfile-reporter', () => {
+  assert.equal(
     reporter,
     reporterDefault,
     'should expose `reporter` as a named and a default export'
   )
 
-  /** @type {VFile} */
-  let file
+  assert.equal(reporter(), '', 'should return empty without a file')
 
-  t.equal(reporter(), '', 'should return empty without a file')
+  assert.equal(reporter([]), '', 'should return empty when not given files')
 
-  t.equal(reporter([]), '', 'should return empty when not given files')
+  assert.equal(reporter(exception), exception.stack, 'should support an error')
 
-  t.equal(reporter(exception), exception.stack, 'should support an error')
-
-  file = new VFile({path: 'a.js'})
+  let file = new VFile({path: 'a.js'})
 
   try {
     file.fail('Error!')
   } catch {}
 
-  t.equal(
+  assert.equal(
     reporter(file.messages[0]),
     'a.js:1:1: Error!',
     'should support a fatal message'
   )
 
-  t.equal(
+  assert.equal(
     strip(reporter(new VFile({path: 'a.js'}))),
     'a.js: no issues found',
     'should work on a single file'
   )
 
-  t.equal(
+  assert.equal(
     strip(reporter(new VFile())),
     'no issues found',
     'should work without file-paths'
   )
 
-  t.equal(
+  assert.equal(
     strip(reporter([new VFile({path: 'a.js'}), new VFile({path: 'b.js'})])),
     'a.js: no issues found\nb.js: no issues found',
     'should work on files without messages'
@@ -99,7 +97,7 @@ test('vfile-reporter', (t) => {
   file = new VFile({path: 'a.js'})
   file.message('Warning!')
 
-  t.equal(
+  assert.equal(
     strip(reporter([file, new VFile({path: 'b.js'})])),
     [
       'a.js',
@@ -118,7 +116,7 @@ test('vfile-reporter', (t) => {
     file.fail('Error!')
   } catch {}
 
-  t.equal(
+  assert.equal(
     strip(reporter([file, new VFile({path: 'b.js'})])),
     [
       'a.js',
@@ -146,7 +144,7 @@ test('vfile-reporter', (t) => {
     file.fail('Another error!')
   } catch {}
 
-  t.equal(
+  assert.equal(
     strip(reporter(file)),
     [
       'a.js',
@@ -166,7 +164,7 @@ test('vfile-reporter', (t) => {
     'should work on files with multiple mixed messages'
   )
 
-  t.equal(
+  assert.equal(
     reporter(file, {color: false}),
     [
       'a.js',
@@ -189,7 +187,7 @@ test('vfile-reporter', (t) => {
   file = new VFile()
   Object.assign(file.message('Warning!'), {position: null})
 
-  t.equal(
+  assert.equal(
     strip(reporter(file)),
     '    warning  Warning!\n\n' + chars.warning + ' 1 warning',
     'should support a missing position'
@@ -198,7 +196,7 @@ test('vfile-reporter', (t) => {
   file = new VFile()
   file.message('Warning!', {line: 3, column: 2})
 
-  t.equal(
+  assert.equal(
     strip(reporter(file)),
     ['  3:2  warning  Warning!', '', chars.warning + ' 1 warning'].join('\n'),
     'should support a single point'
@@ -210,7 +208,7 @@ test('vfile-reporter', (t) => {
     end: {line: 4, column: 8}
   })
 
-  t.equal(
+  assert.equal(
     strip(reporter(file)),
     ['  3:2-4:8  warning  Warning!', '', chars.warning + ' 1 warning'].join(
       '\n'
@@ -225,7 +223,7 @@ test('vfile-reporter', (t) => {
   })
   file.basename = 'foo.bar'
 
-  t.equal(
+  assert.equal(
     strip(reporter(file)),
     [
       'foo.bar',
@@ -242,7 +240,7 @@ test('vfile-reporter', (t) => {
     file.fail(exception)
   } catch {}
 
-  t.equal(
+  assert.equal(
     cleanStack(strip(reporter(file)), 3),
     [
       'test.js',
@@ -258,7 +256,7 @@ test('vfile-reporter', (t) => {
     file.fail(exception, undefined, 'foo:bar')
   } catch {}
 
-  t.equal(
+  assert.equal(
     cleanStack(strip(reporter(file)), 3),
     [
       'test.js',
@@ -274,7 +272,7 @@ test('vfile-reporter', (t) => {
     file.fail(changedMessage)
   } catch {}
 
-  t.equal(
+  assert.equal(
     cleanStack(strip(reporter(file)), 3),
     'test.js\n  1:1  error  ReferenceError: foo\n    at test.js:1:1',
     'should support a “real” error with a changed message'
@@ -286,7 +284,7 @@ test('vfile-reporter', (t) => {
     file.fail(multilineException)
   } catch {}
 
-  t.equal(
+  assert.equal(
     cleanStack(strip(reporter(file)), 5),
     [
       'test.js',
@@ -304,7 +302,7 @@ test('vfile-reporter', (t) => {
     file.fail(multilineException, undefined, 'alpha:bravo')
   } catch {}
 
-  t.equal(
+  assert.equal(
     cleanStack(strip(reporter(file)), 5),
     [
       'test.js',
@@ -321,7 +319,7 @@ test('vfile-reporter', (t) => {
   warning.note = 'Lorem ipsum dolor sit amet.'
   file.message('...and some more warnings')
 
-  t.equal(
+  assert.equal(
     strip(reporter(file, {verbose: true})),
     [
       'a.js',
@@ -337,7 +335,7 @@ test('vfile-reporter', (t) => {
   file = new VFile({path: 'a.js'})
   file.message('Warning!')
 
-  t.equal(
+  assert.equal(
     strip(reporter([file, new VFile({path: 'b.js'})], {quiet: true})),
     ['a.js', '  1:1  warning  Warning!', '', chars.warning + ' 1 warning'].join(
       '\n'
@@ -354,7 +352,7 @@ test('vfile-reporter', (t) => {
 
   fileB.message('Warning!')
 
-  t.equal(
+  assert.equal(
     strip(reporter([file, fileB], {silent: true})),
     ['a.js', '  1:1  error  Error!', '', chars.error + ' 1 error'].join('\n'),
     'should ignore non-failures in `silent` mode'
@@ -363,7 +361,7 @@ test('vfile-reporter', (t) => {
   file = new VFile({path: 'a.js'})
   file.stem = 'b'
 
-  t.equal(
+  assert.equal(
     strip(reporter(file)),
     'a.js: no issues found',
     'should support `history`'
@@ -372,9 +370,13 @@ test('vfile-reporter', (t) => {
   file = new VFile({path: 'a.js'})
   file.stored = true
 
-  t.equal(strip(reporter(file)), 'a.js: written', 'should support `stored`')
+  assert.equal(
+    strip(reporter(file)),
+    'a.js: written',
+    'should support `stored`'
+  )
 
-  t.equal(
+  assert.equal(
     reporter(file, {color: false}),
     'a.js: written',
     'should support `stored` (w/o color)'
@@ -384,29 +386,27 @@ test('vfile-reporter', (t) => {
   file.stem = 'b'
   file.stored = true
 
-  t.equal(
+  assert.equal(
     strip(reporter(file)),
     'a.js > b.js: written',
     'should expose the stored file-path'
   )
 
-  t.equal(
+  assert.equal(
     reporter(new VFile({path: 'a.js'}), {color: true}),
     '\u001B[4m\u001B[32ma.js\u001B[39m\u001B[24m: no issues found',
     'should support `color: true`'
   )
 
-  t.equal(
+  assert.equal(
     reporter(new VFile({path: 'a.js'}), {color: false}),
     'a.js: no issues found',
     'should support `color: false`'
   )
-
-  t.end()
 })
 
 /**
- * @param {string|undefined} stack
+ * @param {string | undefined} stack
  * @param {number} max
  */
 function cleanStack(stack, max) {

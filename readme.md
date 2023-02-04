@@ -19,6 +19,7 @@
 *   [Use](#use)
 *   [API](#api)
     *   [`reporter(files[, options])`](#reporterfiles-options)
+    *   [`Options`](#options)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
 *   [Security](#security)
@@ -44,7 +45,7 @@ listed in vfile.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
+In Node.js (version 14.14+ and 16.0+), install with [npm][]:
 
 ```sh
 npm install vfile-reporter
@@ -93,57 +94,55 @@ test/fixture/2.js: no issues found
 
 ## API
 
-This package exports the identifier `reporter`.
-That value is also the default export.
+This package exports the identifier [`reporter`][api-reporter].
+That value is also the `default` export.
 
 ### `reporter(files[, options])`
 
 Create a report from an error, one file, or multiple files.
 
-##### `options`
+###### Parameters
 
-Configuration (optional).
+*   `files` ([`VFile`][vfile], `Array<VFile>`, or `Error`)
+    — files or error to report
+*   `options` ([`Options`][api-options], optional)
+    — configuration
 
-###### `options.color`
-
-Use ANSI colors in report (`boolean`, default: depends).
-The default behavior in Node.js is the check if [color is
-supported][supports-color].
-
-###### `options.verbose`
-
-Show message [`note`][message-note]s (`boolean`, default: `false`).
-Notes are optional, additional, long descriptions.
-
-###### `options.quiet`
-
-Do not show files without messages (`boolean`, default: `false`).
-
-###### `options.silent`
-
-Show errors only (`boolean`, default: `false`).
-This does not show info and warning messages.
-Also sets `quiet` to `true`.
-
-###### `options.defaultName`
-
-Label to use for files without file path (`string`, default: `'<stdin>'`).
-If one file and no `defaultName` is given, no name will show up in the report.
-
-##### Returns
+###### Returns
 
 Report (`string`).
+
+### `Options`
+
+Configuration (TypeScript type).
+
+###### Fields
+
+*   `color` (`boolean`, default: depends)
+    — use ANSI colors in report, the default behavior in Node.js is the check
+    if [color is supported][supports-color]
+*   `verbose` (`boolean`, default: `false`)
+    — show message [`note`][message-note]s, notes are optional, additional,
+    long descriptions
+*   `quiet` (`boolean`, default: `false`)
+    — do not show files without messages
+*   `silent` (`boolean`, default: `false`)
+    — show errors only, this hides info and warning messages, and sets
+    `quiet: true`
+*   `defaultName` (`string`, default: `'<stdin>'`).
+    — label to use for files without file path, if one file and no
+    `defaultName` is given, no name will show up in the report
 
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional type `Options`.
+It exports the additional type [`Options`][api-options].
 
 ## Compatibility
 
 Projects maintained by the unified collective are compatible with all maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, 16.0+, and 18.0+.
+As of now, that is Node.js 14.14+ and 16.0+.
 Our projects sometimes work with older versions, but this is not guaranteed.
 
 ## Security
@@ -234,3 +233,7 @@ Nicholas C. Zakas, and licensed under MIT.
 [message-note]: https://github.com/vfile/vfile-message#note
 
 [screenshot]: screenshot.png
+
+[api-reporter]: #reporterfiles-options
+
+[api-options]: #options

@@ -4,7 +4,8 @@ import process from 'node:process'
 import test from 'node:test'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
-import reporterDefault, {reporter} from './index.js'
+import {reporter} from './index.js'
+import * as mod from './index.js'
 
 // `log-symbols` without chalk, ignored for Windows:
 /* c8 ignore next 4 */
@@ -51,10 +52,16 @@ try {
 }
 /* eslint-enable no-undef */
 
-test('vfile-reporter', () => {
+test('reporter', () => {
+  assert.deepEqual(
+    Object.keys(mod).sort(),
+    ['default', 'reporter'],
+    'should expose the public api'
+  )
+
   assert.equal(
-    reporter,
-    reporterDefault,
+    mod.reporter,
+    mod.default,
     'should expose `reporter` as a named and a default export'
   )
 

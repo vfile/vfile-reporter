@@ -57,22 +57,24 @@ test('reporter', async function () {
     'should expose `reporter` as a named and a default export'
   )
 
-  assert.equal(reporter(), '', 'should return empty without a file')
-
   assert.equal(reporter([]), '', 'should return empty when not given files')
 
-  assert.equal(reporter(exception), exception.stack, 'should support an error')
+  assert.throws(
+    function () {
+      // @ts-expect-error: Removed support for passing nullish, which used to be supported.
+      reporter()
+    },
+    /Unexpected value for `files`, expected one or more `VFile`s/,
+    'should display a runtime error when an error is passed'
+  )
 
-  let file = new VFile({path: 'a.js'})
-
-  try {
-    file.fail('Error!')
-  } catch {}
-
-  assert.equal(
-    reporter(file.messages[0]),
-    'a.js:1:1: Error!',
-    'should support a fatal message'
+  assert.throws(
+    function () {
+      // @ts-expect-error: Removed support for passing an error, which used to be supported.
+      reporter(exception)
+    },
+    /Unexpected value for `files`, expected one or more `VFile`s/,
+    'should display a runtime error when an error is passed'
   )
 
   assert.equal(
@@ -93,7 +95,7 @@ test('reporter', async function () {
     'should work on files without messages'
   )
 
-  file = new VFile({path: 'a.js'})
+  let file = new VFile({path: 'a.js'})
   file.message('Warning!')
 
   assert.equal(

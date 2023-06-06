@@ -100,12 +100,12 @@ That value is also the `default` export.
 
 ### `reporter(files[, options])`
 
-Create a report from an error, one file, or multiple files.
+Create a report from one or more files.
 
 ###### Parameters
 
-*   `files` ([`Array<VFile>`][vfile], `VFile`, or `Error`, optional)
-    — files or error to report
+*   `files` ([`Array<VFile>`][vfile] or `VFile`)
+    — files to report
 *   `options` ([`Options`][api-options], optional)
     — configuration
 

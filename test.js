@@ -1,16 +1,8 @@
 import assert from 'node:assert/strict'
-import process from 'node:process'
 import test from 'node:test'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
 import {reporter} from './index.js'
-
-// `log-symbols` without chalk, ignored for Windows:
-/* c8 ignore next 4 */
-const chars =
-  process.platform === 'win32'
-    ? {error: '×', warning: '‼'}
-    : {error: '✖', warning: '⚠'}
 
 /* eslint-disable no-undef */
 /** @type {Error} */
@@ -112,7 +104,7 @@ test('reporter', async function () {
       '',
       'b.js: no issues found',
       '',
-      chars.warning + ' 1 warning'
+      '⚠ 1 warning'
     ].join('\n'),
     'should work on files with warnings'
   )
@@ -131,7 +123,7 @@ test('reporter', async function () {
       '',
       'b.js: no issues found',
       '',
-      chars.error + ' 1 error'
+      '✖ 1 error'
     ].join('\n'),
     'should work on files with errors'
   )
@@ -162,11 +154,7 @@ test('reporter', async function () {
       '  1:1  warning  Warning!',
       '  1:1  info     Another note!',
       '',
-      '6 messages (' +
-        chars.error +
-        ' 2 errors, ' +
-        chars.warning +
-        ' 3 warnings)'
+      '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
     'should work on files with multiple mixed messages'
   )
@@ -182,11 +170,7 @@ test('reporter', async function () {
       '  1:1  warning  Warning!',
       '  1:1  info     Another note!',
       '',
-      '6 messages (' +
-        chars.error +
-        ' 2 errors, ' +
-        chars.warning +
-        ' 3 warnings)'
+      '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
     'should work on files with multiple mixed messages (w/o color)'
   )
@@ -196,7 +180,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    '    warning  Warning!\n\n' + chars.warning + ' 1 warning',
+    '    warning  Warning!\n\n⚠ 1 warning',
     'should support a missing position'
   )
 
@@ -205,7 +189,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    ['  3:2  warning  Warning!', '', chars.warning + ' 1 warning'].join('\n'),
+    ['  3:2  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
     'should support a single point'
   )
 
@@ -217,9 +201,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    ['  3:2-4:8  warning  Warning!', '', chars.warning + ' 1 warning'].join(
-      '\n'
-    ),
+    ['  3:2-4:8  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
     'should support a location'
   )
 
@@ -232,12 +214,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    [
-      'foo.bar',
-      '  3:2-4:8  warning  Warning!',
-      '',
-      chars.warning + ' 1 warning'
-    ].join('\n'),
+    ['foo.bar', '  3:2-4:8  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
     'should support a location (#2)'
   )
 
@@ -334,7 +311,7 @@ test('reporter', async function () {
       '  1:1  warning  Whoops',
       'Lorem ipsum dolor sit amet.',
       '',
-      chars.warning + ' 2 warnings'
+      '⚠ 2 warnings'
     ].join('\n'),
     'should support `note` in verbose mode'
   )
@@ -344,9 +321,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter([file, new VFile({path: 'b.js'})], {quiet: true})),
-    ['a.js', '  1:1  warning  Warning!', '', chars.warning + ' 1 warning'].join(
-      '\n'
-    ),
+    ['a.js', '  1:1  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
     'should ignore successful files in `quiet` mode'
   )
 
@@ -361,7 +336,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter([file, fileB], {silent: true})),
-    ['a.js', '  1:1  error  Error!', '', chars.error + ' 1 error'].join('\n'),
+    ['a.js', '  1:1  error  Error!', '', '✖ 1 error'].join('\n'),
     'should ignore non-failures in `silent` mode'
   )
 

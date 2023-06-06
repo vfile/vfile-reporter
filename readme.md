@@ -3,6 +3,7 @@
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
 [![Downloads][downloads-badge]][downloads]
+[![Size][size-badge]][size]
 [![Sponsors][sponsors-badge]][collective]
 [![Backers][backers-badge]][collective]
 [![Chat][chat-badge]][chat]
@@ -29,7 +30,7 @@
 
 ## What is this?
 
-This package create a textual report from a file showing the warnings that
+This package create a textual report from files showing the warnings that
 occurred while processing.
 Many CLIs of tools that process files, whether linters (such as ESLint) or
 bundlers (such as esbuild), have similar functionality.
@@ -45,7 +46,7 @@ listed in vfile.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+ and 16.0+), install with [npm][]:
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install vfile-reporter
@@ -103,7 +104,7 @@ Create a report from an error, one file, or multiple files.
 
 ###### Parameters
 
-*   `files` ([`VFile`][vfile], `Array<VFile>`, or `Error`)
+*   `files` ([`Array<VFile>`][vfile], `VFile`, or `Error`, optional)
     — files or error to report
 *   `options` ([`Options`][api-options], optional)
     — configuration
@@ -118,20 +119,20 @@ Configuration (TypeScript type).
 
 ###### Fields
 
-*   `color` (`boolean`, default: depends)
-    — use ANSI colors in report, the default behavior in Node.js is the check
-    if [color is supported][supports-color]
+*   `color` (`boolean`, default: default: `true` when in Node.js and
+    [color is supported][supports-color], or `false`)
+    — use ANSI colors in report
 *   `verbose` (`boolean`, default: `false`)
-    — show message [`note`][message-note]s, notes are optional, additional,
+    — show message [`note`][message-note]s; notes are optional, additional,
     long descriptions
 *   `quiet` (`boolean`, default: `false`)
     — do not show files without messages
 *   `silent` (`boolean`, default: `false`)
-    — show errors only, this hides info and warning messages, and sets
+    — show errors only; this hides info and warning messages, and sets
     `quiet: true`
-*   `defaultName` (`string`, default: `'<stdin>'`).
-    — label to use for files without file path, if one file and no
-    `defaultName` is given, no name will show up in the report
+*   `defaultName` (`string`, default: `'<stdin>'`)
+    — Label to use for files without file path; if one file and no `defaultName`
+    is given, no name will show up in the report
 
 ## Types
 
@@ -140,10 +141,13 @@ It exports the additional type [`Options`][api-options].
 
 ## Compatibility
 
-Projects maintained by the unified collective are compatible with all maintained
+Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
-As of now, that is Node.js 14.14+ and 16.0+.
-Our projects sometimes work with older versions, but this is not guaranteed.
+
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `vfile-reporter@^7`,
+compatible with Node.js 12.
 
 ## Security
 
@@ -191,6 +195,10 @@ Nicholas C. Zakas, and licensed under MIT.
 [downloads-badge]: https://img.shields.io/npm/dm/vfile-reporter.svg
 
 [downloads]: https://www.npmjs.com/package/vfile-reporter
+
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=vfile-reporter
+
+[size]: https://bundlejs.com/?q=vfile-reporter
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 

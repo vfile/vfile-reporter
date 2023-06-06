@@ -1,11 +1,9 @@
 import assert from 'node:assert/strict'
-import path from 'node:path'
 import process from 'node:process'
 import test from 'node:test'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
 import {reporter} from './index.js'
-import * as mod from './index.js'
 
 // `log-symbols` without chalk, ignored for Windows:
 /* c8 ignore next 4 */
@@ -52,7 +50,9 @@ try {
 }
 /* eslint-enable no-undef */
 
-test('reporter', () => {
+test('reporter', async function () {
+  const mod = await import('./index.js')
+
   assert.deepEqual(
     Object.keys(mod).sort(),
     ['default', 'reporter'],
@@ -418,7 +418,7 @@ test('reporter', () => {
  */
 function cleanStack(stack, max) {
   return (stack || '')
-    .replace(new RegExp('\\(.+\\' + path.sep, 'g'), '(')
+    .replace(/\(.+[/\\]/g, '(')
     .replace(/file:.+\//g, '')
     .replace(/\d+:\d+/g, '1:1')
     .split('\n')

@@ -102,7 +102,7 @@ test('reporter', async function () {
     strip(reporter([file, new VFile({path: 'b.js'})])),
     [
       'a.js',
-      '  1:1  warning  Warning!',
+      '    warning  Warning!',
       '',
       'b.js: no issues found',
       '',
@@ -121,7 +121,7 @@ test('reporter', async function () {
     strip(reporter([file, new VFile({path: 'b.js'})])),
     [
       'a.js',
-      '  1:1  error  Error!',
+      '    error  Error!',
       '',
       'b.js: no issues found',
       '',
@@ -149,12 +149,12 @@ test('reporter', async function () {
     strip(reporter(file)),
     [
       'a.js',
-      '  1:1  error    Another error!',
-      '  1:1  error    Error!',
-      '  1:1  warning  Another warning!',
-      '  1:1  warning  Note!',
-      '  1:1  warning  Warning!',
-      '  1:1  info     Another note!',
+      '    error    Another error!',
+      '    error    Error!',
+      '    warning  Another warning!',
+      '    warning  Note!',
+      '    warning  Warning!',
+      '    info     Another note!',
       '',
       '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
@@ -165,12 +165,12 @@ test('reporter', async function () {
     reporter(file, {color: false}),
     [
       'a.js',
-      '  1:1  error    Another error!',
-      '  1:1  error    Error!',
-      '  1:1  warning  Another warning!',
-      '  1:1  warning  Note!',
-      '  1:1  warning  Warning!',
-      '  1:1  info     Another note!',
+      '    error    Another error!',
+      '    error    Error!',
+      '    warning  Another warning!',
+      '    warning  Note!',
+      '    warning  Warning!',
+      '    info     Another note!',
       '',
       '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
@@ -230,7 +230,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 3),
     [
       'test.js',
-      '  1:1  error  ReferenceError: variable is not defined',
+      '    error  ReferenceError: variable is not defined',
       '    at test.js:1:1'
     ].join('\n'),
     'should support a “real” error (show a stack)'
@@ -246,7 +246,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 3),
     [
       'test.js',
-      '  1:1  error  ReferenceError: variable is not defined  bar  foo',
+      '    error  ReferenceError: variable is not defined  bar  foo',
       '    at test.js:1:1'
     ].join('\n'),
     'should properly align a real error with a source'
@@ -260,7 +260,7 @@ test('reporter', async function () {
 
   assert.equal(
     cleanStack(strip(reporter(file)), 3),
-    'test.js\n  1:1  error  ReferenceError: foo\n    at test.js:1:1',
+    'test.js\n    error  ReferenceError: foo\n    at test.js:1:1',
     'should support a “real” error with a changed message'
   )
 
@@ -274,7 +274,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 5),
     [
       'test.js',
-      '  1:1  error  ReferenceError: foo',
+      '    error  ReferenceError: foo',
       'bar',
       'baz',
       '    at test.js:1:1'
@@ -292,7 +292,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 5),
     [
       'test.js',
-      '  1:1  error  ReferenceError: foo  bravo  alpha',
+      '    error  ReferenceError: foo  bravo  alpha',
       'bar',
       'baz',
       '    at test.js:1:1'
@@ -309,8 +309,8 @@ test('reporter', async function () {
     strip(reporter(file, {verbose: true})),
     [
       'a.js',
-      '  1:1  warning  ...and some more warnings',
-      '  1:1  warning  Whoops',
+      '    warning  ...and some more warnings',
+      '    warning  Whoops',
       'Lorem ipsum dolor sit amet.',
       '',
       '⚠ 2 warnings'
@@ -323,7 +323,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter([file, new VFile({path: 'b.js'})], {quiet: true})),
-    ['a.js', '  1:1  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    ['a.js', '    warning  Warning!', '', '⚠ 1 warning'].join('\n'),
     'should ignore successful files in `quiet` mode'
   )
 
@@ -338,7 +338,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter([file, fileB], {silent: true})),
-    ['a.js', '  1:1  error  Error!', '', '✖ 1 error'].join('\n'),
+    ['a.js', '    error  Error!', '', '✖ 1 error'].join('\n'),
     'should ignore non-failures in `silent` mode'
   )
 

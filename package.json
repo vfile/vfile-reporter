@@ -47,10 +47,10 @@
     "string-width": "^6.0.0",
     "supports-color": "^9.0.0",
     "unist-util-stringify-position": "^3.0.0",
-    "vfile": "^5.0.0",
-    "vfile-message": "^3.0.0",
-    "vfile-sort": "^3.0.0",
-    "vfile-statistics": "^2.0.0"
+    "vfile": "^6.0.0",
+    "vfile-message": "^4.0.0",
+    "vfile-sort": "^4.0.0",
+    "vfile-statistics": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

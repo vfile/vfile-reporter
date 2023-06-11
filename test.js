@@ -387,6 +387,18 @@ test('reporter', async function () {
     'a.js: no issues found',
     'should support `color: false`'
   )
+
+  assert.equal(
+    strip(reporter(new VFile(), {defaultName: '<unknown>'})),
+    '<unknown>: no issues found',
+    'should support `defaultName`'
+  )
+
+  assert.equal(
+    strip(reporter([new VFile()])),
+    '<stdin>: no issues found',
+    'should use `<stdin>` for files w/o path if multiple are given'
+  )
 })
 
 /**

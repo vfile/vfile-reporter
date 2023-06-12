@@ -442,6 +442,12 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
+    '    warning  x\n\n⚠ 1 warning',
+    'should not show `message.ancestors` in normal mode'
+  )
+
+  assert.equal(
+    strip(reporter(file, {verbose: true})),
     [
       '    warning  x',
       '  [trace]:',
@@ -452,11 +458,11 @@ test('reporter', async function () {
       '',
       '⚠ 1 warning'
     ].join('\n'),
-    'should support `message.ancestors`'
+    'should support `message.ancestors` in verbose mode'
   )
 
   assert.equal(
-    strip(reporter(file, {traceLimit: 2})),
+    strip(reporter(file, {verbose: true, traceLimit: 2})),
     [
       '    warning  x',
       '  [trace]:',

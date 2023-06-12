@@ -1,3 +1,11 @@
+/**
+ * @typedef {import('hast').Element} Element
+ * @typedef {import('hast').Root} Root
+ * @typedef {import('hast').Text} Text
+ * @typedef {import('mdast-util-mdx-jsx').MdxJsxTextElementHast} MdxJsxTextElementHast
+ *
+ */
+
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import strip from 'strip-ansi'
@@ -398,6 +406,84 @@ test('reporter', async function () {
     strip(reporter([new VFile()])),
     '<stdin>: no issues found',
     'should use `<stdin>` for files w/o path if multiple are given'
+  )
+
+  assert.equal(
+    strip(reporter([new VFile()])),
+    '<stdin>: no issues found',
+    'should use `<stdin>` for files w/o path if multiple are given'
+  )
+
+  file = new VFile()
+  file.message('Something failed terribly', {cause: exception})
+
+  assert.equal(
+    strip(reporter(file)),
+    [
+      '    warning  Something failed terribly',
+      '  [cause]:',
+      '    ReferenceError: variable is not defined',
+      '    at test.js:1:1',
+      '    at ModuleJob.run (module_job:1:1)',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a `message.cause`'
+  )
+
+  /** @type {Text} */
+  const text = {type: 'text', value: 'a'}
+  /** @type {MdxJsxTextElementHast} */
+  const jsx = {
+    type: 'mdxJsxTextElement',
+    name: 'b',
+    attributes: [],
+    children: [text]
+  }
+  /** @type {Element} */
+  const element = {
+    type: 'element',
+    tagName: 'p',
+    properties: {},
+    children: [jsx],
+    position: {start: {line: 1, column: 1}, end: {line: 1, column: 9}}
+  }
+  /** @type {Root} */
+  const root = {
+    type: 'root',
+    children: [element],
+    position: {start: {line: 1, column: 1}, end: {line: 1, column: 9}}
+  }
+
+  file = new VFile()
+  file.message('x', {ancestors: [root, element, jsx, text]})
+
+  assert.equal(
+    strip(reporter(file)),
+    [
+      '    warning  x',
+      '  [trace]:',
+      '    at text',
+      '    at mdxJsxTextElement<b>',
+      '    at element<p> (1:1-1:9)',
+      '    at root (1:1-1:9)',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support `message.ancestors`'
+  )
+
+  assert.equal(
+    strip(reporter(file, {traceLimit: 2})),
+    [
+      '    warning  x',
+      '  [trace]:',
+      '    at text',
+      '    at mdxJsxTextElement<b>',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support `options.traceLimit`'
   )
 })
 

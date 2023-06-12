@@ -53,9 +53,11 @@
     "vfile-statistics": "^3.0.0"
   },
   "devDependencies": {
+    "@types/hast": "^2.0.0",
     "@types/node": "^20.0.0",
     "c8": "^7.0.0",
     "cross-env": "^7.0.0",
+    "mdast-util-mdx-jsx": "^2.0.0",
     "prettier": "^2.0.0",
     "remark-cli": "^11.0.0",
     "remark-preset-wooorm": "^9.0.0",

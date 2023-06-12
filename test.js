@@ -110,7 +110,7 @@ test('reporter', async function () {
     strip(reporter([file, new VFile({path: 'b.js'})])),
     [
       'a.js',
-      '    warning  Warning!',
+      ' warning Warning!',
       '',
       'b.js: no issues found',
       '',
@@ -129,7 +129,7 @@ test('reporter', async function () {
     strip(reporter([file, new VFile({path: 'b.js'})])),
     [
       'a.js',
-      '    error  Error!',
+      ' error Error!',
       '',
       'b.js: no issues found',
       '',
@@ -157,12 +157,12 @@ test('reporter', async function () {
     strip(reporter(file)),
     [
       'a.js',
-      '    error    Another error!',
-      '    error    Error!',
-      '    warning  Another warning!',
-      '    warning  Note!',
-      '    warning  Warning!',
-      '    info     Another note!',
+      ' error   Another error!',
+      ' error   Error!',
+      ' warning Another warning!',
+      ' warning Note!',
+      ' warning Warning!',
+      ' info    Another note!',
       '',
       '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
@@ -173,12 +173,12 @@ test('reporter', async function () {
     reporter(file, {color: false}),
     [
       'a.js',
-      '    error    Another error!',
-      '    error    Error!',
-      '    warning  Another warning!',
-      '    warning  Note!',
-      '    warning  Warning!',
-      '    info     Another note!',
+      ' error   Another error!',
+      ' error   Error!',
+      ' warning Another warning!',
+      ' warning Note!',
+      ' warning Warning!',
+      ' info    Another note!',
       '',
       '6 messages (✖ 2 errors, ⚠ 3 warnings)'
     ].join('\n'),
@@ -190,7 +190,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    '    warning  Warning!\n\n⚠ 1 warning',
+    ' warning Warning!\n\n⚠ 1 warning',
     'should support a missing position'
   )
 
@@ -199,7 +199,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    ['  3:2  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    ['3:2 warning Warning!', '', '⚠ 1 warning'].join('\n'),
     'should support a single point'
   )
 
@@ -211,7 +211,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    ['  3:2-4:8  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    ['3:2-4:8 warning Warning!', '', '⚠ 1 warning'].join('\n'),
     'should support a location'
   )
 
@@ -224,7 +224,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    ['foo.bar', '  3:2-4:8  warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    ['foo.bar', '3:2-4:8 warning Warning!', '', '⚠ 1 warning'].join('\n'),
     'should support a location (#2)'
   )
 
@@ -238,7 +238,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 3),
     [
       'test.js',
-      '    error  ReferenceError: variable is not defined',
+      ' error ReferenceError: variable is not defined',
       '    at test.js:1:1'
     ].join('\n'),
     'should support a “real” error (show a stack)'
@@ -254,7 +254,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 3),
     [
       'test.js',
-      '    error  ReferenceError: variable is not defined  bar  foo',
+      ' error ReferenceError: variable is not defined bar foo',
       '    at test.js:1:1'
     ].join('\n'),
     'should properly align a real error with a source'
@@ -268,7 +268,7 @@ test('reporter', async function () {
 
   assert.equal(
     cleanStack(strip(reporter(file)), 3),
-    'test.js\n    error  ReferenceError: foo\n    at test.js:1:1',
+    'test.js\n error ReferenceError: foo\n    at test.js:1:1',
     'should support a “real” error with a changed message'
   )
 
@@ -282,7 +282,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 5),
     [
       'test.js',
-      '    error  ReferenceError: foo',
+      ' error ReferenceError: foo',
       'bar',
       'baz',
       '    at test.js:1:1'
@@ -300,7 +300,7 @@ test('reporter', async function () {
     cleanStack(strip(reporter(file)), 5),
     [
       'test.js',
-      '    error  ReferenceError: foo  bravo  alpha',
+      ' error ReferenceError: foo bravo alpha',
       'bar',
       'baz',
       '    at test.js:1:1'
@@ -313,7 +313,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter([file, new VFile({path: 'b.js'})], {quiet: true})),
-    ['a.js', '    warning  Warning!', '', '⚠ 1 warning'].join('\n'),
+    ['a.js', ' warning Warning!', '', '⚠ 1 warning'].join('\n'),
     'should ignore successful files in `quiet` mode'
   )
 
@@ -328,7 +328,7 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter([file, fileB], {silent: true})),
-    ['a.js', '    error  Error!', '', '✖ 1 error'].join('\n'),
+    ['a.js', ' error Error!', '', '✖ 1 error'].join('\n'),
     'should ignore non-failures in `silent` mode'
   )
 
@@ -402,7 +402,7 @@ test('reporter', async function () {
   assert.equal(
     strip(reporter(file)),
     [
-      '    warning  Something failed terribly',
+      ' warning Something failed terribly',
       '  [cause]:',
       '    ReferenceError: variable is not defined',
       '    at test.js:1:1',
@@ -442,14 +442,14 @@ test('reporter', async function () {
 
   assert.equal(
     strip(reporter(file)),
-    '    warning  x\n\n⚠ 1 warning',
+    ' warning x\n\n⚠ 1 warning',
     'should not show `message.ancestors` in normal mode'
   )
 
   assert.equal(
     strip(reporter(file, {verbose: true})),
     [
-      '    warning  x',
+      ' warning x',
       '  [trace]:',
       '    at text',
       '    at mdxJsxTextElement<b>',
@@ -464,7 +464,7 @@ test('reporter', async function () {
   assert.equal(
     strip(reporter(file, {verbose: true, traceLimit: 2})),
     [
-      '    warning  x',
+      ' warning x',
       '  [trace]:',
       '    at text',
       '    at mdxJsxTextElement<b>',
@@ -480,7 +480,7 @@ test('reporter', async function () {
   assert.equal(
     strip(reporter(file, {verbose: true})),
     [
-      '    warning  Alpha',
+      ' warning Alpha',
       '  [note]:',
       '    Bravo',
       '    charlie.',
@@ -496,13 +496,22 @@ test('reporter', async function () {
   assert.equal(
     strip(reporter(file, {verbose: true})),
     [
-      '    warning  Alpha',
+      ' warning Alpha',
       '  [url]:',
       '    https://example.com',
       '',
       '⚠ 1 warning'
     ].join('\n'),
     'should support `message.url` in verbose mode'
+  )
+
+  file = new VFile()
+  file.message('a `b` c `` d `` e `` f ` g `` h ```')
+
+  assert.equal(
+    reporter(file),
+    ' \u001B[33mwarning\u001B[39m \u001B[1ma \u001B[36m`b`\u001B[39m c \u001B[36m`` d ``\u001B[39m e \u001B[36m`` f ` g ``\u001B[39m h ```\u001B[22m\n\n\u001B[33m⚠\u001B[39m 1 warning',
+    'should highlight markdown code in message reasons'
   )
 })
 

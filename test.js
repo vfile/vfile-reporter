@@ -319,7 +319,8 @@ test('reporter', async function () {
       'a.js',
       '    warning  ...and some more warnings',
       '    warning  Whoops',
-      'Lorem ipsum dolor sit amet.',
+      '  [note]:',
+      '    Lorem ipsum dolor sit amet.',
       '',
       '⚠ 2 warnings'
     ].join('\n'),

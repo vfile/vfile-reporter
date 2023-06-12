@@ -309,25 +309,6 @@ test('reporter', async function () {
   )
 
   file = new VFile({path: 'a.js'})
-  const warning = file.message('Whoops')
-  warning.note = 'Lorem ipsum dolor sit amet.'
-  file.message('...and some more warnings')
-
-  assert.equal(
-    strip(reporter(file, {verbose: true})),
-    [
-      'a.js',
-      '    warning  ...and some more warnings',
-      '    warning  Whoops',
-      '  [note]:',
-      '    Lorem ipsum dolor sit amet.',
-      '',
-      '⚠ 2 warnings'
-    ].join('\n'),
-    'should support `note` in verbose mode'
-  )
-
-  file = new VFile({path: 'a.js'})
   file.message('Warning!')
 
   assert.equal(
@@ -485,6 +466,37 @@ test('reporter', async function () {
       '⚠ 1 warning'
     ].join('\n'),
     'should support `options.traceLimit`'
+  )
+
+  file = new VFile()
+  Object.assign(file.message('Alpha'), {note: 'Bravo\ncharlie.'})
+
+  assert.equal(
+    strip(reporter(file, {verbose: true})),
+    [
+      '    warning  Alpha',
+      '  [note]:',
+      '    Bravo',
+      '    charlie.',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support `message.note` in verbose mode'
+  )
+
+  file = new VFile()
+  Object.assign(file.message('Alpha'), {url: 'https://example.com'})
+
+  assert.equal(
+    strip(reporter(file, {verbose: true})),
+    [
+      '    warning  Alpha',
+      '  [url]:',
+      '    https://example.com',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support `message.url` in verbose mode'
   )
 })
 

@@ -21,6 +21,7 @@
 *   [API](#api)
     *   [`reporter(files[, options])`](#reporterfiles-options)
     *   [`Options`](#options)
+*   [Example](#example)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
 *   [Security](#security)
@@ -37,8 +38,8 @@ bundlers (such as esbuild), have similar functionality.
 
 ## When should I use this?
 
-You can use this package whenever you want to display a report about what
-occurred while processing to a human.
+You can use this package when you want to display a report about what occurred
+while processing to a human.
 
 There are [other reporters][reporters] that display information differently
 listed in vfile.
@@ -86,7 +87,7 @@ console.error(reporter([one, two]))
 
 ```txt
 test/fixture/1.js
-  2:4  warning  Warning!
+2:4 warning Warning!
 
 test/fixture/2.js: no issues found
 
@@ -119,20 +120,95 @@ Configuration (TypeScript type).
 
 ###### Fields
 
-*   `color` (`boolean`, default: default: `true` when in Node.js and
+*   `color` (`boolean`, default: `true` when in Node.js and
     [color is supported][supports-color], or `false`)
     — use ANSI colors in report
+*   `defaultName` (`string`, default: `'<stdin>'`)
+    — Label to use for files without file path; if one file and no `defaultName`
+    is given, no name will show up in the report
 *   `verbose` (`boolean`, default: `false`)
-    — show message [`note`][message-note]s; notes are optional, additional,
-    long descriptions
+    — show message notes, URLs, and ancestor stack trace if available
 *   `quiet` (`boolean`, default: `false`)
     — do not show files without messages
 *   `silent` (`boolean`, default: `false`)
     — show errors only; this hides info and warning messages, and sets
     `quiet: true`
-*   `defaultName` (`string`, default: `'<stdin>'`)
-    — Label to use for files without file path; if one file and no `defaultName`
-    is given, no name will show up in the report
+*   `traceLimit` (`number`, default: `10`)
+    — max number of nodes to show in ancestors trace); ancestors can be shown
+    when `verbose: true`
+
+## Example
+
+Here’s a small example that looks through a markdown AST for emphasis and
+strong nodes, and checks whether they use `*`.
+The message has detailed information which will be shown in verbose mode.
+
+`example.js`:
+
+```js
+import {fromMarkdown} from 'mdast-util-from-markdown'
+import {visitParents} from 'unist-util-visit-parents'
+import {VFile} from 'vfile'
+import {reporter} from 'vfile-reporter'
+
+const file = new VFile({
+  path: new URL('example.md', import.meta.url),
+  value: '# *hi*, _world_!'
+})
+const value = String(file)
+const tree = fromMarkdown(value)
+visitParents(tree, (node, parents) => {
+  if (node.type === 'emphasis' || node.type === 'strong') {
+    const start = node.position?.start.offset
+
+    if (start !== undefined && value.charAt(start) === '_') {
+      const m = file.message('Expected `*` (asterisk), not `_` (underscore)', {
+        ancestors: [...parents, node],
+        place: node.position,
+        ruleId: 'attention-marker',
+        source: 'some-lint-example'
+      })
+      m.note = `It is recommended to use asterisks for emphasis/strong attention when
+writing markdown.
+
+There are some small differences in whether sequences can open and/or close…`
+      m.url = 'https://example.com/whatever'
+    }
+  }
+})
+
+console.error(reporter([file], {verbose: false}))
+```
+
+…running `node example.js` yields:
+
+```txt
+/Users/tilde/Projects/oss/vfile-reporter/example.md
+1:9-1:16 warning Expected `*` (asterisk), not `_` (underscore) attention-marker some-lint-example
+
+⚠ 1 warning
+```
+
+To show the info, pass `verbose: true` to `reporter`, and run again:
+and see:
+
+```txt
+/Users/tilde/Projects/oss/vfile-reporter/example.md
+1:9-1:16 warning Expected `*` (asterisk), not `_` (underscore) attention-marker some-lint-example
+  [url]:
+    https://example.com/whatever
+  [note]:
+    It is recommended to use asterisks for emphasis/strong attention when
+    writing markdown.
+
+    There are some small differences in whether sequences can open and/or close…
+  [trace]:
+    at emphasis (1:9-1:16)
+    at heading (1:1-1:17)
+    at root (1:1-1:17)
+
+⚠ 1 warning
+```
 
 ## Types
 
@@ -231,8 +307,6 @@ abide by its terms.
 [reporters]: https://github.com/vfile/vfile#reporters
 
 [supports-color]: https://github.com/chalk/supports-color
-
-[message-note]: https://github.com/vfile/vfile-message#note
 
 [screenshot]: screenshot.png
 

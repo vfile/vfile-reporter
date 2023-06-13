@@ -56,14 +56,14 @@ npm install vfile-reporter
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {reporter} from 'https://esm.sh/vfile-reporter@7'
+import {reporter} from 'https://esm.sh/vfile-reporter@8'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {reporter} from 'https://esm.sh/vfile-reporter@7?bundle'
+  import {reporter} from 'https://esm.sh/vfile-reporter@8?bundle'
 </script>
 ```
 
@@ -222,7 +222,7 @@ versions of Node.js.
 
 When we cut a new major release, we drop support for unmaintained versions of
 Node.
-This means we try to keep the current release line, `vfile-reporter@^7`,
+This means we try to keep the current release line, `vfile-reporter@^8`,
 compatible with Node.js 16.
 
 ## Security

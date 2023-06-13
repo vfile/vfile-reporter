@@ -178,10 +178,6 @@ abide by its terms.
 
 [MIT][license] © [Titus Wormer][author]
 
-Forked from [ESLint][]s stylish reporter
-(originally created by Sindre Sorhus), which is Copyright (c) 2013
-Nicholas C. Zakas, and licensed under MIT.
-
 <!-- Definitions -->
 
 [build-badge]: https://github.com/vfile/vfile-reporter/workflows/main/badge.svg
@@ -229,8 +225,6 @@ Nicholas C. Zakas, and licensed under MIT.
 [license]: license
 
 [author]: https://wooorm.com
-
-[eslint]: https://github.com/eslint/eslint
 
 [vfile]: https://github.com/vfile/vfile
 

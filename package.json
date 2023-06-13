@@ -31,12 +31,13 @@
   ],
   "sideEffects": false,
   "type": "module",
-  "main": "index.js",
-  "browser": {
-    "./lib/color.js": "./lib/color.browser.js",
-    "./lib/platform.js": "./lib/platform.browser.js"
+  "exports": {
+    ".": "./index.js",
+    "./do-not-use-color": {
+      "node": "./lib/color.node.js",
+      "default": "./lib/color.js"
+    }
   },
-  "types": "index.d.ts",
   "files": [
     "lib/",
     "index.d.ts",

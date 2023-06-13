@@ -10,7 +10,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
-import {reporter} from './index.js'
+import {reporter} from 'vfile-reporter'
 
 /* eslint-disable no-undef */
 /** @type {Error} */

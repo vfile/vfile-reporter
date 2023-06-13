@@ -6,11 +6,11 @@
     "emitDeclarationOnly": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["es2020"],
+    "lib": ["es2022"],
     "module": "node16",
     "newLine": "lf",
     "strict": true,
-    "target": "es2020"
+    "target": "es2022"
   },
   "exclude": ["coverage/", "node_modules/"],
   "include": ["**/*.js"]

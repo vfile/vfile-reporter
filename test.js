@@ -413,6 +413,54 @@ test('reporter', async function () {
     'should support a `message.cause`'
   )
 
+  file = new VFile()
+  let message = file.message('Something failed terribly')
+  message.cause = 'Boom!'
+
+  assert.equal(
+    strip(reporter(file)),
+    [
+      ' warning Something failed terribly',
+      '  [cause]:',
+      '    Boom!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a `message.cause` set to a primitive'
+  )
+
+  file = new VFile()
+  message = file.message('Something failed terribly')
+  message.cause = {message: 'Boom!'}
+
+  assert.equal(
+    strip(reporter(file)),
+    [
+      ' warning Something failed terribly',
+      '  [cause]:',
+      '    Boom!',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a `message.cause` set to a n object w/o stack'
+  )
+
+  file = new VFile()
+  message = file.message('Something failed terribly')
+  message.cause = {}
+
+  assert.equal(
+    strip(reporter(file)),
+    [
+      ' warning Something failed terribly',
+      '  [cause]:',
+      '    [object Object]',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a `message.cause` set to a n object w/o stack or message'
+  )
+
   /** @type {Text} */
   const text = {type: 'text', value: 'a'}
   /** @type {MdxJsxTextElementHast} */

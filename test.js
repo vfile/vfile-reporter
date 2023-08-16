@@ -50,6 +50,10 @@ try {
 }
 /* eslint-enable no-undef */
 
+// @ts-expect-error: it’s assigned.
+const causedCause = new Error('Boom!', {cause: exception})
+causedCause.stack = cleanStack(causedCause.stack, 3)
+
 test('reporter', async function () {
   const mod = await import('./index.js')
 
@@ -414,6 +418,30 @@ test('reporter', async function () {
   )
 
   file = new VFile()
+
+  file.message('Something failed terribly', {
+    cause: causedCause
+  })
+
+  assert.equal(
+    strip(reporter(file)),
+    [
+      ' warning Something failed terribly',
+      '  [cause]:',
+      '    Error: Boom!',
+      '    at test.js:1:1',
+      '    at ModuleJob.run (module_job:1:1)',
+      '  [cause]:',
+      '    ReferenceError: variable is not defined',
+      '    at test.js:1:1',
+      '    at ModuleJob.run (module_job:1:1)',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a `message.cause`, w/ another cause'
+  )
+
+  file = new VFile()
   let message = file.message('Something failed terribly')
   message.cause = 'Boom!'
 
@@ -442,7 +470,7 @@ test('reporter', async function () {
       '',
       '⚠ 1 warning'
     ].join('\n'),
-    'should support a `message.cause` set to a n object w/o stack'
+    'should support a `message.cause` set to an object w/o stack'
   )
 
   file = new VFile()
@@ -458,7 +486,7 @@ test('reporter', async function () {
       '',
       '⚠ 1 warning'
     ].join('\n'),
-    'should support a `message.cause` set to a n object w/o stack or message'
+    'should support a `message.cause` set to an object w/o stack or message'
   )
 
   /** @type {Text} */

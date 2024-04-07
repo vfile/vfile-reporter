@@ -10,6 +10,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import strip from 'strip-ansi'
 import {VFile} from 'vfile'
+import {VFileMessage} from 'vfile-message'
 import {reporter} from 'vfile-reporter'
 
 /* eslint-disable no-undef */
@@ -439,6 +440,24 @@ test('reporter', async function () {
       '⚠ 1 warning'
     ].join('\n'),
     'should support a `message.cause`, w/ another cause'
+  )
+
+  file = new VFile()
+
+  file.message('Something failed terribly', {
+    cause: new VFileMessage('Boom!', {ruleId: 'foo', source: 'bar'})
+  })
+
+  assert.equal(
+    strip(reporter(file)),
+    [
+      '     warning Something failed terribly',
+      '  [cause]:',
+      '     info    Boom!                     foo bar',
+      '',
+      '⚠ 1 warning'
+    ].join('\n'),
+    'should support a `message.cause` w/ a message'
   )
 
   file = new VFile()

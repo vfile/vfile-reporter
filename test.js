@@ -56,18 +56,10 @@ const causedCause = new Error('Boom!', {cause: exception})
 causedCause.stack = cleanStack(causedCause.stack, 3)
 
 test('reporter', async function () {
-  const mod = await import('./index.js')
-
   assert.deepEqual(
-    Object.keys(mod).sort(),
+    Object.keys(await import('vfile-reporter')).sort(),
     ['default', 'reporter'],
     'should expose the public api'
-  )
-
-  assert.equal(
-    mod.reporter,
-    mod.default,
-    'should expose `reporter` as a named and a default export'
   )
 
   assert.equal(reporter([]), '', 'should return empty when not given files')

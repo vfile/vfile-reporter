@@ -1,9 +1,6 @@
 /**
- * @typedef {import('hast').Element} Element
- * @typedef {import('hast').Root} Root
- * @typedef {import('hast').Text} Text
- * @typedef {import('mdast-util-mdx-jsx').MdxJsxTextElementHast} MdxJsxTextElementHast
- *
+ * @import {Element, Root, Text} from 'hast'
+ * @import {MdxJsxTextElementHast} from 'mdast-util-mdx-jsx'
  */
 
 import assert from 'node:assert/strict'

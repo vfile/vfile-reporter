@@ -14,20 +14,20 @@
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When should I use this?](#when-should-i-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`reporter(files[, options])`](#reporterfiles-options)
-    *   [`Options`](#options)
-*   [Example](#example)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Security](#security)
-*   [Related](#related)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When should I use this?](#when-should-i-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`reporter(files[, options])`](#reporterfiles-options)
+  * [`Options`](#options)
+* [Example](#example)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Security](#security)
+* [Related](#related)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
@@ -105,10 +105,10 @@ Create a report from one or more files.
 
 ###### Parameters
 
-*   `files` ([`Array<VFile>`][vfile] or `VFile`)
-    — files to report
-*   `options` ([`Options`][api-options], optional)
-    — configuration
+* `files` ([`Array<VFile>`][vfile] or `VFile`)
+  — files to report
+* `options` ([`Options`][api-options], optional)
+  — configuration
 
 ###### Returns
 
@@ -120,22 +120,22 @@ Configuration (TypeScript type).
 
 ###### Fields
 
-*   `color` (`boolean`, default: `true` when in Node.js and
-    [color is supported][supports-color], or `false`)
-    — use ANSI colors in report
-*   `defaultName` (`string`, default: `'<stdin>'`)
-    — Label to use for files without file path; if one file and no `defaultName`
-    is given, no name will show up in the report
-*   `verbose` (`boolean`, default: `false`)
-    — show message notes, URLs, and ancestor stack trace if available
-*   `quiet` (`boolean`, default: `false`)
-    — do not show files without messages
-*   `silent` (`boolean`, default: `false`)
-    — show errors only; this hides info and warning messages, and sets
-    `quiet: true`
-*   `traceLimit` (`number`, default: `10`)
-    — max number of nodes to show in ancestors trace); ancestors can be shown
-    when `verbose: true`
+* `color` (`boolean`, default: `true` when in Node.js and
+  [color is supported][supports-color], or `false`)
+  — use ANSI colors in report
+* `defaultName` (`string`, default: `'<stdin>'`)
+  — Label to use for files without file path; if one file and no `defaultName`
+  is given, no name will show up in the report
+* `verbose` (`boolean`, default: `false`)
+  — show message notes, URLs, and ancestor stack trace if available
+* `quiet` (`boolean`, default: `false`)
+  — do not show files without messages
+* `silent` (`boolean`, default: `false`)
+  — show errors only; this hides info and warning messages, and sets
+  `quiet: true`
+* `traceLimit` (`number`, default: `10`)
+  — max number of nodes to show in ancestors trace); ancestors can be shown
+  when `verbose: true`
 
 ## Example
 
@@ -231,14 +231,14 @@ Use of `vfile-reporter` is safe.
 
 ## Related
 
-*   [`vfile-reporter-json`](https://github.com/vfile/vfile-reporter-json)
-    — create a JSON report
-*   [`vfile-reporter-pretty`](https://github.com/vfile/vfile-reporter-pretty)
-    — create a pretty report
-*   [`vfile-reporter-junit`](https://github.com/kellyselden/vfile-reporter-junit)
-    — create a jUnit report
-*   [`vfile-reporter-position`](https://github.com/Hocdoc/vfile-reporter-position)
-    — create a report with content excerpts
+* [`vfile-reporter-json`](https://github.com/vfile/vfile-reporter-json)
+  — create a JSON report
+* [`vfile-reporter-pretty`](https://github.com/vfile/vfile-reporter-pretty)
+  — create a pretty report
+* [`vfile-reporter-junit`](https://github.com/kellyselden/vfile-reporter-junit)
+  — create a jUnit report
+* [`vfile-reporter-position`](https://github.com/Hocdoc/vfile-reporter-position)
+  — create a report with content excerpts
 
 ## Contribute
 
